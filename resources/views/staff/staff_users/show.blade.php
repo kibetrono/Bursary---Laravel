@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Users
+    Staff: {{ $user->name }}
 @endsection
 
 @section('css')
@@ -12,6 +12,9 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
+
+    {{-- custom css --}}
+    <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
 @endsection
 
 @section('content')
@@ -45,27 +48,29 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-
+                            @canany(['edit staff','delete staff'])
                             <div class="card-header d-flex">
+                                @can('edit staff')
+                                <form class="mx-1" action="{{ route('staff.users.edit', encrypt($user->id)) }}" method="POST">
+                                    @csrf
+                                    <button class="btn-sm btn btn-primary" type="submit"><i
+                                            class="fas fa-edit"></i> Update</button>
+                                </form>
+                                @endcan
+                                @can('delete staff')
+                                <form class="mx-1"
+                                    onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
+                                    action="{{ route('staff.users.delete', $user->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
 
-                                        <form class="mx-1" action="{{ route('staff.users.edit', $user->id) }}" method="POST">
-                                            @csrf
-                                            <button class="btn-sm btn btn-primary" type="submit"><i
-                                                    class="fas fa-edit"></i>Update</button>
-                                        </form>
-
-                                        <form class="mx-1"
-                                        onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
-                                        action="{{ route('staff.users.delete', $user->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-
-                                        <button class="btn-sm btn btn-danger" type="submit"><i
-                                                class="fas fa-trash"></i>Delete</button>
-                                    </form>
-                               
+                                    <button class="btn-sm btn btn-danger" type="submit"><i
+                                            class="fas fa-trash"></i> Delete</button>
+                                </form>
+                                @endcan
 
                             </div>
+                            @endcanany
                             <!-- /.card-header -->
                             <div class="card-body p-0">
                                 <table class="table table-striped">
@@ -83,27 +88,43 @@
                                             <td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
                                         </tr>
                                         <tr>
-                                            <td style="width: 30%"><b>Last Updated</b> </td>
-                                            <td>{{ $user->updated_at }}</td>
-                                        </tr>
-                                        <tr>
                                             <td style="width: 30%"><b>Date Created</b> </td>
                                             <td>{{ $user->created_at }}</td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 30%"><b>Last Updated</b> </td>
+                                            <td>{{ $user->updated_at }}</td>
                                         </tr>
                                         <tr>
                                             <td style="width: 30%"><b>Role</b> </td>
                                             <td>
                                                 @forelse ($user->roles as $role)
-                                                        {{ $role->name }}
+                                                    {{ $role->name }}
                                                 @empty
                                                     -
                                                 @endforelse
                                             </td>
                                         </tr>
+                                        @can('manage bursary')
+                                       
                                         <tr>
                                             <td style="width: 30%"><b>Tasks Attended</b> </td>
-                                            <td>-</td>
+                                            <td>
+                                                <a href="{{route('staff.view.approved.applications',encrypt($user->id))}}">
+                                                <span class="btn-sm btn btn-success py-1">
+                                                    Approved <div class="circle_approved_num"><span class="appr_rej_number">{{ $attendedApprovedBursaries }}</span></div>
+                                                </span>
+                                                </a>
+                                                <a href="{{route('staff.view.rejected.applications',encrypt($user->id))}}">
+                                                <span class="btn-sm btn btn-danger py-1">
+                                                    Rejected<div class="circle_rejected_num"><span class="appr_rej_number">{{ $attendedRejectedBursaries }}</span></div>
+                                                </span>
+                                                </a>
+                                            </td>
+
                                         </tr>
+                                        @endcan
 
                                     </tbody>
                                     <tfoot>
@@ -136,7 +157,4 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
 @endsection

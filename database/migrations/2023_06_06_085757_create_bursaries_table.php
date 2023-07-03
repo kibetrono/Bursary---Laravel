@@ -16,10 +16,11 @@ class CreateBursariesTable extends Migration
         Schema::create('bursaries', function (Blueprint $table) {
             $table->id();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('staff_id')->default('0');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('gender');
-            $table->integer('id_or_passport_no')->nullable();
+            $table->bigInteger('id_or_passport_no')->nullable();
             $table->timestamp('date_of_birth');
             $table->string('institution_name');
             $table->string('adm_or_reg_no');

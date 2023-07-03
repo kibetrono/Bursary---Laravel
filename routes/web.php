@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\SchoolController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,17 +16,12 @@ use App\Http\Controllers\StaffController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    if (Auth::check()) {
+        return redirect('/home');
+    } else {
+        return view('auth.login');
+    }
 });
-
-Route::get('/defined-error', function () {
-    return view('errors.403');
-});
-
-Route::get('/test', function () {
-    return view('test');
-});
-
 
 Auth::routes();
 
@@ -33,11 +29,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('applicant.home');
 
-// Multistep Form Controller
-Route::prefix('multi-step')->middleware(['auth'])->group( function () {
-    Route::resource('form', 'MultiStepFormController');
-
-});
+Route::get('/user-dashboard', [App\Http\Controllers\ApplicantController::class, 'index'])->name('default.applicant.dashboard');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('profile', 'ProfileController');
@@ -50,23 +42,31 @@ Route::group(['middleware' => 'auth'], function () {
 // user bursary
 Route::prefix('user-bursary')->middleware(['auth'])->group(function () {
     Route::get('history/{id}', [App\Http\Controllers\BursaryController::class, 'history'])->name('user.bursary.history');
-    Route::get('create', [App\Http\Controllers\BursaryController::class, 'create'])->name('user.bursary.create.form');
+    Route::get('apply', [App\Http\Controllers\BursaryController::class, 'create'])->name('user.bursary.create.form');
     Route::post('save', [App\Http\Controllers\BursaryController::class, 'store'])->name('user.bursary.store');
 });
 
 
 // bursary application, approved applications and rejected applications( for admin and staffs only)
-Route::middleware(['auth', 'staffAuth'])
+Route::middleware(['auth'])
     ->group(function () {
         // BursaryController
         Route::resource('bursary', 'BursaryController');
         Route::get('approved-applications', [App\Http\Controllers\BursaryController::class, 'approvedApplications'])->name('approved.applications');
         Route::get('rejected-applications', [App\Http\Controllers\BursaryController::class, 'rejectedApplications'])->name('rejected.applications');
-        Route::get('bursary/{id}/show', [App\Http\Controllers\BursaryController::class, 'showToAttendees'])->name('bursary.show.to.attendees');
-});
+
+        Route::post('/update-bursary-approved-status', 'BursaryController@updateApprovedBursaryStatus')->name('bursary.updateApprovedStatus'); // approved
+        Route::post('/update-bursary-rejected-status', 'BursaryController@updateRejectedBursaryStatus')->name('bursary.updateRejectedStatus'); // rejected
+
+        //  applying multiple approval or rejection
+        Route::post('/multi_approve_or_reject', [App\Http\Controllers\BursaryController::class, 'multiApproveOrReject'])->name('bulk.actions');
+
+        // downloading attachments
+        Route::get('/download/{filename}', 'BursaryController@downloadAttachment')->name('download.attachment');
+    });
 
 
-Route::prefix('admin')->middleware(['auth', 'adminAuth'])->group(
+Route::prefix('admin')->middleware(['auth'])->group(
     function () {
         // AdminController
         Route::get('dashboard', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.home');
@@ -81,6 +81,11 @@ Route::prefix('admin')->middleware(['auth', 'adminAuth'])->group(
         // UserController
         Route::resource('user', 'UserController');
 
+        // Bursary Controller on edit, update and destroy methods
+        Route::get('/bursary/{id}/edit', 'BursaryController@edit')->name('admin.edit.bursary');
+        Route::put('/bursary/{id}', 'BursaryController@update')->name('admin.update.bursary');
+        Route::delete('/bursary/{id}', 'BursaryController@destroy')->name('admin.destroy.bursary');
+
         // StaffController
         Route::resource('staff', 'StaffController');
         Route::get('staff-users', [App\Http\Controllers\StaffController::class, 'staffUsersList'])->name('staff_users.list');
@@ -91,17 +96,17 @@ Route::prefix('admin')->middleware(['auth', 'adminAuth'])->group(
         Route::put('staff-user-update/{id}', [App\Http\Controllers\StaffController::class, 'updateStaffUser'])->name('staff.users.update');
         Route::put('staff-user-delete/{id}', [App\Http\Controllers\StaffController::class, 'deleteStaffUser'])->name('staff.users.delete');
 
+        Route::get('staff-user-view-approved-tasks/{id}', [App\Http\Controllers\StaffController::class, 'viewUserApprovedTasks'])->name('staff.view.approved.applications');
+        Route::get('staff-user-view-rejected-tasks/{id}', [App\Http\Controllers\StaffController::class, 'viewUserRejectedTasks'])->name('staff.view.rejected.applications');
+
+        // application periods
+        Route::resource('application-period', 'ApplicationPeriodController');
+
         // system settings
-        Route::get('system-settings', [App\Http\Controllers\AdminController::class, 'systemSettings'])->name('system.settings');
+        Route::resource('system-setting', 'SystemSettingController');
+
     }
 );
-
-
-// Route::prefix('staff')->group(
-//     function () {
-//         Route::get('dashboard', [App\Http\Controllers\StaffController::class, 'index'])->name('staff.home')->middleware('staffAuth');
-//     }
-// );
 
 Route::prefix('staff')->middleware(['auth', 'permission:approve bursary'])->group(function () {
     Route::get('dashboard', [StaffController::class, 'index'])->name('staff.home');

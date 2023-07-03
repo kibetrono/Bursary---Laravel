@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\Bursary;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class StaffController extends Controller
 {
@@ -20,8 +24,10 @@ class StaffController extends Controller
      */
     public function index()
     {
-        
-        return view('staff.dashboard');
+        if (Auth::user()->can('manage staff')) {
+        }else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -90,159 +96,245 @@ class StaffController extends Controller
         //
     }
 
-
-
     public function staffUsersList(Request $request)
-    {   
-        $role_name= "Staff";
-        $staffUsers = User::whereHas('roles', function ($query) use ($role_name) {
-            $query->where('name', $role_name);
-        })->latest()->get();
+    {
+        if (Auth::user()->can('manage staff')) {
 
-        if($request->has('staff_user_search')){
-            $role_name= "Staff";
-            $staffUsers = User::where('name','like',"%{$request->staff_user_search}%")->orWhere('email','like',"%$request->staff_user_search%")->whereHas('roles', function ($query) use ($role_name) {
+            $role_name = "Staff";
+            $staffUsers = User::query()->whereHas('roles', function ($query) use ($role_name) {
                 $query->where('name', $role_name);
-            })->latest()->get();
+            })->latest()->paginate('10');
+
+            if ($request->has('staff_user_search') && $request->staff_user_search != null) {
+                session()->put('staff_user_search', $request->staff_user_search);
+
+                $role_name = "Staff";
+                $staffUsers = User::query()->where('name', 'like', "%{$request->staff_user_search}%")->orWhere('email', 'like', "%$request->staff_user_search%")->whereHas('roles', function ($query) use ($role_name) {
+                    $query->where('name', $role_name);
+                })->latest()->paginate('1');
+                $userSearch = session('staff_user_search');
+
+                $staffUsers->appends(['staff_user_search' => $userSearch]);
+            }
+
+            return view('staff.staff_users.index', compact('staffUsers'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        $searchTerm = $request->staff_user_search;
-
-        return view('staff.staff_users.index',compact('staffUsers','searchTerm'));
     }
 
     public function staffUsersCreate()
-    {   
-        $role_name= "Staff";
-        // $rolesss = Role::all();
-        // dd($ro);
-        $role = Role::where('name',$role_name)->get();
-        return view('staff.staff_users.create',compact('role'));
+    {
+        if (Auth::user()->can('create staff')) {
+
+            $role_name = "Staff";
+            // $rolesss = Role::all();
+            // dd($ro);
+            $role = Role::where('name', $role_name)->get();
+            return view('staff.staff_users.create', compact('role'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     public function staffUsersStore(Request $request)
     {
-        // dd($request->all());
+        if (Auth::user()->can('create staff')) {
 
-        $this->validate($request,[
-            'name' => 'required|max:120',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            // 'phone' => 'required',
-            'role' => 'required',
+            // dd($request->all());
 
-        ]);
+            $this->validate($request, [
+                'name' => 'required|max:120',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6',
+                // 'phone' => 'required',
+                'role' => 'required',
 
-        $user               = new User();
+            ]);
 
-        $user->name      = $request->name;
-        $user->email      = $request->email;
-        $user->password   = Hash::make($request->password);
-        // $user->phone      = $request->phone;
+            $user               = new User();
 
-        // saving role
-        $user->assignRole($request->role);
+            $user->name      = $request->name;
+            $user->email      = $request->email;
+            $user->password   = Hash::make($request->password);
+            // $user->phone      = $request->phone;
 
-        // saving permission
-        // if($request->has('permissions')){
-        //     $user->givePermissionTo($request->permission);
-        // }
+            // saving role
+            $user->assignRole($request->role);
+
+            // saving permission
+            // if($request->has('permissions')){
+            //     $user->givePermissionTo($request->permission);
+            // }
 
 
-        $user->save();
+            $user->save();
 
-        return redirect()->route('staff_users.list')->with('success','Staff created successfully');
+            return redirect()->route('staff_users.list')->with('success', 'Staff created successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
-    public function showStaffUser($id)
-    {   
-      
-        $user = User::find($id);
-        return view('staff.staff_users.show',compact('user'));
-    }
-
-    public function editStaffUser($id)
+    public function showStaffUser($encryptedID)
     {
-        // dd($id);
-        $roles = Role::all();
-        $user = User::findorFail($id);
-        return view('staff.staff_users.edit',compact('user','roles'));
+        if (Auth::user()->can('view staff')) {
+
+            $id = decrypt($encryptedID);
+            $user = User::find($id);
+            $attendedApprovedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '1')->count();
+            $attendedRejectedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '2')->count();
+            return view('staff.staff_users.show', compact('user', 'attendedApprovedBursaries', 'attendedRejectedBursaries'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function editStaffUser($encryptedID)
+    {
+        if (Auth::user()->can('edit staff')) {
+
+            // dd($id);
+            $id = decrypt($encryptedID);
+            $roles = Role::all();
+            $user = User::findorFail($id);
+            return view('staff.staff_users.edit', compact('user', 'roles'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function viewUserApprovedTasks(Request $request, $encryptedID)
+    {
+        if (Auth::user()->can('manage bursary')) {
+
+            $id = decrypt($encryptedID);
+            $user = User::findorFail($id);
+
+            $approvedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '1')->paginate('10');
+
+            if ($request->has('approved_search_by_staff')) {
+
+                $user = User::findorFail($id);
+                $approvedBursaries = Bursary::where('staff_id', $id)->where('adm_or_reg_no', 'like', "%{$request->approved_search_by_staff}%")->where('status', '=', '1')->paginate('10');
+            }
+
+            $searchTerm = $request->approved_search_by_staff;
+
+            return view('staff.staff_users.show-approved-applications', compact('user', 'approvedBursaries', 'searchTerm'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+
+    public function viewUserRejectedTasks(Request $request, $encryptedID)
+    {
+        if (Auth::user()->can('manage bursary')) {
+
+            $id = decrypt($encryptedID);
+
+            $user = User::findorFail($id);
+
+            $rejectedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '2')->paginate('10');
+
+            if ($request->has('rejected_search_by_staff')) {
+
+                $user = User::findorFail($id);
+                $rejectedBursaries = Bursary::where('staff_id', $id)->where('adm_or_reg_no', 'like', "%{$request->rejected_search_by_staff}%")->where('status', '=', '2')->paginate('10');
+            }
+
+            $searchTerm = $request->rejected_search_by_staff;
+
+            return view('staff.staff_users.show-rejected-applications', compact('user', 'rejectedBursaries', 'searchTerm'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     public function updateStaffUser(Request $request, $id)
     {
-        // dd($request->all());
+        if (Auth::user()->can('edit staff')) {
 
-        $this->validate($request,[
-            'name' => 'required|max:120',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'password' => 'nullable|min:6|confirmed',
-            'role' => 'required'
-        ]);
+            // dd($request->all());
 
-        $user = User::findOrFail($id);
+            $this->validate($request, [
+                'name' => 'required|max:120',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'password' => 'nullable|min:6|confirmed',
+                'role' => 'required'
+            ]);
 
-        $user->name      = $request->name;
-        $user->email      = $request->email;
-        // $user->phone      = $request->phone;
+            $user = User::findOrFail($id);
 
-        if($request->has('password') && $request['password'] !== null){
-            $user->password   = Hash::make($request->password);
-        }
+            $user->name      = $request->name;
+            $user->email      = $request->email;
+            // $user->phone      = $request->phone;
 
-        // working with roles
-        if($request->has('role')){
-            $userRole = $user->getRoleNames();
-            foreach ($userRole as $role) {
-                $user->removeRole($role);
+            if ($request->has('password') && $request['password'] !== null) {
+                $user->password   = Hash::make($request->password);
             }
-            // saving new role
-            $user->assignRole($request->role);
+
+            // working with roles
+            if ($request->has('role')) {
+                $userRole = $user->getRoleNames();
+                foreach ($userRole as $role) {
+                    $user->removeRole($role);
+                }
+                // saving new role
+                $user->assignRole($request->role);
+            }
+
+            // working with permissions
+            // if($request->has('permissions')){
+            //     $userPermissions = $user->getPermissionNames();
+            //     foreach ($userPermissions as $permission) {
+            //         $user->revokePermissionTo($permission);
+            //     }
+
+            //     $user->givePermissionTo($request->permission);
+            // }
+
+            // Update the updated_at field manually
+            $user->touch();
+
+            $user->save();
+
+            return redirect()->route('staff_users.list')->with('success', 'Staff updated successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        // working with permissions
-        // if($request->has('permissions')){
-        //     $userPermissions = $user->getPermissionNames();
-        //     foreach ($userPermissions as $permission) {
-        //         $user->revokePermissionTo($permission);
-        //     }
-
-        //     $user->givePermissionTo($request->permission);
-        // }
-
-        $user->save();
-
-        return redirect()->route('staff_users.list')->with('success','Staff updated successfully');
     }
 
     public function deleteStaffUser($id)
-    {       
-        // dd($id);
+    {
+        if (Auth::user()->can('delete staff')) {
 
-     // Step 1: Find the user
-     $user = User::findOrFail($id);
+            // Step 1: Find the user
+            $user = User::findOrFail($id);
 
-     if($user->hasRole('super-admin')){
-        return redirect()->back()->with('warning','User with admin role cannot be deleted');
-     }
+            if ($user->hasRole('super-admin')) {
+                return redirect()->back()->with('warning', 'User with admin role cannot be deleted');
+            }
 
-     // Step 2: Revoke all permissions from the user
-     $permissions = Permission::all();
-     foreach ($permissions as $permission) {
-         $user->revokePermissionTo($permission);
-     }
- 
-     // Step 3: Remove all roles from the user
-     $roles = Role::all();
-     foreach ($roles as $role) {
-         $user->removeRole($role);
-     }
- 
-     // Step 4: Delete the user
-     $user->delete();
+            // Step 2: Revoke all permissions from the user
+            $permissions = Permission::all();
+            foreach ($permissions as $permission) {
+                $user->revokePermissionTo($permission);
+            }
 
-     return redirect()->route('staff_users.list')->with('success','Staff deleted successfully');
-        
+            // Step 3: Remove all roles from the user
+            $roles = Role::all();
+            foreach ($roles as $role) {
+                $user->removeRole($role);
+            }
 
+            // Step 4: Delete the user
+            $user->delete();
+
+            return redirect()->route('staff_users.list')->with('success', 'Staff deleted successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
+
 }

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Users
+    Staffs
 @endsection
 
 @section('css')
@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
 @endsection
 
+@php
+$startIndex = ($staffUsers->currentPage() - 1) * $staffUsers->perPage();
+@endphp
+
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -22,7 +26,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Staffs</h1>
+                        <h1>Staff List</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -57,13 +61,13 @@
                                 </div>
                             </div>
 
-                            <div class="card-header mt-2">
-                                <div class="card-tools mx-4 my-1">
-                                    <form action="{{route('staff_users.list')}}" method="GET">
+                            <div class="card-header mt-1">
+                                <div class="card-tools">
+                                    <form action="{{ route('staff_users.list') }}" method="GET">
 
                                         <div class="input-group input-group-sm">
-                                            <input type="text" name="staff_user_search" value="{{ $searchTerm }}"
-                                                class="form-control float-right"  placeholder="Search by name or email">
+                                            <input type="text" name="staff_user_search" value="{{ request('staff_user_search') }}"
+                                                class="form-control float-right" placeholder="Search by name or email">
 
                                             <div class="input-group-append">
                                                 <button type="submit" class="btn btn-default">
@@ -76,8 +80,8 @@
 
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
+                            <div class="card-body table-responsive p-1">
+                                <table class="table table-hover text-nowrap table-bordered">
                                     <thead>
                                         <tr>
                                             <th style="width:10%">#</th>
@@ -85,46 +89,61 @@
                                             <th style="width:25%">email</th>
                                             <th style="width:25%">Date created</th>
                                             <th style="width:50%">Date updated</th>
+                                            @canany(['view staff', 'edit staff', 'delete staff'])
                                             <th class="text-end">Action</th>
+                                            @endcanany
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($staffUsers as $index => $user)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $startIndex + $index + 1 }}</td>
                                                 <td>{{ $user->name }}</td>
                                                 <td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
                                                 <td>{{ $user->created_at->format('Y-m-d') }}</td>
                                                 <td>{{ $user->updated_at->format('Y-m-d') }}</td>
+                                                @canany(['view staff', 'edit staff', 'delete staff'])
+
                                                 <td class="d-flex">
-                                                    <a href="{{ route('staff.users.show', $user->id) }}"
-                                                        class="btn-sm btn btn-info mx-1" title="View"><i class="fas fa-eye"></i></a>
-                                                    
-                                                    <form class="mx-1" action="{{ route('staff.users.edit', $user->id) }}" method="POST" title="Edit">
+                                                    @can('view staff')
+                                                    <a href="{{ route('staff.users.show', encrypt($user->id)) }}"
+                                                        class="btn-sm btn btn-info mx-1" title="View"><i
+                                                            class="fas fa-eye"></i></a>
+                                                    @endcan
+                                                    @can('edit staff')
+                                                    <form class="mx-1"
+                                                        action="{{ route('staff.users.edit', encrypt($user->id)) }}"
+                                                        method="POST" title="Edit">
                                                         @csrf
                                                         <button class="btn-sm btn btn-warning" type="submit"><i
                                                                 class="fas fa-edit"></i></button>
                                                     </form>
-
-                                                    <form class="mx-1" onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
-                                                        action="{{ route('staff.users.delete', $user->id) }}" method="POST" title="Delete">
+                                                    @endcan
+                                                    @can('delete staff')
+                                                    <form class="mx-1"
+                                                        onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
+                                                        action="{{ route('staff.users.delete', $user->id) }}"
+                                                        method="POST" title="Delete">
                                                         @csrf
                                                         @method('PUT')
 
                                                         <button class="btn-sm btn btn-danger" type="submit"><i
                                                                 class="fas fa-trash"></i></button>
                                                     </form>
-
+                                                    @endcan
                                                 </td>
+                                                @endcanany
                                             </tr>
-
-                                            
-
 
                                         @empty
 
                                             <tr>
-                                                <td class="fas fa-folder-open"> No User Found</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="fas fa-folder-open"> No Staff Found</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                         @endforelse
 
@@ -142,6 +161,46 @@
                                         </tr>
                                     </tfoot>
                                 </table>
+                                <div class="row">
+                                    <div class="col-md-12 pt-2">
+                                        @if ($staffUsers->hasPages())
+                                            <div class="d-flex justify-content-end">
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination">
+                                                        {{-- Previous Page Link --}}
+                                                        <li
+                                                            class="page-item {{ $staffUsers->onFirstPage() ? 'disabled' : '' }}">
+                                                            <a class="page-link"
+                                                                href="{{ $staffUsers->previousPageUrl() }}"
+                                                                aria-label="Previous">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
+                                                        </li>
+
+                                                        {{-- Numbered Page Links --}}
+                                                        @foreach ($staffUsers->getUrlRange(1, $staffUsers->lastPage()) as $page => $url)
+                                                            <li
+                                                                class="page-item {{ $staffUsers->currentPage() === $page ? 'active' : '' }}">
+                                                                <a class="page-link"
+                                                                    href="{{ $url }}">{{ $page }}</a>
+                                                            </li>
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        <li
+                                                            class="page-item {{ !$staffUsers->hasMorePages() ? 'disabled' : '' }}">
+                                                            <a class="page-link" href="{{ $staffUsers->nextPageUrl() }}"
+                                                                aria-label="Next">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -168,7 +227,4 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
 @endsection

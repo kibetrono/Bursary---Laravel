@@ -63,12 +63,10 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-
+  
         // added
-        'applicantAuth' => \App\Http\Middleware\CustomUserMiddleware::class,
         'adminAuth' => \App\Http\Middleware\CustomAdminMiddleware::class,
         'staffAuth' => \App\Http\Middleware\CustomStaffMiddleware::class,
-        'schoolAuth' => \App\Http\Middleware\CustomSchoolMiddleware::class,
 
         // role and permission from spatie
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,

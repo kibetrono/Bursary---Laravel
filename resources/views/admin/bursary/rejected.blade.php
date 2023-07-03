@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Rejected Applications
+    Rejected Application List
 @endsection
 
 @section('css')
@@ -13,8 +13,14 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
     
+    {{-- custom css --}}
+    <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
 @endsection
 
+@php
+$startIndex = ($rejectedBursaries->currentPage() - 1) * $rejectedBursaries->perPage();
+$user = Auth::user();
+@endphp
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -23,7 +29,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Rejected Applications</h1>
+                        <h1>Rejected Application List</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -53,13 +59,134 @@
                             <div class="card-header bg-info">
                                 <h3 class="card-title">Rejected Applications </h3>
                                 <div class="card-tools">
-                                    {{-- <a href="{{ route('user.create') }}" class="btn-sm btn btn-success"><i
-                                            class="fas fa-plus-circle"></i> Create New User</a> --}}
+                                    <form action="{{ route('rejected.applications') }}" method="GET">
+
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" name="rejected_search" class="form-control"
+                                                placeholder="search by adm/reg number" value="{{ request('rejected_search') }}" autocomplete="off">
+
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
                                 </div>
                             </div>
-                         
+
                             <!-- /.card-header -->
-                            
+                            <div class="card-body table-responsive p-1">
+                                <table class="table table-hover text-nowrap table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Gender</th>
+                                            <th>Institution</th>
+                                            <th>Adm/Reg no.</th>
+                                            <th>Total Fees</th>
+                                            <th>Paid</th>
+                                            <th>Balance</th>
+                                            <th>Date Applied</th>
+                                            <th>Date Rejected</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($rejectedBursaries as $index =>$rejectedBursary)
+                                            <tr>
+                                                <td>{{ $startIndex + $index + 1 }}</td>
+                                                <td>{{ $rejectedBursary->first_name }} {{ $rejectedBursary->last_name }}
+                                                </td>
+                                                <td>{{ $rejectedBursary->gender }}</td>
+                                                <td>{{ $rejectedBursary->institution_name }}</td>
+                                                <td>{{ $rejectedBursary->adm_or_reg_no }}</td>
+                                                <td>{{ $rejectedBursary->total_fees_payable }}</td>
+                                                <td>{{ $rejectedBursary->total_fees_paid }}</td>
+                                                <td>{{ $rejectedBursary->fee_balance }}</td>
+                                                <td>{{ $rejectedBursary->created_at->format('Y-m-d') }}</td>
+                                                <td>{{ $rejectedBursary->updated_at->format('Y-m-d') }}</td>
+                                            </tr>
+
+                                        @empty
+
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                @if ($user->hasRole('super-admin'))
+                                                <td class="text-bold"><i class="fas fa-folder-open"></i> No Application Rejected</td>
+                                                @else
+                                                <td class="text-bold"><i class="fas fa-folder-open"></i> No Application Rejected By: {{$user->name}}</td>
+                                                @endif
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        @endforelse
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <div class="row">
+                                    <div class="col-md-12 pt-2">
+                                        @if ($rejectedBursaries->hasPages())
+                                            <div class="d-flex justify-content-end">
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination">
+                                                        {{-- Previous Page Link --}}
+                                                        <li
+                                                            class="page-item {{ $rejectedBursaries->onFirstPage() ? 'disabled' : '' }}">
+                                                            <a class="page-link"
+                                                                href="{{ $rejectedBursaries->previousPageUrl() }}"
+                                                                aria-label="Previous">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
+                                                        </li>
+
+                                                        {{-- Numbered Page Links --}}
+                                                        @foreach ($rejectedBursaries->getUrlRange(1, $rejectedBursaries->lastPage()) as $page => $url)
+                                                            <li
+                                                                class="page-item {{ $rejectedBursaries->currentPage() === $page ? 'active' : '' }}">
+                                                                <a class="page-link"
+                                                                    href="{{ $url }}">{{ $page }}</a>
+                                                            </li>
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        <li
+                                                            class="page-item {{ !$rejectedBursaries->hasMorePages() ? 'disabled' : '' }}">
+                                                            <a class="page-link" href="{{ $rejectedBursaries->nextPageUrl() }}"
+                                                                aria-label="Next">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                </div>
+                            </div>
                             <!-- /.card-body -->
                         </div>
                         <!-- /.card -->
@@ -85,7 +212,4 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
 @endsection

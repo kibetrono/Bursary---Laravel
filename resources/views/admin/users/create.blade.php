@@ -19,6 +19,8 @@
 
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url('Admin/css/users/create.css') }}">
+
 @endsection
 
 @section('content')
@@ -33,7 +35,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">
                                 <a href="{{ route('user.index') }}">Users</a>
                             </li>
@@ -98,32 +100,19 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    {{-- <div class="input-group mb-3">
-
-                        <input id="telephone" type="number"
-                            class="form-control @error('telephone') is-invalid @enderror" name="telephone"
-                            placeholder="Telephone number" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-phone"></span>
-                            </div>
-                        </div>
-                        @error('telephone')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div> --}}
+                                    
                                     <label for="">Password</label>
                                     <div class="input-group mb-3">
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
                                             required autocomplete="new-password" placeholder="Password">
-                                        <div class="input-group-append">
-                                            <div class="input-group-text">
-                                                <span class="fas fa-lock"></span>
-                                            </div>
-                                        </div>
+                                       <!-- Password visibility toggle -->
+                                       <div class="input-group-append">
+                                        <span class="input-group-text password-toggle"
+                                            onclick="togglePasswordVisibility()">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -134,15 +123,20 @@
                                     <div class="input-group mb-3">
                                         <input id="password-confirm" type="password" name="password_confirmation"
                                             class="form-control" placeholder="Retype password" required>
+                                       
                                         <div class="input-group-append">
-                                            <div class="input-group-text">
-                                                <span class="fas fa-lock"></span>
-                                            </div>
+                                            <span class="input-group-text password-toggle-confirm"
+                                                onclick="togglePasswordConfirmVisibility()">
+                                                <i class="fas fa-eye"></i>
+                                            </span>
                                         </div>
                                     </div>
+
+                                   
                                     <label for="">Assign Role</label>
                                     <div class="input-group mb-3">
-                                        <select name="role" id="select_role" class="form-control">
+                                        <select name="role" id="user_create_select_role"
+                                            class="form-control @error('role') is-invalid @enderror">
                                             <option disabled selected>Choose role</option>
 
                                             @foreach ($roles as $role)
@@ -150,6 +144,12 @@
                                             @endforeach
 
                                         </select>
+
+                                        @error('role')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
 
                                         <div class="input-group-append">
                                             <div class="input-group-text">
@@ -160,17 +160,14 @@
 
                                     <div class="mt-3">
                                         <button style="border:unset" type="submit"
-                                            class="btn-sm btn btn-success btn-block">Create User</button>
+                                            class="btn-md btn btn-success btn-block">Create User</button>
                                     </div>
-
 
                                 </div>
 
                             </form>
                         </div>
                         <!-- /.card -->
-
-
 
                     </div>
                     <!--/.col (left) -->
@@ -198,33 +195,16 @@
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
 
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
-
     {{-- select 2 --}}
-
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
+    <!-- Custom js -->
+    <script src="{{ url('Admin/js/users/select2.js') }}"></script>
+    <script src="{{ url('Admin/js/users/create.js') }}"></script>
 
-            // Initialize Select2
-            $('#select_role').select2();
-
-            // Set option selected onchange
-            $('#user_selected').change(function() {
-                var value = $(this).val();
-
-                // Set selected 
-                $('#select_role').val(value);
-                $('#select_role').select2().trigger('change');
-
-            });
-        });
-    </script>
-    {{-- /select 2 --}}
+    
 @endsection

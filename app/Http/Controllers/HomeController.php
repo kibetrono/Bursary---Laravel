@@ -28,22 +28,22 @@ class HomeController extends Controller
     {
         // Check if the user is authenticated
         if (Auth::check()) {
+
             // Get the authenticated user
             $user = Auth::user();
+            $permissions = Permission::pluck('name')->all();
 
-            // Check the user's roles and permissions
-            if ($user->hasRole('super-admin')) {
+            if ($user->hasAnyPermission($permissions)) {
                 return redirect()->route('admin.home');
-            } elseif ($user->hasRole('Staff')) {
-                return redirect()->route('staff.home');
             }
-            elseif ($user->hasRole('SchoolRole')) {
-                return redirect()->route('school.home');
-            }
-           
-        }
 
+            // if ($user->hasRole('super-admin')) {
+            //     return redirect()->route('admin.home');
+            // } elseif ($user->hasRole('Staff')) {
+            //     return redirect()->route('staff.home');
+            // }
+        }
         // Fallback if the user doesn't have any of the specified roles or permissions
-        return view('applicant.dashboard');
+        return redirect()->route('default.applicant.dashboard');
     }
 }

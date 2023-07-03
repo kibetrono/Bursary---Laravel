@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 
 class RoleController extends Controller
@@ -27,12 +28,17 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = $this->role::latest()->get(); // all roles
-        // $roles = $this->role::whereNotIn('name',['super-admin'])->get(); // all roles except for super-admin
+        if (Auth::user()->can('manage role')) {
 
-        // dd($roles);
-        
-        return view('admin.roles.index',compact('roles'));
+            $roles = $this->role::query()->latest()->paginate('10'); // all roles
+            // $roles = $this->role::whereNotIn('name',['super-admin'])->get(); // all roles except for super-admin
+
+            // dd($roles);
+
+            return view('admin.roles.index', compact('roles'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -42,9 +48,14 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();
-        // dd($permissions);
-        return view('admin.roles.create',compact('permissions'));
+        if (Auth::user()->can('create role')) {
+
+            $permissions = Permission::all();
+            // dd($permissions);
+            return view('admin.roles.create', compact('permissions'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -56,23 +67,26 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        if (Auth::user()->can('create role')) {
 
-        $this->validate($request,[
-            'name'=>'required|string|unique:roles',
-            'permissions'=>'nullable',
-        ]);
+            $this->validate($request, [
+                'name' => 'required|string|unique:roles',
+                'permissions' => 'nullable',
+            ]);
 
-        $role = $this->role->create([
+            $role = $this->role->create([
 
-            'name' => $request->name,
-        ]);
+                'name' => $request->name,
+            ]);
 
-        if($request->has('permissions')){
-            $role->givePermissionTo($request->permissions);
+            if ($request->has('permissions')) {
+                $role->givePermissionTo($request->permissions);
+            }
+
+            return redirect()->route('role.index')->with('success', 'Role Created Successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        return redirect()->route('role.index')->with('success','Role Created Successfully'); 
-        
     }
 
     /**
@@ -81,10 +95,15 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($encryptedID)
     {
-        $role = Role::findOrFail($id);
-        return view("admin.roles.show",compact('role'));
+        if (Auth::user()->can('view role')) {
+            $id = decrypt($encryptedID);
+            $role = Role::findOrFail($id);
+            return view("admin.roles.show", compact('role'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -93,13 +112,19 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {   
-        $permissions = Permission::all();
-        $role = Role::findById($id);
-        return view('admin.roles.edit',compact('role','permissions'));
-    }
+    public function edit($encryptedID)
+    {
+        if (Auth::user()->can('edit role')) {
+            $id = decrypt($encryptedID);
 
+            $permissions = Permission::all();
+            $role = Role::findById($id);
+            return view('admin.roles.edit', compact('role', 'permissions'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
+    }
+ 
     /**
      * Update the specified resource in storage.
      *
@@ -109,29 +134,36 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        $role = Role::findOrFail($id);
+        if (Auth::user()->can('edit role')) {
+
+            // dd($request->all());
+            $role = Role::findOrFail($id);
 
 
-        $this->validate($request,[
-            'name'=>'required|string|unique:roles,name,'.$role->id,
-            'permissions'=>'nullable',
-        ]);
+            $this->validate($request, [
+                'name' => 'required|string|unique:roles,name,' . $role->id,
+                'permissions' => 'nullable',
+            ]);
 
 
-        $role->name      = $request->input('name');
-        // $user->phone      = $request->phone;
-        $role->save();
+            $role->name      = $request->input('name');
 
-        if($request->has('permissions')){
-            $permissions = $request->input('permissions',[]);
-            $role->syncPermissions($permissions);
+            $role->touch();
+            // $user->phone      = $request->phone;
+            $role->save();
+
+            if ($request->has('permissions')) {
+                $permissions = $request->input('permissions', []);
+                $role->syncPermissions($permissions);
+            } else {
+                $role->syncPermissions([]); // Clear all permissions if none are selected
+            }
+
+
+            return redirect()->route('role.index')->with('success', 'Role updated successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-
-        return redirect()->route('role.index')->with('success','Role updated successfully');
-        
-      
     }
 
     /**
@@ -141,27 +173,29 @@ class RoleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {   
+    {
+        if (Auth::user()->can('delete role')) {
 
-        // Step 1: Find the role
-    $role = Role::findOrFail($id);
+            // Step 1: Find the role
+            $role = Role::findOrFail($id);
 
-    if($role->name == 'super-admin'){
+            if ($role->name == 'super-admin') {
 
-    return redirect()->back()->with('warning','Admin role cannot be deleted');
+                return redirect()->back()->with('warning', '"super-admin" role cannot be deleted !!!');
+            }
 
-    }
+            // Step 2: Revoke all permissions from the role
+            $permissions = Permission::all();
+            foreach ($permissions as $permission) {
+                $role->revokePermissionTo($permission);
+            }
 
-    // Step 2: Revoke all permissions from the role
-    $permissions = Permission::all();
-    foreach ($permissions as $permission) {
-        $role->revokePermissionTo($permission);
-    }
+            // Step 3: Delete the role
+            $role->delete();
 
-    // Step 3: Delete the role
-    $role->delete();
-
-    return redirect()->back()->with('success','Role deleted successfully');
-
+            return redirect()->back()->with('success', 'Role deleted successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 }

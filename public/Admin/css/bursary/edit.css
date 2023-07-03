@@ -1,0 +1,17 @@
+.form-section{
+    padding-left: 15px;
+    display: none;
+
+}
+.form-section.current{
+    display: inherit
+}
+.btn-info,.btn-success{
+    margin-top: 10px
+}
+.parsley-errors-list{
+    margin: 2px 0 3px;
+    padding: 0px;
+    list-style-type: none;
+    color: red
+}

@@ -1,0 +1,16 @@
+.permissions-group {
+    margin-bottom: 1px;
+    /* Add margin bottom to create space between groups */
+}
+
+.permissions-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    /* Add margin bottom to create space between rows */
+}
+
+.permission-item {
+    width: 25%;
+    padding: 5px;
+}

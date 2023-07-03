@@ -5,14 +5,13 @@
 @endsection
 
 @section('css')
-      <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{url('Admin/plugins/fontawesome-free/css/all.min.css')}}">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
 
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{{url('Admin/dist/css/adminlte.min.css')}}">
-
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
 @endsection
 
 @section('content')
@@ -23,11 +22,11 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h3>{{ $role->name }}</h3>
+                        <h3>Role: {{ $role->name }}</h3>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{url('admin/dashboard')}}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">
                                 <a href="{{ route('role.index') }}">Roles</a>
                             </li>
@@ -49,17 +48,19 @@
 
                         <div class="card ">
                             <div class="card-header bg-info">
-                               
-                               <h3 class="card-title">Update</h3>
+
+                                <h3 class="card-title">Role - {{ $role->name }}</h3>
 
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table class="table table-bordered">
+                                    @can('edit role')                                                    
                                     <div class="mb-3">
-                                        <a href="{{ route('role.edit', $role->id) }}" class="btn-sm btn btn-primary"><i
-                                            class="fas fa-edit"></i>Update</a>
+                                        <a href="{{ route('role.edit', encrypt($role->id)) }}" class="btn-sm btn btn-primary"><i
+                                                class="fas fa-edit"></i>Update</a>
                                     </div>
+                                    @endcan
                                     <thead>
                                         <tr>
                                             <th style="width: 30%">Role Name</th>
@@ -70,14 +71,15 @@
                                         <tr>
                                             <td style="width: 30%"><b>Permissions</b> </td>
                                             <td>
-                                                
-                                                    @forelse ($role->permissions as $permission)
-                                                     - {{ $permission->name }} <br>
-                                                    @empty
-                                                    <p class="fas fa-folder-open" style="font-weight: normal"> No Permission(s) Found</p>
-                                                    @endforelse
-                                               
-                                                </td>
+
+                                                @forelse ($role->permissions as $permission)
+                                                    - {{ ucfirst($permission->name) }} <br>
+                                                @empty
+                                                    <p class="fas fa-folder-open" style="font-weight: normal"> No
+                                                        Permission(s) Found</p>
+                                                @endforelse
+
+                                            </td>
                                         </tr>
 
                                     </tbody>
@@ -105,15 +107,11 @@
 
 @section('js')
     <!-- jQuery -->
-<script src="{{url('Admin/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{ url('Admin/plugins/jquery/jquery.min.js') }}"></script>
 
-<!-- Bootstrap 4 -->
-<script src="{{url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-<!-- AdminLTE App -->
-<script src="{{url('Admin/dist/js/adminlte.min.js')}}"></script>
-
-<!-- AdminLTE for demo purposes -->
-<script src="{{url('Admin/dist/js/demo.js')}}"></script>
-
+    <!-- AdminLTE App -->
+    <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
 @endsection

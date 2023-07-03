@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Users
+    User: {{ $user->name }}
 @endsection
 
 @section('css')
@@ -12,6 +12,7 @@
 
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
+    
 @endsection
 
 @section('content')
@@ -45,27 +46,31 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-
+                            @canany(['edit user', 'create user', 'delete user'])
                             <div class="card-header d-flex">
-                                <a href="{{ route('user.edit', $user->id) }}" class="btn-sm btn btn-primary"><i
-                                        class="fas fa-edit"></i>Update</a>
-                                {{-- <a href="{{ route('user.destroy', $user->id) }}" class="btn-sm btn btn-danger"><i
-                                        class="fas fa-trash"></i> Delete</a> --}}
-                                        <form class="mx-1"
-                                        onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
-                                        action="{{ route('user.destroy', $user->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                                @can('edit user')
+                                <a href="{{ route('user.edit', encrypt($user->id)) }}" class="btn-sm btn btn-primary"><i
+                                        class="fas fa-edit"></i> Update</a>
+                                @endcan
+                                
+                                @can('delete user')
+                                <form class="mx-1"
+                                    onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
+                                    action="{{ route('user.destroy', $user->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
 
-                                        <button class="btn-sm btn btn-danger" type="submit"><i
-                                                class="fas fa-trash"></i>Delete</button>
-                                    </form>
-
+                                    <button class="btn-sm btn btn-danger" type="submit"><i
+                                            class="fas fa-trash"></i> Delete</button>
+                                </form>
+                                @endcan
+                                @can('create user')
                                 <a href="{{ route('user.create') }}" class="btn-sm btn btn-success"><i
                                         class="fas fa-plus-circle"></i> Add New</a>
-
+                                @endcan
 
                             </div>
+                            @endcanany
                             <!-- /.card-header -->
                             <div class="card-body p-0">
                                 <table class="table table-striped">
@@ -80,7 +85,7 @@
                                         </tr>
                                         <tr>
                                             <td style="width: 30%"><b>Email Address</b> </td>
-                                            <td>                                                <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
+                                            <td> <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -123,7 +128,4 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
 @endsection

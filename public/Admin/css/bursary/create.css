@@ -1,0 +1,73 @@
+.form-section {
+    padding-left: 15px;
+    display: none;
+
+}
+
+.form-section.current {
+    display: inherit
+}
+
+.btn-info,
+.btn-success {
+    margin-top: 10px
+}
+
+.parsley-errors-list {
+    margin: 2px 0 3px;
+    padding: 0px;
+    list-style-type: none;
+    color: red
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.step {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.step-number {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+.step.active .step-number {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.step.active .step-title {
+    color: #007bff;
+}
+
+/* Media queries for responsive layout */
+
+@media (max-width: 767px) {
+    .step {
+        flex-basis: 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    .step {
+        flex-basis: 100%;
+    }
+}

@@ -1,18 +1,17 @@
 @extends('layouts.app')
 
 @section('title')
-    Permission
+    Permission {{ $permission->name }}
 @endsection
 
 @section('css')
-      <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{url('Admin/plugins/fontawesome-free/css/all.min.css')}}">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
 
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{{url('Admin/dist/css/adminlte.min.css')}}">
-
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
 @endsection
 
 @section('content')
@@ -27,7 +26,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{url('admin/dashboard')}}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">
                                 <a href="{{ route('permission.index') }}">Permissions</a>
                             </li>
@@ -49,14 +48,14 @@
 
                         <div class="card ">
                             <div class="card-header bg-info">
-                               
-                               <h3 class="card-title">Permission Name: {{ $permission->name }}</h3>
+
+                                <h3 class="card-title">Permission Name: {{ $permission->name }}</h3>
 
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table class="table table-bordered">
-                                   
+
                                     <thead>
                                         <tr>
                                             <th style="width: 30%">Permission Name</th>
@@ -64,7 +63,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       
+
 
                                     </tbody>
                                     <tfoot>
@@ -91,15 +90,11 @@
 
 @section('js')
     <!-- jQuery -->
-<script src="{{url('Admin/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{ url('Admin/plugins/jquery/jquery.min.js') }}"></script>
 
-<!-- Bootstrap 4 -->
-<script src="{{url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-<!-- AdminLTE App -->
-<script src="{{url('Admin/dist/js/adminlte.min.js')}}"></script>
-
-<!-- AdminLTE for demo purposes -->
-<script src="{{url('Admin/dist/js/demo.js')}}"></script>
-
+    <!-- AdminLTE App -->
+    <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
 @endsection

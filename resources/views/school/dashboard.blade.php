@@ -30,8 +30,8 @@
     <link rel="stylesheet" href="{{ url('Admin/plugins/summernote/summernote-bs4.min.css') }}">
 
 
-    {{-- main css --}}
-    {{-- <link rel="stylesheet" href="{{url('Admin/css/main.css')}}"> --}}
+    {{-- custom css --}}
+    <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
 @endsection
 
 @section('content')
@@ -697,9 +697,6 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.js') }}"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ url('Admin/dist/js/pages/dashboard.js') }}"></script>
+
 
 @endsection

@@ -19,8 +19,10 @@
 
             </div>
             <div class="info">
-                <a href="{{ route('profile.show', encrypt(Auth::user()->id)) }}" class="d-block">
-                    {{ Auth::user()->name }}</a>
+                @if (Auth::check())
+                    <a href="{{ route('profile.show', encrypt(Auth::user()->id)) }}" class="d-block">
+                        {{ Auth::user()->name }}</a>
+                @endif
             </div>
         </div>
 
@@ -31,70 +33,69 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="{{ request()->is(['admin/dashboard']) ? 'nav-item' : 'nav-item' }}">
-                        <a href="{{ url('home') }}"
-                            class="{{ request()->is(['admin/dashboard', 'staff/dashboard','home']) ? 'nav-link active' : 'nav-link' }}">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                Dashboard
-                            </p>
-                        </a>
-                   
+                    <a href="{{ url('home') }}"
+                        class="{{ request()->is(['admin/dashboard', 'staff/dashboard', 'home', 'user-dashboard']) ? 'nav-link active' : 'nav-link' }}">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
 
-                    @if (Auth::user()->roles->count() === 0)
-                       
-                        {{-- Bursary Application --}}
-                        <li class="{{ request()->is(['user-bursary/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                            <a href="#" class="{{ request()->is(['user-bursary/*']) ? 'nav-link active' : 'nav-link' }}">
-                                <i class="nav-icon fas fa-wallet"></i>
-                                <p>
-                                    Bursary
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('user.bursary.create.form') }}"
-                                        class="{{ request()->is(['user-bursary/create', '']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-hand-holding"></i>
-                                        <p>&nbsp Apply bursary</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('user.bursary.history', encrypt(Auth::user()->id)) }}"
-                                        class="{{ request()->is(['user-bursary/history/*']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-history"></i>
-                                        <p>&nbsp History</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                        {{-- Bursary Application --}}
-
-                        {{-- notifications --}}
+                    @if (Auth::check())
+                        @if (Auth::user()->roles->count() === 0)
+                            {{-- Bursary Application --}}
+                <li class="{{ request()->is(['user-bursary/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                    <a href="#" class="{{ request()->is(['user-bursary/*']) ? 'nav-link active' : 'nav-link' }}">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>
+                            Bursary
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ url('notifications') }}"
-                                class="{{ request()->is(['notifications']) ? 'nav-link active' : 'nav-link' }}">
-                                <i class="nav-icon fas fa-bell"></i>
-                                <p>
-                                    Notifications
-                                </p>
+                            <a href="{{ route('user.bursary.create.form') }}"
+                                class="{{ request()->is(['user-bursary/apply', '']) ? 'nav-link active' : 'nav-link' }}">
+                                &nbsp
+                                <i class="fas fa-hand-holding"></i>
+                                <p>&nbsp Apply bursary</p>
                             </a>
                         </li>
-                        {{-- /notifications --}}
+                        <li class="nav-item">
+                            <a href="{{ route('user.bursary.history', encrypt(Auth::user()->id)) }}"
+                                class="{{ request()->is(['user-bursary/history/*']) ? 'nav-link active' : 'nav-link' }}">
+                                &nbsp
+                                <i class="fas fa-history"></i>
+                                <p>&nbsp History</p>
+                            </a>
+                        </li>
 
-                    @endif
+                    </ul>
+                </li>
+                {{-- Bursary Application --}}
+
+                {{-- notifications --}}
+                <li class="nav-item">
+                    <a href="{{ url('notifications') }}"
+                        class="{{ request()->is(['notifications']) ? 'nav-link active' : 'nav-link' }}">
+                        <i class="nav-icon fas fa-bell"></i>
+                        <p>
+                            Notifications
+                        </p>
+                    </a>
+                </li>
+                {{-- /notifications --}}
+                @endif
+                @endif
                 </li>
 
-                @canany(['approve bursary','reject bursary','view bursary','edit bursary','delete bursary'])
-
+                {{-- @canany(['approve bursary', 'reject bursary', 'view bursary', 'edit bursary', 'delete bursary']) --}}
+                @if(Gate::check('manage bursary'))  
                     <li class="nav-header">APPLICATIONS</li>
                     {{-- Admin check bursary applications --}}
                     <li class="nav-item">
                         <a href="{{ url('bursary') }}"
-                            class="{{ request()->is(['bursary','bursary/*']) ? 'nav-link active' : 'nav-link' }}">
+                            class="{{ request()->is(['bursary', 'bursary/*', 'admin/bursary/*']) ? 'nav-link active' : 'nav-link' }}">
                             <i class="nav-icon fas fa-hand-holding"></i>
                             <p>
                                 Bursary Applications
@@ -136,187 +137,253 @@
                         </ul>
                     </li>
                     {{-- application status --}}
-                @endcanany
+                @endif
 
-                @canany(['create user', 'view user','edit user', 'delete user', 'create staff','view staff','edit staff','delete staff','create role', 'view role','edit role','delete role','create permission','delete permission',])
-                
+
+                @if (Gate::check('manage user') ||
+                        Gate::check('manage staff') ||
+                        Gate::check('manage role') ||
+                        Gate::check('manage permission') ||
+                        Gate::check('manage application period') ||
+                        Gate::check('manage system setting'))
+
                     <li class="nav-header">ADMINISTRATION</li>
-                    
+
+
                     {{-- Permissions --}}
-                    @can('create permission','delete permission')
-                    <li
-                        class="{{ request()->is(['admin/permission', 'admin/permission/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                        <a href="#"
-                            class="{{ request()->is(['admin/permission', 'admin/permission/*']) ? 'nav-link active' : 'nav-link' }}">
-                            <i class="nav-icon fas fa-lock"></i>
-                            <p>
-                                Permissions
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('permission.index') }}"
-                                    class="{{ request()->is(['admin/permission']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-list"></i>
-                                    <p>&nbsp List</p>
-                                </a>
-                            </li>
+                    {{-- @if (Gate::check('manage permission'))
+                        <li
+                            class="{{ request()->is(['admin/permission', 'admin/permission/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            <a href="#"
+                                class="{{ request()->is(['admin/permission', 'admin/permission/*']) ? 'nav-link active' : 'nav-link' }}">
+                                <i class="nav-icon fas fa-lock"></i>
+                                <p>
+                                    Permissions
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('permission.index') }}"
+                                        class="{{ request()->is(['admin/permission']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-list"></i>
+                                        <p>&nbsp List</p>
+                                    </a>
+                                </li>
+                                @can('create permission')                                    
+                                <li class="nav-item">
+                                    <a href="{{ route('permission.create') }}"
+                                        class="{{ request()->is(['admin/permission/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                @endcan
 
-                            <li class="nav-item">
-                                <a href="{{ route('permission.create') }}"
-                                    class="{{ request()->is(['admin/permission/create']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-plus-circle"></i>
-                                    <p>&nbsp Add</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-                    @endcan
+                            </ul>
+                        </li>
+                    @endif --}}
                     {{-- /Permissions --}}
-                    
-                    
+
+
                     {{-- Roles --}}
-                    @can(['create role', 'view role','edit role','delete role'])
-                    <li class="{{ request()->is(['admin/role', 'admin/role/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                        <a href="#"
-                            class="{{ request()->is(['admin/role', 'admin/role/*']) ? 'nav-link active' : 'nav-link' }}">
-                            <i class="nav-icon fas fa-tasks"></i>
-                            <p>
-                                Roles
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('role.index') }}"
-                                    class="{{ request()->is(['admin/role']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-list"></i>
-                                    <p>&nbsp List</p>
-                                </a>
-                            </li>
+                    @if (Gate::check('manage role'))
+                        <li
+                            class="{{ request()->is(['admin/role', 'admin/role/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            <a href="#"
+                                class="{{ request()->is(['admin/role', 'admin/role/*']) ? 'nav-link active' : 'nav-link' }}">
+                                <i class="nav-icon fas fa-tasks"></i>
+                                <p>
+                                    Roles
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('role.index') }}"
+                                        class="{{ request()->is(['admin/role']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-list"></i>
+                                        <p>&nbsp List</p>
+                                    </a>
+                                </li>
+                                @can('create role')
+                                <li class="nav-item">
+                                    <a href="{{ route('role.create') }}"
+                                        class="{{ request()->is(['admin/role/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                @endcan
 
-                            <li class="nav-item">
-                                <a href="{{ route('role.create') }}"
-                                    class="{{ request()->is(['admin/role/create']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-plus-circle"></i>
-                                    <p>&nbsp Add</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-                    @endcan
+                            </ul>
+                        </li>
+                    @endif
                     {{-- /Roles --}}
 
+
                     {{-- Staff --}}
-                    @can(['create staff','view staff','edit staff','delete staff'])
-                    <li
-                        class="{{ request()->is(['admin/staff-users', 'admin/staff-users/*', 'admin/staff-user-edit/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                        <a href="#"
-                            class="{{ request()->is(['admin/staff-users', 'admin/staff-users/*', 'admin/staff-user-edit/*']) ? 'nav-link active' : 'nav-link' }}">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>
-                                Staffs
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('staff_users.list') }}"
-                                    class="{{ request()->is(['admin/staff-users']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-list"></i>
-                                    <p>&nbsp List</p>
-                                </a>
-                            </li>
+                    @if (Gate::check('manage staff'))
+                        <li
+                            class="{{ request()->is(['admin/staff-users', 'admin/staff-users/*', 'admin/staff-user-edit/*', 'admin/staff-user-view-approved-tasks/*', 'admin/staff-user-view-rejected-tasks/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            <a href="#"
+                                class="{{ request()->is(['admin/staff-users', 'admin/staff-users/*', 'admin/staff-user-edit/*', 'admin/staff-user-view-approved-tasks/*', 'admin/staff-user-view-rejected-tasks/*']) ? 'nav-link active' : 'nav-link' }}">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Staffs
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('staff_users.list') }}"
+                                        class="{{ request()->is(['admin/staff-users']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-list"></i>
+                                        <p>&nbsp List</p>
+                                    </a>
+                                </li>
+                                @can('create staff')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin/staff_users/create') }}"
+                                        class="{{ request()->is(['admin/staff-users/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                @endcan
 
-                            <li class="nav-item">
-                                <a href="{{ route('admin/staff_users/create') }}"
-                                    class="{{ request()->is(['admin/staff-users/create']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-plus-circle"></i>
-                                    <p>&nbsp Add</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-                    @endcan
+                            </ul>
+                        </li>
+                    @endif
                     {{-- /Staff --}}
 
+
                     {{-- Users --}}
-                    @can(['create user', 'view user','edit user', 'delete user'])
-                    <li class="{{ request()->is(['admin/user', 'admin/user/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                        <a href="#"
-                            class="{{ request()->is(['admin/user', 'admin/user/*']) ? 'nav-link active' : 'nav-link' }}">
-                            <i class="nav-icon fas fa-user-secret"></i>
-                            <p>
-                                Users
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('user.index') }}"
-                                    class="{{ request()->is(['admin/user']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-list"></i>
-                                    <p>&nbsp List</p>
-                                </a>
-                            </li>
+                    @if (Gate::check('manage user'))
+                        <li
+                            class="{{ request()->is(['admin/user', 'admin/user/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            <a href="#"
+                                class="{{ request()->is(['admin/user', 'admin/user/*']) ? 'nav-link active' : 'nav-link' }}">
+                                <i class="nav-icon fas fa-user-secret"></i>
+                                <p>
+                                    Users
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('user.index') }}"
+                                        class="{{ request()->is(['admin/user']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-list"></i>
+                                        <p>&nbsp List</p>
+                                    </a>
+                                </li>
+                                @can('create user') 
+                                
+                                <li class="nav-item">
+                                    <a href="{{ route('user.create') }}"
+                                        class="{{ request()->is(['admin/user/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                @endcan
 
-                            <li class="nav-item">
-                                <a href="{{ route('user.create') }}"
-                                    class="{{ request()->is(['admin/user/create']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-plus-circle"></i>
-                                    <p>&nbsp Add</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-                    @endcan
+                            </ul>
+                        </li>
+                    @endif
                     {{-- /Users --}}
 
+                    {{-- Application Period --}}
+                    @if (Gate::check('manage application period'))
+                        <li
+                            class="{{ request()->is(['admin/application-period', 'admin/application-period/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            <a href="#"
+                                class="{{ request()->is(['admin/application-period', 'admin/application-period/*']) ? 'nav-link active' : 'nav-link' }}">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <p>
+                                    Application Period
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('application-period.index') }}"
+                                        class="{{ request()->is(['admin/application-period']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-list"></i>
+                                        <p>&nbsp List</p>
+                                    </a>
+                                </li>
+                                @can('create application period')
+                                <li class="nav-item">
+                                    <a href="{{ route('application-period.create') }}"
+                                        class="{{ request()->is(['admin/application-period/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                            </ul>
+                        </li>
+                    @endif
+                    {{-- /Application Period --}}
+
                     {{-- System Settings --}}
-                    @can(['create user', 'view user','edit user', 'delete user', 'create staff','view staff','edit staff','delete staff','create role', 'view role','edit role','delete role','create permission','delete permission',])
-                    <li
-                        class="{{ request()->is(['admin/system-settings', 'admin/system-settings/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                        <a href="#"
-                            class="{{ request()->is(['admin/system-settings', 'admin/system-settings/*']) ? 'nav-link active' : 'nav-link' }}">
-                            <i class="nav-icon fas fa-cogs"></i>
-                            <p>
-                                System Settings
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('system.settings') }}"
-                                    class="{{ request()->is(['admin/system-settings']) ? 'nav-link active' : 'nav-link' }}">
-                                    &nbsp
-                                    <i class="fas fa-list"></i>
-                                    <p>&nbsp List</p>
-                                </a>
-                            </li>
+                    @if (Gate::check('manage system setting'))
+                        <li
+                            class="{{ request()->is(['admin/system-setting', 'admin/system-setting/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            <a href="#"
+                                class="{{ request()->is(['admin/system-setting', 'admin/system-setting/*']) ? 'nav-link active' : 'nav-link' }}">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    System Settings
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
 
-                        </ul>
-                    </li>
-                    @endcan
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('system-setting.index') }}"
+                                        class="{{ request()->is(['admin/system-setting']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-list"></i>
+                                        <p>&nbsp List</p>
+                                    </a>
+                                </li>
+                                @can('create system setting')
+                                
+                                <li class="nav-item">
+                                    <a href="{{ route('system-setting.create') }}"
+                                        class="{{ request()->is(['admin/system-setting/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                            </ul>
+                        </li>
+                    @endif
                     {{-- /System Settings --}}
+                @endif
 
-                @endcanany   
-                    
 
-                </ul>
-            </nav>
-        </div>
-        <!-- /.sidebar -->
-    </aside>
+
+            </ul>
+        </nav>
+    </div>
+    <!-- /.sidebar -->
+</aside>

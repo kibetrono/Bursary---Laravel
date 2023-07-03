@@ -148,7 +148,7 @@
                     </div>
 
                     <div class="mt-3">
-                        <button style="border:unset" type="submit" class="btn-sm btn btn-success btn-block">Create Staff</button>
+                        <button style="border:unset" type="submit" class="btn-md btn btn-success btn-block">Create Staff</button>
                     </div>
 
                    
@@ -185,9 +185,6 @@
 
 <!-- AdminLTE App -->
 <script src="{{url('Admin/dist/js/adminlte.min.js')}}"></script>
-
-<!-- AdminLTE for demo purposes -->
-<script src="{{url('Admin/dist/js/demo.js')}}"></script>
 
 {{-- select 2 --}}
 

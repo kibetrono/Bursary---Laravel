@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ $user->email }}
+    User: {{ $user->name }}
 @endsection
 @section('css')
     <!-- Google Font: Source Sans Pro -->
@@ -28,11 +28,10 @@
                             <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
 
                             @foreach ($user->roles as $role)
-                                
                                 @if ($role->name == '')
-                                <li class="breadcrumb-item active">
-                                    <a href="{{ route('user.index') }}">Users</a>
-                                </li>
+                                    <li class="breadcrumb-item active">
+                                        <a href="{{ route('user.index') }}">Users</a>
+                                    </li>
                                 @endif
                             @endforeach
                             <li class="breadcrumb-item active">{{ $user->email }}</li>
@@ -42,7 +41,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        
+
                         @include('layouts.flash-messages')
                     </div>
 
@@ -63,11 +62,11 @@
 
                                 <a href="{{ route('profile.edit', encrypt($user->id)) }}" class="btn-sm btn btn-primary"><i
                                         class="fas fa-edit"></i>Edit</a>
-                                
+
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body p-0">
-                                <table class="table table-striped">
+                            <div class="card-body p-1">
+                                <table class="table table-striped table-bordered">
                                     <thead>
 
                                     </thead>
@@ -138,7 +137,4 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
 @endsection

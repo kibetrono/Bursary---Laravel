@@ -16,7 +16,6 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        
     }
 
     /**
@@ -52,7 +51,7 @@ class ProfileController extends Controller
 
         $user = User::findorFail($id);
 
-        return view('profile.show',compact('user'));
+        return view('profile.show', compact('user'));
     }
 
     /**
@@ -65,9 +64,9 @@ class ProfileController extends Controller
     {
         $id = decrypt($encryptedId);
         $user = User::findOrFail($id);
-        
+
         // dd($user);
-        return view('profile.edit',compact('user'));
+        return view('profile.edit', compact('user'));
     }
 
     /**
@@ -79,9 +78,9 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'name' => 'required|max:120',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6|confirmed',
         ]);
 
@@ -91,17 +90,17 @@ class ProfileController extends Controller
         $user->email      = $request->email;
         // $user->phone      = $request->phone;
 
-        if($request->has('password') && $request['password'] !== null){
+        if ($request->has('password') && $request['password'] !== null) {
             $user->password   = Hash::make($request->password);
         }
 
+        $user->touch();
 
         $user->save();
 
-        return redirect()->route('profile.show',encrypt($id))->with('success','User updated successfully');
-        
+        return redirect()->route('profile.show', encrypt($id))->with('success', 'User updated successfully');
     }
-
+ 
     /**
      * Remove the specified resource from storage.
      *
@@ -112,6 +111,4 @@ class ProfileController extends Controller
     {
         //
     }
-
-
 }

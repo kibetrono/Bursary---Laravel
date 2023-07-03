@@ -19,6 +19,7 @@
 
   {{-- custom css --}}
   <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
+  <link rel="stylesheet" href="{{ url('Admin/css/staffs/update.css') }}">
 
 
 @endsection
@@ -133,10 +134,15 @@
                           </option>
                       @endforeach
                   </select>
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-tasks"></span>
+                    </div>
+                </div>
                   </div>
 
-                  <div class="p-4">
-                      <button style="border:unset" type="submit" class="btn-sm btn btn-success btn-block">Update Staff</button>
+                  <div class="px-4">
+                      <button style="border:unset" type="submit" class="btn-md btn btn-success btn-block">Update Staff</button>
                   </div>
           
                   
@@ -175,8 +181,7 @@
   <!-- AdminLTE App -->
   <script src="{{url('Admin/dist/js/adminlte.min.js')}}"></script>
 
-  <!-- AdminLTE for demo purposes -->
-  <script src="{{url('Admin/dist/js/demo.js')}}"></script>
+
 
   {{-- select 2 --}}
 
@@ -189,23 +194,7 @@
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-<script>
-    $(document).ready(function(){
-    
-    // Initialize Select2
-    $('#select_role').select2();
-    
-    // Set option selected onchange
-    $('#user_selected').change(function(){
-    var value = $(this).val();
-    
-    // Set selected 
-    $('#select_role').val(value);
-    $('#select_role').select2().trigger('change');
-    
-    });
-    });
-    </script>
-{{-- /select 2 --}}
+<!-- Custom js -->
+<script src="{{ url('Admin/js/users/select2.js') }}"></script>
 
 @endsection

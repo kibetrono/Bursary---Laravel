@@ -13,7 +13,9 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
 @endsection
-
+@php
+$startIndex = ($bursaryNotifications->currentPage() - 1) * $bursaryNotifications->perPage();
+@endphp
 @section('content')
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -56,52 +58,107 @@
                                             class="fas fa-plus-circle"></i> Create New User</a> --}}
                                 </div>
                             </div>
-                         
+
                             <!-- /.card-header -->
-                            
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap mt-2">
+
+                            <div class="card-body table-responsive p-1">
+                                <table class="table table-hover text-nowrap table-bordered">
                                     <thead>
                                         <tr>
-                                            <th style="width:80%">Message</th>
+                                            <th>#</th>
+                                            <th>Message</th>
                                             <th>Date</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($bursaryNotifications as $notification)
-                                        <tr>
-                                            <td>
-                                                @if ($notification->status == '1')
-                                                <p> Congratulations, your application bursary has been approved and the funds will be deposited to {{$notification->institution_name}} account.</p>
-                                                @elseif($notification->status == '2')
-                                                <p> We regret that your application was rejected due to plenty of factors considered.</p>
-                                                @endif
-                                            </td> 
+                                        @forelse ($bursaryNotifications as $index=> $notification)
+                                            <tr>
+                                                <td>{{ $startIndex + $index + 1 }}</td>
 
-                                            <td>{{$notification->updated_at->format('Y-m-d')}}</td>
-                                            <td>
-                                                @if ($notification->status == '1')
-                                                <span class="btn-sm btn btn-success">Approved</span>
-                                                @elseif($notification->status == '2')
-                                                <span class="btn-sm btn btn-danger">Rejected</span>
-                                                @endif
-                                            </td>
-                                        </tr>
+                                                <td>
+                                                    @if ($notification->status == '1')
+                                                        <p> Congratulations, your bursary application for academic year
+                                                            {{ $notification->created_at->format('Y') }} has been approved.
+                                                            {{ $notification->institution_name }} will receive your funds.
+                                                        </p>
+                                                    @elseif($notification->status == '2')
+                                                        <p> We regret that your bursary application for academic year
+                                                            {{ $notification->created_at->format('Y') }} was unsuccessful as
+                                                            you did not meet all the requirements needed.</p>
+                                                    @endif
+                                                </td>
+
+                                                <td>{{ $notification->updated_at->format('Y-m-d') }}</td>
+                                                <td>
+                                                    @if ($notification->status == '1')
+                                                        <span class="btn-sm btn btn-success">Approved</span>
+                                                    @elseif($notification->status == '2')
+                                                        <span class="btn-sm btn btn-danger">Rejected</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
                                         @empty
-
                                         <tr>
-                                            
-                                            <td class="fas fa-inbox"> Empty Inbox</td>
+                                            <td></td>
+                                            <td class="text-bold"><i class="fas fa-inbox"></i> Empty Inbox</td>
                                             <td></td>
                                             <td></td>
                                         </tr>
-                                            
+
+                                    
                                         @endforelse
-                                        
 
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
+                                <div class="row">
+                                    <div class="col-md-12 pt-2">
+                                        @if ($bursaryNotifications->hasPages())
+                                            <div class="d-flex justify-content-end">
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination">
+                                                        {{-- Previous Page Link --}}
+                                                        <li
+                                                            class="page-item {{ $bursaryNotifications->onFirstPage() ? 'disabled' : '' }}">
+                                                            <a class="page-link"
+                                                                href="{{ $bursaryNotifications->previousPageUrl() }}"
+                                                                aria-label="Previous">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
+                                                        </li>
+
+                                                        {{-- Numbered Page Links --}}
+                                                        @foreach ($bursaryNotifications->getUrlRange(1, $bursaryNotifications->lastPage()) as $page => $url)
+                                                            <li
+                                                                class="page-item {{ $bursaryNotifications->currentPage() === $page ? 'active' : '' }}">
+                                                                <a class="page-link"
+                                                                    href="{{ $url }}">{{ $page }}</a>
+                                                            </li>
+                                                        @endforeach
+
+                                                        {{-- Next Page Link --}}
+                                                        <li
+                                                            class="page-item {{ !$bursaryNotifications->hasMorePages() ? 'disabled' : '' }}">
+                                                            <a class="page-link" href="{{ $bursaryNotifications->nextPageUrl() }}"
+                                                                aria-label="Next">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -128,7 +185,4 @@
 
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ url('Admin/dist/js/demo.js') }}"></script>
 @endsection

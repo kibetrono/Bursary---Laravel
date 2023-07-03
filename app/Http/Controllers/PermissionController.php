@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-
+use Illuminate\Support\Facades\Auth;
 
 class PermissionController extends Controller
 {
@@ -16,7 +16,7 @@ class PermissionController extends Controller
         $this->permission = $permission;
         $this->middleware("auth");
     }
-
+ 
     /**
      * Display a listing of the resource.
      *
@@ -24,10 +24,14 @@ class PermissionController extends Controller
      */
     public function index()
     {
-      
-        $permissions = $this->permission::latest()->get();
-        
-        return view('admin.permissions.index',compact('permissions'));
+        if (Auth::user()->can('manage permission')) {
+
+            $permissions = $this->permission::latest()->paginate('10');
+
+            return view('admin.permissions.index', compact('permissions'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -37,8 +41,12 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
-        return view('admin.permissions.create');
+        if (Auth::user()->can('create permission')) {
+
+            return view('admin.permissions.create');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -50,17 +58,21 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-    
-        $this->validate($request, [
-            'name' => 'required|string|unique:permissions'
-        ]);
-        // create the permission
-        $this->permission->create([
+        if (Auth::user()->can('create permission')) {
 
-            'name' => $request->name
-        ]);
+            $this->validate($request, [
+                'name' => 'required|string|unique:permissions'
+            ]);
+            // create the permission
+            $this->permission->create([
 
-        return redirect()->route('permission.index')->with('success','Permission Created Successfully'); 
+                'name' => $request->name
+            ]);
+
+            return redirect()->route('permission.index')->with('success', 'Permission Created Successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -72,7 +84,7 @@ class PermissionController extends Controller
     public function show($id)
     {
         $permission = Permission::findOrFail($id);
-        return view("admin.permissions.show",compact('permission'));
+        return view("admin.permissions.show", compact('permission'));
     }
 
     /**
@@ -106,20 +118,23 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
-        
-         // Step 1: Find the permission
-        $permission = Permission::findOrFail($id);
+        if (Auth::user()->can('delete permission')) {
 
-        // Step 2: Revoke the permission from all roles
-        $roles = Role::all();
-        foreach ($roles as $role) {
-            $role->revokePermissionTo($permission);
+            // Step 1: Find the permission
+            $permission = Permission::findOrFail($id);
+
+            // Step 2: Revoke the permission from all roles
+            $roles = Role::all();
+            foreach ($roles as $role) {
+                $role->revokePermissionTo($permission);
+            }
+
+            // Step 3: Delete the permission
+            $permission->delete();
+
+            return redirect()->back()->with('success', 'Permission deleted successfully');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        // Step 3: Delete the permission
-        $permission->delete();
-
-        return redirect()->back()->with('success','Permission deleted successfully');
-       
     }
 }

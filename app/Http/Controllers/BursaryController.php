@@ -3,8 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bursary;
+use App\Models\ApplicationPeriod;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Spatie\Permission\Models\Permission;
+
 
 class BursaryController extends Controller
 {
@@ -15,8 +27,26 @@ class BursaryController extends Controller
      */
     public function index()
     {
-        $bursaries = Bursary::latest()->get();
-        return view('applicant.bursary.index',compact('bursaries'));
+        if (Auth::user()->can('manage bursary')) {
+
+            // show bursaries only when the user exist in Users tables
+            // $bursaries = Bursary::join('users', 'users.id', '=', 'bursaries.user_id')
+            // ->select('bursaries.*')
+            // ->get();
+            $user = auth()->user();
+
+            if ($user->hasRole('super-admin')) {
+                // Show data to super-admin
+                $bursaries = Bursary::query()->latest()->paginate('10');
+            } else {
+                $bursaries = Bursary::where('status', '=', 0)->latest()->paginate('10');
+            }
+            $permissions = Permission::pluck('name')->all();
+
+            return view('applicant.bursary.index', compact('bursaries','permissions'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -26,7 +56,21 @@ class BursaryController extends Controller
      */
     public function create()
     {
-        return view('applicant.bursary.create');
+        // Retrieve the system settings
+        $applicationPeriod = ApplicationPeriod::first();
+
+        if ($applicationPeriod && $applicationPeriod->isApplicationAllowed()) {
+            // Application is allowed
+            // Your application logic here
+            $applicationActive = true;
+        } else {
+            // Application is not allowed
+            // Show a message indicating that applications are not allowed at the moment
+
+            $applicationActive = false;
+        }
+
+        return view('applicant.bursary.create', compact('applicationActive'));
     }
 
     /**
@@ -37,16 +81,17 @@ class BursaryController extends Controller
      */
     public function store(Request $request)
     {
+        // dd(encrypt(Auth::user()->id));
         // dd($request->all());
         $this->validate($request, [
             'first_name' => 'required|max:120',
             'last_name' => 'required|max:120',
             'gender' => 'required',
             'id_or_passport_no' => 'nullable',
-            'date_of_birth' => 'required',
+            'date_of_birth' => 'required|date_format:Y-m-d',
             'institution_name' => 'required',
             'adm_or_reg_no' => 'required',
-            'telephone_number' => 'nullable',
+            'telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
             'mode_of_study' => 'required',
             'year_of_study' => 'required',
             'course_name' => 'nullable',
@@ -68,17 +113,18 @@ class BursaryController extends Controller
 
             'fathers_firstname' => 'nullable',
             'fathers_lastname' => 'nullable',
-            'fathers_telephone_number' => 'nullable',
+            'fathers_telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
             'fathers_occupation' => 'nullable',
             'fathers_employment_type' => 'nullable',
             'mothers_firstname' => 'nullable',
             'mothers_lastname' => 'nullable',
-            'mothers_telephone_number' => 'nullable',
+            'mothers_telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
             'mothers_occupation' => 'nullable',
             'mothers_employment_type' => 'nullable',
             'guardians_firstname' => 'nullable',
             'guardians_lastname' => 'nullable',
-            'guardians_telephone_number' => 'nullable',
+            'guardians_telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
+
             'guardians_occupation' => 'nullable',
             'guardians_employment_type' => 'nullable',
 
@@ -94,107 +140,135 @@ class BursaryController extends Controller
 
         ]);
 
-        $bursary               = new Bursary();
-        $bursary->user_id      = Auth::user()->id;
-        $bursary->first_name      = $request->first_name;
-        $bursary->last_name      = $request->last_name;
-        $bursary->gender      = $request->gender;
-        if($request->has('id_or_passport_no') && $request['id_or_passport_no'] !== null){
-            $bursary->id_or_passport_no   = $request->id_or_passport_no;
-        }
-        $bursary->date_of_birth      = $request->date_of_birth;
-        $bursary->institution_name      = $request->institution_name;
-        $bursary->adm_or_reg_no      = $request->adm_or_reg_no;
-        if($request->has('telephone_number') && $request['telephone_number'] !== null){
-            $bursary->telephone_number   = $request->telephone_number;
-        }
-        $bursary->mode_of_study      = $request->mode_of_study;
-        $bursary->year_of_study      = $request->year_of_study;
-        if($request->has('course_name') && $request['course_name'] !== null){
-            $bursary->course_name   = $request->course_name;
-        }
-        $bursary->location      = $request->location;
-        $bursary->sub_location      = $request->sub_location;
-        $bursary->ward      = $request->ward;
-        $bursary->polling_station      = $request->polling_station;
-        $bursary->instititution_postal_address      = $request->instititution_postal_address;
-        $bursary->instititution_telephone_number      = $request->instititution_telephone_number;
-        $bursary->total_fees_payable      = $request->total_fees_payable;
-        $bursary->total_fees_paid      = $request->total_fees_paid;
-        $bursary->fee_balance      = $request->fee_balance;
-        $bursary->bank_name      = $request->bank_name;
-        $bursary->branch      = $request->branch;
-        $bursary->account_number      = "011222";
-        $bursary->parental_status      = $request->parental_status;
-        $bursary->number_of_siblings      = $request->number_of_siblings;
-        $bursary->estimated_family_income      = $request->estimated_family_income;
-        if($request->has('fathers_firstname') && $request['fathers_firstname'] !== null){
-            $bursary->fathers_firstname   = $request->fathers_firstname;
-        }
-        if($request->has('fathers_lastname') && $request['fathers_lastname'] !== null){
-            $bursary->fathers_lastname   = $request->fathers_lastname;
-        }
-        if($request->has('fathers_telephone_number') && $request['fathers_telephone_number'] !== null){
-            $bursary->fathers_telephone_number   = $request->fathers_telephone_number;
-        }
-        if($request->has('fathers_occupation') && $request['fathers_occupation'] !== null){
-            $bursary->fathers_occupation   = $request->fathers_occupation;
-        }
-        if($request->has('fathers_employment_type') && $request['fathers_employment_type'] !== null){
-            $bursary->fathers_employment_type   = $request->fathers_employment_type;
-        }
-        if($request->has('mothers_firstname') && $request['mothers_firstname'] !== null){
-            $bursary->mothers_firstname   = $request->mothers_firstname;
-        }
-        if($request->has('mothers_lastname') && $request['mothers_lastname'] !== null){
-            $bursary->mothers_lastname   = $request->mothers_lastname;
-        }
-        if($request->has('mothers_telephone_number') && $request['mothers_telephone_number'] !== null){
-            $bursary->mothers_telephone_number   = $request->mothers_telephone_number;
-        }
-        if($request->has('mothers_occupation') && $request['mothers_occupation'] !== null){
-            $bursary->mothers_occupation   = $request->mothers_occupation;
-        }
-        if($request->has('mothers_employment_type') && $request['mothers_employment_type'] !== null){
-            $bursary->mothers_employment_type   = $request->mothers_employment_type;
-        }
-        if($request->has('guardians_firstname') && $request['guardians_firstname'] !== null){
-            $bursary->guardians_firstname   = $request->guardians_firstname;
-        }
-        if($request->has('guardians_lastname') && $request['guardians_lastname'] !== null){
-            $bursary->guardians_lastname   = $request->guardians_lastname;
-        }
-        if($request->has('guardians_telephone_number') && $request['guardians_telephone_number'] !== null){
-            $bursary->guardians_telephone_number   = $request->guardians_telephone_number;
-        }
-        if($request->has('guardians_occupation') && $request['guardians_occupation'] !== null){
-            $bursary->guardians_occupation   = $request->guardians_occupation;
-        }
-        if($request->has('guardians_employment_type') && $request['guardians_employment_type'] !== null){
-            $bursary->guardians_employment_type   = $request->guardians_employment_type;
-        }
-        $bursary->transcript_report_form      = $request->transcript_report_form;
-        $bursary->parents_or_guardian_id      = $request->parents_or_guardian_id;
-        if($request->has('personal_id') && $request['personal_id'] !== null){
-            $bursary->personal_id   = $request->personal_id;
-        }
-        $bursary->birth_certificate      = $request->birth_certificate;
-        if($request->has('school_id') && $request['school_id'] !== null){
-            $bursary->school_id   = $request->school_id;
-        }
-        if($request->has('fathers_death_certificate') && $request['fathers_death_certificate'] !== null){
-            $bursary->fathers_death_certificate   = $request->fathers_death_certificate;
-        }
-        if($request->has('mothers_death_certificate') && $request['mothers_death_certificate'] !== null){
-            $bursary->mothers_death_certificate   = $request->mothers_death_certificate;
-        }
-        $bursary->current_fee_structure      = $request->current_fee_structure;
-        $bursary->admission_letter      = $request->admission_letter;
-        $bursary->status      = '0';
-        
-        $bursary->save();
+        // Start a database transaction
+        DB::beginTransaction();
 
-        return redirect()->route('user.bursary.history',encrypt(Auth::user()->id))->with('success','Application sent successfully.');
+        try {
+
+            // dd($request->all());
+
+            $bursary               = new Bursary();
+            $bursary->user_id      = Auth::user()->id;
+            $bursary->staff_id      = '0';
+            $bursary->first_name      = $request->first_name;
+            $bursary->last_name      = $request->last_name;
+            $bursary->gender      = $request->gender;
+            if ($request->has('id_or_passport_no') && $request['id_or_passport_no'] !== null) {
+                $bursary->id_or_passport_no   = $request->id_or_passport_no;
+            }
+            $bursary->date_of_birth      = $request->date_of_birth;
+            $bursary->institution_name      = $request->institution_name;
+            $bursary->adm_or_reg_no      = $request->adm_or_reg_no;
+            if ($request->has('telephone_number') && $request['telephone_number'] !== null) {
+                $bursary->telephone_number   = $request->telephone_number;
+            }
+            $bursary->mode_of_study      = $request->mode_of_study;
+            $bursary->year_of_study      = $request->year_of_study;
+            if ($request->has('course_name') && $request['course_name'] !== null) {
+                $bursary->course_name   = $request->course_name;
+            }
+            $bursary->location      = $request->location;
+            $bursary->sub_location      = $request->sub_location;
+            $bursary->ward      = $request->ward;
+            $bursary->polling_station      = $request->polling_station;
+            $bursary->instititution_postal_address      = $request->instititution_postal_address;
+            $bursary->instititution_telephone_number      = $request->instititution_telephone_number;
+            $bursary->total_fees_payable      = $request->total_fees_payable;
+            $bursary->total_fees_paid      = $request->total_fees_paid;
+            $bursary->fee_balance      = $request->fee_balance;
+            $bursary->bank_name      = $request->bank_name;
+            $bursary->branch      = $request->branch;
+            $bursary->account_number      = "011222";
+            $bursary->parental_status      = $request->parental_status;
+            $bursary->number_of_siblings      = $request->number_of_siblings;
+            $bursary->estimated_family_income      = $request->estimated_family_income;
+            if ($request->has('fathers_firstname') && $request['fathers_firstname'] !== null) {
+                $bursary->fathers_firstname   = $request->fathers_firstname;
+            }
+            if ($request->has('fathers_lastname') && $request['fathers_lastname'] !== null) {
+                $bursary->fathers_lastname   = $request->fathers_lastname;
+            }
+            if ($request->has('fathers_telephone_number') && $request['fathers_telephone_number'] !== null) {
+                $bursary->fathers_telephone_number   = $request->fathers_telephone_number;
+            }
+            if ($request->has('fathers_occupation') && $request['fathers_occupation'] !== null) {
+                $bursary->fathers_occupation   = $request->fathers_occupation;
+            }
+            if ($request->has('fathers_employment_type') && $request['fathers_employment_type'] !== null) {
+                $bursary->fathers_employment_type   = $request->fathers_employment_type;
+            }
+            if ($request->has('mothers_firstname') && $request['mothers_firstname'] !== null) {
+                $bursary->mothers_firstname   = $request->mothers_firstname;
+            }
+            if ($request->has('mothers_lastname') && $request['mothers_lastname'] !== null) {
+                $bursary->mothers_lastname   = $request->mothers_lastname;
+            }
+            if ($request->has('mothers_telephone_number') && $request['mothers_telephone_number'] !== null) {
+                $bursary->mothers_telephone_number   = $request->mothers_telephone_number;
+            }
+            if ($request->has('mothers_occupation') && $request['mothers_occupation'] !== null) {
+                $bursary->mothers_occupation   = $request->mothers_occupation;
+            }
+            if ($request->has('mothers_employment_type') && $request['mothers_employment_type'] !== null) {
+                $bursary->mothers_employment_type   = $request->mothers_employment_type;
+            }
+            if ($request->has('guardians_firstname') && $request['guardians_firstname'] !== null) {
+                $bursary->guardians_firstname   = $request->guardians_firstname;
+            }
+            if ($request->has('guardians_lastname') && $request['guardians_lastname'] !== null) {
+                $bursary->guardians_lastname   = $request->guardians_lastname;
+            }
+            if ($request->has('guardians_telephone_number') && $request['guardians_telephone_number'] !== null) {
+                $bursary->guardians_telephone_number   = $request->guardians_telephone_number;
+            }
+            if ($request->has('guardians_occupation') && $request['guardians_occupation'] !== null) {
+                $bursary->guardians_occupation   = $request->guardians_occupation;
+            }
+            if ($request->has('guardians_employment_type') && $request['guardians_employment_type'] !== null) {
+                $bursary->guardians_employment_type   = $request->guardians_employment_type;
+            }
+
+            $attachments = [];
+
+            foreach ($request->allFiles() as $key => $file) {
+                if ($request->hasFile($key)) {
+                    // Generate a unique file name
+                    $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+
+                    // Specify the file storage path
+                    // $filePath = 'Attachments/' . $fileName;
+                    $filePath = $fileName;
+
+                    // Save the file to the desired location
+                    $file->storeAs('public/attachments', $filePath);
+
+                    // Add the file path to the attachments array
+                    $attachments[$key] = $filePath;
+                }
+            }
+
+            $bursary->transcript_report_form = $attachments['transcript_report_form'] ?? null;
+            $bursary->parents_or_guardian_id = $attachments['parents_or_guardian_id'] ?? null;
+            $bursary->personal_id = $attachments['personal_id'] ?? null;
+            $bursary->birth_certificate = $attachments['birth_certificate'] ?? null;
+            $bursary->school_id = $attachments['school_id'] ?? null;
+            $bursary->fathers_death_certificate = $attachments['fathers_death_certificate'] ?? null;
+            $bursary->mothers_death_certificate = $attachments['mothers_death_certificate'] ?? null;
+            $bursary->current_fee_structure = $attachments['current_fee_structure'] ?? null;
+            $bursary->admission_letter = $attachments['admission_letter'] ?? null;
+
+            $bursary->status      = '0';
+
+            $bursary->save();
+
+            // Commit the transaction if everything is successful
+            DB::commit();
+            return redirect()->route('user.bursary.history', encrypt(Auth::user()->id))->with('success', 'Application sent successfully.');
+        } catch (\Exception $e) {
+            // An error occurred, so rollback the transaction
+            DB::rollBack();
+            return redirect()->route('user.bursary.create.form')->with('error', 'An error occured while saving the bursary application.');
+        }
     }
 
     /**
@@ -205,7 +279,7 @@ class BursaryController extends Controller
      */
     public function show(Bursary $bursary)
     {
-        dd('ddddddddd');
+        dd('');
     }
 
     /**
@@ -214,9 +288,17 @@ class BursaryController extends Controller
      * @param  \App\Models\Bursary  $bursary
      * @return \Illuminate\Http\Response
      */
-    public function edit(Bursary $bursary)
+    public function edit($encryptedId)
     {
-        //
+        if (Auth::user()->can('edit bursary')) {
+
+            $id = decrypt($encryptedId);
+            $bursaryapplied = Bursary::findorFail($id);
+
+            return view('admin.bursary.edit', compact('bursaryapplied'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -226,9 +308,81 @@ class BursaryController extends Controller
      * @param  \App\Models\Bursary  $bursary
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Bursary $bursary)
+    public function update(Request $request, $id)
     {
-        //
+        if (Auth::user()->can('edit bursary')) {
+
+            // $request->first_name;
+            // dd($request->all());
+            $this->validate($request, [
+                'first_name' => 'required|max:120',
+                'last_name' => 'required|max:120',
+                'gender' => 'required',
+                'id_or_passport_no' => 'nullable',
+                'date_of_birth' => 'required|date_format:Y-m-d',
+                'institution_name' => 'required',
+                'adm_or_reg_no' => 'required',
+                'telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
+
+                'mode_of_study' => 'required',
+                'year_of_study' => 'required',
+                'course_name' => 'nullable',
+                'location' => 'required',
+                'sub_location' => 'required',
+                'ward' => 'required',
+                'polling_station' => 'required',
+                'instititution_postal_address' => 'required',
+                'instititution_telephone_number' => 'required',
+                'total_fees_payable' => 'required',
+                'total_fees_paid' => 'required',
+                'fee_balance' => 'required',
+                'bank_name' => 'required',
+                'branch' => 'required',
+                'account_number' => 'required',
+                'parental_status' => 'required',
+                'number_of_siblings' => 'required',
+                'estimated_family_income' => 'required',
+
+                'fathers_firstname' => 'nullable',
+                'fathers_lastname' => 'nullable',
+                'fathers_telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
+                'fathers_occupation' => 'nullable',
+                'fathers_employment_type' => 'nullable',
+                'mothers_firstname' => 'nullable',
+                'mothers_lastname' => 'nullable',
+                'mothers_telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
+                'mothers_occupation' => 'nullable',
+                'mothers_employment_type' => 'nullable',
+                'guardians_firstname' => 'nullable',
+                'guardians_lastname' => 'nullable',
+                'guardians_telephone_number' => ['nullable', 'regex:/^(0|\+254|254)?-?[17]\d{2}-?\d{6}$/'],
+                'guardians_occupation' => 'nullable',
+                'guardians_employment_type' => 'nullable',
+
+            ]);
+
+            $bursary               = Bursary::findorFail($id);
+            $originalValues = $bursary->getOriginal();
+            // Compare the original values with the new values
+            $changedFields = [];
+            foreach ($request->all() as $key => $value) {
+                if (array_key_exists($key, $originalValues) && $originalValues[$key] !== $value) {
+                    $changedFields[$key] = $value;
+                }
+            }
+
+            // Update only the changed fields
+            $bursary->fill($changedFields);
+
+            $bursary->touch(); // update updated_at filled
+            // Save the bursary
+            $bursary->save();
+
+
+            return redirect()->route('bursary.index')->with('success', 'Application updated successfully.');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     /**
@@ -237,36 +391,205 @@ class BursaryController extends Controller
      * @param  \App\Models\Bursary  $bursary
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Bursary $bursary)
+    public function destroy($encryptedId)
     {
-        //
+        if (Auth::user()->can('delete bursary')) {
+
+            $id = decrypt($encryptedId);
+
+            Bursary::findorFail($id)->delete();
+
+            return redirect()->route('bursary.index')->with('success', 'Application deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
+
     public function history($encryptedId)
-    {   
-        $id = decrypt($encryptedId);
-       
-        $bursaries = Bursary::where('user_id',$id)->get();
-        
-        return view('applicant.bursary.history',compact('bursaries'));
-    }
-
-    public function showToAttendees($encryptedId)
     {
         $id = decrypt($encryptedId);
-        $data = Bursary::findorFail($id);
-        
-        return view('admin.bursary.show',compact('data'));
+
+        $bursaries = Bursary::where('user_id', $id)->latest()->paginate('10');
+
+
+        return view('applicant.bursary.history', compact('bursaries'));
     }
 
-    public function approvedApplications()
+
+    public function approvedApplications(Request $request)
     {
-        return view('admin.bursary.approved');
+        $user = auth()->user();
+
+        if ($user->hasRole('super-admin')) {
+            // Show data to super-admin
+            $approvedBursaries = Bursary::query()->where('status', '=', '1')->latest()->paginate('10');
+        } else {
+            $approvedBursaries = Bursary::query()->where('status', '=', '1')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+        }
+
+        if ($request->has('approved_search')) {
+            session()->put('approved_search', $request->approved_search);
+
+            if ($user->hasRole('super-admin')) {
+                // Show data to super-admin
+                $approvedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->latest()->paginate('10');
+            } else {
+                $approvedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+            }
+
+            $userSearch = session('approved_search');
+
+            $approvedBursaries->appends(['approved_search' => $userSearch]);
+        }
+
+        return view('admin.bursary.approved', compact('approvedBursaries'));
     }
 
-    public function rejectedApplications()
+    public function approvedApplicationsSearch(Request $request, $encryptedId)
     {
-        return view('admin.bursary.rejected');
+        $id = decrypt($encryptedId);
+
+        $approvedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '1')->get();
+
+        if ($request->has('approved_search_by_staff')) {
+            $approvedBursaries = Bursary::where('staff_id', $id)->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->get();
+        }
+
+        $searchTerm = $request->approved_search;
+
+        return view('admin.bursary.approved', compact('approvedBursaries', 'searchTerm'));
     }
-    // download attachments
-    
+
+    public function rejectedApplications(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($user->hasRole('super-admin')) {
+
+            // Show data to super-admin
+            $rejectedBursaries = Bursary::query()->where('status', '=', '2')->latest()->paginate('10');
+        } else {
+            $rejectedBursaries = Bursary::query()->where('status', '=', '2')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+        }
+
+        if ($request->has('rejected_search')) {
+            session()->put('rejected_search', $request->rejected_search);
+
+            if ($user->hasRole('super-admin')) {
+                // Show data to super-admin
+                $rejectedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->rejected_search}%")->where('status', '=', '2')->latest()->paginate('10');
+            } else {
+                $rejectedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->rejected_search}%")->where('status', '=', '2')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+            }
+            $userSearch = session('rejected_search');
+
+            $rejectedBursaries->appends(['rejected_search' => $userSearch]);
+        }
+
+        return view('admin.bursary.rejected', compact('rejectedBursaries'));
+    }
+
+    public function updateApprovedBursaryStatus(Request $request): JsonResponse
+    {
+        $bursaryId = $request->input('bursaryId');
+
+        // Retrieve the bursary by ID
+        $bursary = Bursary::findOrFail($bursaryId);
+
+        // Update the bursary status
+        $bursary->status = 1; // Set the status to 1 (approved)
+        $bursary->staff_id = Auth::user()->id; // Set the status to 1 (approved)
+        $bursary->touch();
+        $bursary->save();
+
+        Session::flash('success', 'Application approved successfully');
+
+
+        // Prepare the response data
+        $data = [
+            'url' => route('bursary.index'), // Provide the URL to redirect to
+        ];
+
+        // Return the JSON response
+        return response()->json($data);
+    }
+
+    public function updateRejectedBursaryStatus(Request $request): JsonResponse
+    {
+        $bursaryId = $request->input('bursaryId');
+
+        // Retrieve the bursary by ID
+        $bursary = Bursary::findOrFail($bursaryId);
+
+        // Update the bursary status
+        $bursary->status = 2; // Set the status to 1 (approved)
+        $bursary->staff_id = Auth::user()->id;
+        $bursary->touch();
+        $bursary->save();
+
+        Session::flash('success', 'Application rejected successfully');
+
+
+        // Prepare the response data
+        $data = [
+            'url' => route('bursary.index'), // Provide the URL to redirect to
+        ];
+
+        // Return the JSON response
+        return response()->json($data);
+    }
+
+    // multi approve or reject
+    public function multiApproveOrReject(Request $request)
+    {
+        // Retrieve the data from the AJAX request
+        $action = $request->input('action');
+        $ids = $request->input('ids');
+
+        // Perform different actions based on the selected option
+        if ($action === 'approve') {
+            // Handle the 'approve' action
+            DB::table('bursaries')
+                ->whereIn('id', $ids)
+                ->update(['status' => '1', 'staff_id' => Auth::user()->id, 'updated_at' => Carbon::now()]);
+            Session::flash('success', 'Applications approved successfully');
+            $data = ['url' => route('bursary.index')];
+        } elseif ($action === 'reject') {
+            // Handle the 'reject' action
+            DB::table('bursaries')
+                ->whereIn('id', $ids)
+                ->update(['status' => '2', 'staff_id' => Auth::user()->id, 'updated_at' => Carbon::now()]);
+            Session::flash('success', 'Applications rejected successfully');
+            $data = ['url' => route('bursary.index')];
+        }
+        // elseif ($action === 'pending') {
+        //     // Handle the 'reject' action
+        //     DB::table('bursaries')
+        //         ->whereIn('id', $ids)
+        //         ->update(['status' => '0', 'staff_id' => '0', 'updated_at' => Carbon::now()]);
+        //     Session::flash('success', 'Applications reverted successfully');
+        //     $data = ['url' => route('bursary.index')];
+        // } 
+        else {
+            Session::flash('error', 'An error occured.');
+            $data = ['url' => route('bursary.index')];
+        }
+
+        // Return a response
+        return response()->json($data);
+    }
+
+    public function downloadAttachment($filename)
+    {
+        // $filePath = public_path('Attachments/' . $file->filename);
+        $filePath = storage_path('app/public/attachments/' . $filename);
+
+        // dd($filePath);
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+    }
 }

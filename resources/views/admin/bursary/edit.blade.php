@@ -30,7 +30,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Application for: {{ $bursaryapplied->first_name }} {{ $bursaryapplied->last_name }}</h1>
+                        <h3>Application for: {{ $bursaryapplied->first_name }} {{ $bursaryapplied->last_name }}</h3>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -66,14 +66,36 @@
                         <!-- general form elements -->
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title">Apply Bursary</h3>
+                                <h3 class="card-title">Update Bursary</h3>
                                 <div class="card-tools">
 
                                 </div>
                             </div>
                             <!-- /.card-header -->
+
+                            <!-- Step Indicator -->
+                            <div class="step-indicator pt-3 px-4">
+                                <div class="step">
+                                    <div class="step-number">1</div>
+                                    <div class="step-title">Personal Details</div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">2</div>
+                                    <div class="step-title">Family Background Information</div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">3</div>
+                                    <div class="step-title">Address Information</div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-number">4</div>
+                                    <div class="step-title">School Information</div>
+                                </div>
+                               
+                            </div>
+
                             <!-- form start -->
-                            <div class="card-body">
+                            <div class="card-body pt-0">
                                 <form id="application_form" method="POST"
                                     action="{{ route('admin.update.bursary', $bursaryapplied->id) }}" class="bursary-form">
                                     @csrf
@@ -82,9 +104,7 @@
                                     {{-- Personal Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                            <div class="col-md-12 m-1">
-                                                <h5 class="text-center text-bold">Personal Details</h5>
-                                            </div>
+                                            
                                             <div class="col-md-4">
                                                 <div class="form-group first_name required">
                                                     <label class="control-label" for="first_name">First Name:</label>
@@ -195,9 +215,7 @@
                                     {{-- /Family Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                            <div class="col-md-12 m-1">
-                                                <h5 class="text-center text-bold">Family Background Information</h5>
-                                            </div>
+                                           
                                             <div class="col-md-4">
                                                 <div class="form-group parental_status required">
                                                     <label class="control-label" for="parental_status">Parental
@@ -586,72 +604,142 @@
                                     {{-- /Address Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                            <div class="col-md-12 m-1">
-                                                <h5 class="text-center text-bold">Address Information</h5>
-                                            </div>
+
                                             <div class="col-md-4">
-                                                <div class="form-group location required">
-                                                    <label class="control-label" for="location">Location:</label>
-                                                    <input type="text" id="location"
-                                                        class="form-control @error('location') is-invalid @enderror"
-                                                        name="location" aria-required="true" placeholder="Location name"
-                                                        value={{ $bursaryapplied->location }} required>
-                                                    @error('location')
+                                                <div class="form-group county required">
+                                                    <label class="control-label" for="county">County:</label>
+                                                    <select id="county"
+                                                        class="form-control @error('county') is-invalid @enderror"
+                                                        name="county" aria-required="true" required>
+                                                        <option value="" disabled selected>Select county</option>
+                                                        @foreach ($counties as $county)
+                                                            <option value="{{ $county->name }}"
+                                                                {{ $bursaryapplied->county == $county->name ? 'selected' : '' }}>
+                                                                {{ $county->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('county')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
-
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
-                                                <div class="form-group sub_location required">
-                                                    <label class="control-label" for="sub_location">Sub Location:</label>
-                                                    <input type="text" id="sub_location"
-                                                        class="form-control @error('sub_location') is-invalid @enderror"
-                                                        name="sub_location" aria-required="true"
-                                                        placeholder="sub location"
-                                                        value={{ $bursaryapplied->sub_location }} required>
-                                                    @error('sub_location')
+                                                <div class="form-group constituency required">
+                                                    <label class="control-label" for="constituency">Constitution:</label>
+                                                    <select id="constituency"
+                                                        class="form-control @error('constituency') is-invalid @enderror"
+                                                        name="constituency" aria-required="true" required>
+                                                        <option value="">Select a ward</option>
+                                                        @foreach ($constituencies as $constituency)
+                                                            <option value="{{ $constituency->name }}"
+                                                                {{ $bursaryapplied->constituency == $constituency->name ? 'selected' : '' }}>
+                                                                {{ $constituency->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('constituency')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
-
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group ward required">
                                                     <label class="control-label" for="ward">Ward:</label>
-                                                    <input type="text" id="ward"
+                                                    <select id="ward"
                                                         class="form-control @error('ward') is-invalid @enderror"
-                                                        name="ward" aria-required="true" placeholder="Ward name"
-                                                        value={{ $bursaryapplied->ward }} required>
+                                                        name="ward" aria-required="true" required>
+                                                        <option value="">Select a ward</option>
+                                                        @foreach ($wards as $ward)
+                                                            <option value="{{ $ward->name }}"
+                                                                {{ $bursaryapplied->ward == $ward->name ? 'selected' : '' }}>
+                                                                {{ $ward->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                     @error('ward')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
-
                                                 </div>
                                             </div>
+
+
+                                            <div class="col-md-4">
+                                                <div class="form-group location required">
+                                                    <label class="control-label" for="location">Location:</label>
+                                                    <select id="location"
+                                                        class="form-control @error('location') is-invalid @enderror"
+                                                        name="location" aria-required="true" required>
+                                                        <option value="">Select a location</option>
+                                                        @foreach ($locations as $location)
+                                                            <option value="{{ $location->name }}"
+                                                                {{ $bursaryapplied->location == $location->name ? 'selected' : '' }}>
+                                                                {{ $location->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('location')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group sub_location required">
+                                                    <label class="control-label" for="sub_location">Sub Location:</label>
+                                                    <select id="sub_location"
+                                                        class="form-control @error('sub_location') is-invalid @enderror"
+                                                        name="sub_location" aria-required="true" required>
+                                                        <option value="">Select a sub location</option>
+                                                        @foreach ($subLocations as $subLocation)
+                                                            <option value="{{ $subLocation->name }}"
+                                                                {{ $bursaryapplied->sub_location == $subLocation->name ? 'selected' : '' }}>
+                                                                {{ $subLocation->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('sub_location')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+
                                             <div class="col-md-4">
                                                 <div class="form-group polling_station required">
                                                     <label class="control-label" for="polling_station">Polling
-                                                        station:</label>
-                                                    <input type="text" id="polling_station"
+                                                        Station:</label>
+                                                    <select id="polling_station"
                                                         class="form-control @error('polling_station') is-invalid @enderror"
-                                                        name="polling_station" aria-required="true"
-                                                        placeholder="Polling station"
-                                                        value={{ $bursaryapplied->polling_station }} required>
+                                                        name="polling_station" aria-required="true" required>
+                                                        <option value="">Select a polling station</option>
+                                                        @foreach ($pollingStations as $pollingStation)
+                                                            <option value="{{ $pollingStation->name }}"
+                                                                {{ $bursaryapplied->polling_station == $pollingStation->name ? 'selected' : '' }}>
+                                                                {{ $pollingStation->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
                                                     @error('polling_station')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
-
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                     {{-- /Address Information --}}
@@ -659,9 +747,7 @@
                                     {{-- /School Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                            <div class="col-md-12 m-1">
-                                                <h5 class="text-center text-bold">School Details</h5>
-                                            </div>
+                                           
                                             <div class="col-md-4">
                                                 <div class="form-group institution_name required">
                                                     <label class="control-label" for="date_of_birth">Name of
@@ -988,29 +1074,16 @@
 
                                     <div class="form-navigation">
                                         <button type="button"
-                                            class="btn-sm previous btn btn-info float-left">Previous</button>
-                                        <button type="button" class="btn-sm next btn btn-info float-right">Next</button>
-                                        <button type="submit" class="btn-sm btn btn-success float-right">Update
+                                            class="btn-sm previous btn btn-info float-left"><span aria-hidden="true">&laquo;</span> Previous</button>
+                                        <button type="button" class="btn-sm next btn btn-info float-right">Next <span aria-hidden="true">&raquo;</span></button>
+                                        <button type="submit" class="btn-sm btn btn-success float-right"><i class="fas fa-edit"></i> Update
                                             Application</button>
                                     </div>
-
-                                    {{-- <div class="col-md-12 mt-4 form-navigation">
-                                        <div class="form-group">
-                                            <a href="#" id="form_preview_details" type="submit"
-                                                class="btn-sm btn btn-primary"><i class="fas fa-save"></i> Preview Before
-                                                Submission</a>
-                                            <button type="submit" class="btn-sm btn btn-success"><i
-                                                    class="fas fa-save"></i> Save Details</button>
-
-                                        </div>
-                                    </div> --}}
-                                    {{-- /previous, next and submit buttons --}}
 
                                 </form>
                             </div>
                         </div>
                         <!-- /.card -->
-
 
                     </div>
                     <!--/.col (left) -->
@@ -1022,8 +1095,6 @@
             </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->
-
-
 
     </div>
     <!-- /.content-wrapper -->
@@ -1042,35 +1113,14 @@
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
 
-
-
     {{-- select 2 --}}
-
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-
-            // Initialize Select2
-            $('#bank_name').select2();
-
-            // Set option selected onchange
-            $('#user_selected').change(function() {
-                var value = $(this).val();
-
-                // Set selected 
-                $('#bank_name').val(value);
-                $('#bank_name').select2().trigger('change');
-
-            });
-        });
-    </script>
-    {{-- /select 2 --}}
-
+    <!-- Custom js -->
+    <script src="{{ url('Admin/js/bursary/select2.js') }}"></script>
 
     {{-- parsley js --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"
@@ -1078,42 +1128,8 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {{-- /parsley js --}}
 
-    {{-- sections of previous, next, etc --}}
-    <script>
-        $(function() {
-            var $sections = $('.form-section');
-
-            function navigateTo(index) {
-                $sections.removeClass('current').eq(index).addClass('current');
-                $('.form-navigation .previous').toggle(index > 0);
-                var atTheEnd = index >= $sections.length - 1;
-                $('.form-navigation .next').toggle(!atTheEnd);
-                $('.form-navigation [type=submit]').toggle(atTheEnd);
-            }
-
-            function currentIndex() {
-                return $sections.index($sections.filter('.current'))
-            }
-
-            $('.form-navigation .previous').click(function() {
-                navigateTo(currentIndex() - 1)
-            });
-
-            $('.form-navigation .next').click(function() {
-                $('.bursary-form').parsley().whenValidate({
-                    group: 'block-' + currentIndex()
-                }).done(function() {
-                    navigateTo(currentIndex() + 1)
-                });
-            });
-            $sections.each(function(index, section) {
-                $(section).find(':input').attr('data-parsley-group', 'block-' + index);
-
-            });
-
-            navigateTo(0);
-        })
-    </script>
+    <!-- Custom js -->
+    <script src="{{ url('Admin/js/bursary/edit.js') }}"></script>
 
     {{-- sections of previous, next, etc --}}
 @endsection

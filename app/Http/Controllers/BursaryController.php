@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Bursary;
 use App\Models\ApplicationPeriod;
+use App\Models\Constituency;
+use App\Models\County;
+use App\Models\Location;
+use App\Models\PollingStation;
+use App\Models\SubLocation;
 use App\Models\User;
+use App\Models\Ward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,7 +49,7 @@ class BursaryController extends Controller
             }
             $permissions = Permission::pluck('name')->all();
 
-            return view('applicant.bursary.index', compact('bursaries','permissions'));
+            return view('applicant.bursary.index', compact('bursaries', 'permissions'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -56,21 +62,43 @@ class BursaryController extends Controller
      */
     public function create()
     {
+        $user = auth()->user();
+        $currentYear = Carbon::now()->year;
+
+        $applicationPeriodSet = ApplicationPeriod::where('financial_year', 'LIKE', '%' . $currentYear . '%')->first();
+
+        $financialYear = explode('-', $applicationPeriodSet->financial_year)[0];
+
+        $counties = County::all();
+        $constituencies = Constituency::all();
+        $wards = Ward::all();
+        $locations = Location::all();
+        $sublocations = SubLocation::all();
+        $pollingstations = PollingStation::all();
+
+        $result = ApplicationPeriod::isApplicationAllowed();
+        $isAllowed = $result['allowed'];
+
         // Retrieve the system settings
         $applicationPeriod = ApplicationPeriod::first();
 
-        if ($applicationPeriod && $applicationPeriod->isApplicationAllowed()) {
+        if ($applicationPeriod && $isAllowed) {
             // Application is allowed
             // Your application logic here
             $applicationActive = true;
+
+            $existingApplication = Bursary::where('user_id', $user->id)
+                ->whereYear('created_at', $financialYear)
+                ->exists();
         } else {
             // Application is not allowed
             // Show a message indicating that applications are not allowed at the moment
 
             $applicationActive = false;
+            $existingApplication = false;
         }
 
-        return view('applicant.bursary.create', compact('applicationActive'));
+        return view('applicant.bursary.create', compact('applicationActive', 'existingApplication', 'currentYear', 'counties','constituencies','wards','locations','sublocations','pollingstations'));
     }
 
     /**
@@ -95,9 +123,11 @@ class BursaryController extends Controller
             'mode_of_study' => 'required',
             'year_of_study' => 'required',
             'course_name' => 'nullable',
+            'county' => 'required',
+            'constituency' => 'required',
+            'ward' => 'required',
             'location' => 'required',
             'sub_location' => 'required',
-            'ward' => 'required',
             'polling_station' => 'required',
             'instititution_postal_address' => 'required',
             'instititution_telephone_number' => 'required',
@@ -145,6 +175,22 @@ class BursaryController extends Controller
 
         try {
 
+            $user = auth()->user();
+
+            $currentYear = Carbon::now()->year;
+
+            $applicationPeriodSet = ApplicationPeriod::where('financial_year', 'LIKE', '%' . $currentYear . '%')->first();
+
+            $financialYear = explode('-', $applicationPeriodSet->financial_year)[0];
+
+            $existingApplication = Bursary::where('user_id', $user->id)
+                ->whereYear('created_at', $financialYear)
+                ->exists();
+
+            if ($existingApplication) {
+                return redirect()->back()->with('error', __('You have already submitted a bursary application for this financial year.'));
+            }
+
             // dd($request->all());
 
             $bursary               = new Bursary();
@@ -167,6 +213,8 @@ class BursaryController extends Controller
             if ($request->has('course_name') && $request['course_name'] !== null) {
                 $bursary->course_name   = $request->course_name;
             }
+            $bursary->county      = $request->county;
+            $bursary->constituency      = $request->constituency;
             $bursary->location      = $request->location;
             $bursary->sub_location      = $request->sub_location;
             $bursary->ward      = $request->ward;
@@ -279,7 +327,7 @@ class BursaryController extends Controller
      */
     public function show(Bursary $bursary)
     {
-        dd('');
+        
     }
 
     /**
@@ -295,7 +343,14 @@ class BursaryController extends Controller
             $id = decrypt($encryptedId);
             $bursaryapplied = Bursary::findorFail($id);
 
-            return view('admin.bursary.edit', compact('bursaryapplied'));
+            $counties = County::all();
+            $constituencies = Constituency::all();
+            $wards = Ward::all();
+            $locations = Location::all();
+            $subLocations = SubLocation::all();
+            $pollingStations = PollingStation::all();
+
+            return view('admin.bursary.edit', compact('bursaryapplied','counties','constituencies','wards','locations','subLocations','pollingStations'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -327,6 +382,8 @@ class BursaryController extends Controller
                 'mode_of_study' => 'required',
                 'year_of_study' => 'required',
                 'course_name' => 'nullable',
+                'county' => 'required',
+                'constituency' => 'required',
                 'location' => 'required',
                 'sub_location' => 'required',
                 'ward' => 'required',
@@ -418,75 +475,90 @@ class BursaryController extends Controller
 
     public function approvedApplications(Request $request)
     {
-        $user = auth()->user();
+        if (Auth::user()->can('manage bursary')) {
 
-        if ($user->hasRole('super-admin')) {
-            // Show data to super-admin
-            $approvedBursaries = Bursary::query()->where('status', '=', '1')->latest()->paginate('10');
-        } else {
-            $approvedBursaries = Bursary::query()->where('status', '=', '1')->where('staff_id', '=', $user->id)->latest()->paginate('10');
-        }
-
-        if ($request->has('approved_search')) {
-            session()->put('approved_search', $request->approved_search);
+            $user = auth()->user();
 
             if ($user->hasRole('super-admin')) {
                 // Show data to super-admin
-                $approvedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->latest()->paginate('10');
+                $approvedBursaries = Bursary::query()->where('status', '=', '1')->latest()->paginate('10');
             } else {
-                $approvedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+                $approvedBursaries = Bursary::query()->where('status', '=', '1')->where('staff_id', '=', $user->id)->latest()->paginate('10');
             }
 
-            $userSearch = session('approved_search');
+            if ($request->has('approved_search')) {
+                session()->put('approved_search', $request->approved_search);
 
-            $approvedBursaries->appends(['approved_search' => $userSearch]);
+                if ($user->hasRole('super-admin')) {
+                    // Show data to super-admin
+                    $approvedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->latest()->paginate('10');
+                } else {
+                    $approvedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+                }
+
+                $userSearch = session('approved_search');
+
+                $approvedBursaries->appends(['approved_search' => $userSearch]);
+            }
+
+            return view('admin.bursary.approved', compact('approvedBursaries'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        return view('admin.bursary.approved', compact('approvedBursaries'));
     }
 
     public function approvedApplicationsSearch(Request $request, $encryptedId)
     {
-        $id = decrypt($encryptedId);
+        if (Auth::user()->can('manage bursary')) {
 
-        $approvedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '1')->get();
+            $id = decrypt($encryptedId);
 
-        if ($request->has('approved_search_by_staff')) {
-            $approvedBursaries = Bursary::where('staff_id', $id)->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->get();
+            $approvedBursaries = Bursary::where('staff_id', $id)->where('status', '=', '1')->get();
+
+            if ($request->has('approved_search_by_staff')) {
+                $approvedBursaries = Bursary::where('staff_id', $id)->where('adm_or_reg_no', 'like', "%{$request->approved_search}%")->where('status', '=', '1')->get();
+            }
+
+            $searchTerm = $request->approved_search;
+
+            return view('admin.bursary.approved', compact('approvedBursaries', 'searchTerm'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        $searchTerm = $request->approved_search;
-
-        return view('admin.bursary.approved', compact('approvedBursaries', 'searchTerm'));
     }
 
     public function rejectedApplications(Request $request)
     {
-        $user = auth()->user();
+        if (Auth::user()->can('manage bursary')) {
 
-        if ($user->hasRole('super-admin')) {
-
-            // Show data to super-admin
-            $rejectedBursaries = Bursary::query()->where('status', '=', '2')->latest()->paginate('10');
-        } else {
-            $rejectedBursaries = Bursary::query()->where('status', '=', '2')->where('staff_id', '=', $user->id)->latest()->paginate('10');
-        }
-
-        if ($request->has('rejected_search')) {
-            session()->put('rejected_search', $request->rejected_search);
+            $user = auth()->user();
 
             if ($user->hasRole('super-admin')) {
+
                 // Show data to super-admin
-                $rejectedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->rejected_search}%")->where('status', '=', '2')->latest()->paginate('10');
+                $rejectedBursaries = Bursary::query()->where('status', '=', '2')->latest()->paginate('10');
             } else {
-                $rejectedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->rejected_search}%")->where('status', '=', '2')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+                $rejectedBursaries = Bursary::query()->where('status', '=', '2')->where('staff_id', '=', $user->id)->latest()->paginate('10');
             }
-            $userSearch = session('rejected_search');
 
-            $rejectedBursaries->appends(['rejected_search' => $userSearch]);
+            if ($request->has('rejected_search')) {
+                session()->put('rejected_search', $request->rejected_search);
+
+                if ($user->hasRole('super-admin')) {
+                    // Show data to super-admin
+                    $rejectedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->rejected_search}%")->where('status', '=', '2')->latest()->paginate('10');
+                } else {
+                    $rejectedBursaries = Bursary::query()->where('adm_or_reg_no', 'like', "%{$request->rejected_search}%")->where('status', '=', '2')->where('staff_id', '=', $user->id)->latest()->paginate('10');
+                }
+                $userSearch = session('rejected_search');
+
+                $rejectedBursaries->appends(['rejected_search' => $userSearch]);
+            }
+
+            return view('admin.bursary.rejected', compact('rejectedBursaries'));
+        } else {
+            return redirect()->back()->with('error', __('Permission denied.'));
         }
-
-        return view('admin.bursary.rejected', compact('rejectedBursaries'));
     }
 
     public function updateApprovedBursaryStatus(Request $request): JsonResponse
@@ -592,4 +664,48 @@ class BursaryController extends Controller
             return redirect()->back()->with('error', 'File not found.');
         }
     }
+    
+    public function fetchConstituencies($county)
+    {
+    
+        // Retrieve locations based on the selected ward
+        $constituencies = Constituency::where('county_name', $county)->get();
+
+        return response()->json($constituencies);
+    }
+
+    public function fetchWards($constituency)
+    {
+        // Retrieve locations based on the selected ward
+        $wards = Ward::where('constituency_name', $constituency)->get();
+
+        return response()->json($wards);
+    }
+
+    public function fetchLocations($ward)
+    {
+    
+        // Retrieve locations based on the selected ward
+        $locations = Location::where('ward_name', $ward)->get();
+
+        return response()->json($locations);
+    }
+
+    public function fetchSubLocations($location)
+    {
+        // Retrieve sub-locations based on the selected location
+        $subLocations = SubLocation::where('location_name', $location)->get();
+
+        return response()->json($subLocations);
+    }
+
+    public function fetchPollingStations($subLocation)
+    {
+        // Retrieve polling stations based on the selected sub-location
+        $pollingStations = PollingStation::where('sublocation_name', $subLocation)->get();
+
+        return response()->json($pollingStations);
+    }
+
+    
 }

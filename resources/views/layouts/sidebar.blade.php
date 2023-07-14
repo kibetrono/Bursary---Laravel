@@ -89,8 +89,8 @@
                 @endif
                 </li>
 
-                {{-- @canany(['approve bursary', 'reject bursary', 'view bursary', 'edit bursary', 'delete bursary']) --}}
-                @if(Gate::check('manage bursary'))  
+                {{-- Applications --}}
+                @if (Gate::check('manage bursary'))
                     <li class="nav-header">APPLICATIONS</li>
                     {{-- Admin check bursary applications --}}
                     <li class="nav-item">
@@ -138,7 +138,265 @@
                     </li>
                     {{-- application status --}}
                 @endif
+                {{-- ./Applications --}}
 
+                {{-- Locations --}}
+
+                @if (Gate::check('manage location'))
+                    <li class="nav-header">LOCATIONS</li>
+
+                    {{-- county --}}
+                    <li
+                        class="{{ request()->is(['admin/county', 'admin/county/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                        <a href="#"
+                            class="{{ request()->is(['admin/county', 'admin/county/*']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-map-marker"></i>
+                            <p>
+                                Counties
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('county.index') }}"
+                                    class="{{ request()->is(['admin/county']) ? 'nav-link active' : 'nav-link' }}">
+                                    &nbsp
+                                    <i class="fas fa-list"></i>
+                                    <p>&nbsp List</p>
+                                </a>
+                            </li>
+                            @can('create location')
+                                <li class="nav-item">
+                                    <a href="{{ route('county.create') }}"
+                                        class="{{ request()->is(['admin/county/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                    {{-- ./county --}}
+
+                    {{-- constituency --}}
+                    <li
+                        class="{{ request()->is(['admin/constituency', 'admin/county-constituency/create-multiple', 'admin/constituency/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                        <a href="#"
+                            class="{{ request()->is(['admin/constituency', 'admin/county-constituency/create-multiple', 'admin/constituency/*']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-map-marker"></i>
+                            <p>
+                                Constituencies
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('constituency.index') }}"
+                                    class="{{ request()->is(['admin/constituency']) ? 'nav-link active' : 'nav-link' }}">
+                                    &nbsp
+                                    <i class="fas fa-list"></i>
+                                    <p>&nbsp List</p>
+                                </a>
+                            </li>
+                            @can('create location')
+                                <li class="nav-item">
+                                    <a href="{{ route('constituency.create') }}"
+                                        class="{{ request()->is(['admin/constituency/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('constituency.create.multiple') }}"
+                                        class="{{ request()->is(['admin/county-constituency/create-multiple']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add Multiple</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                    {{-- ./constituent --}}
+
+                    {{-- ward --}}
+                    <li
+                        class="{{ request()->is(['admin/ward', 'admin/county-ward/create-multiple', 'admin/ward/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                        <a href="#"
+                            class="{{ request()->is(['admin/ward', 'admin/county-ward/create-multiple', 'admin/ward/*']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-map-marker"></i>
+                            <p>
+                                Wards
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('ward.index') }}"
+                                    class="{{ request()->is(['admin/ward']) ? 'nav-link active' : 'nav-link' }}">
+                                    &nbsp
+                                    <i class="fas fa-list"></i>
+                                    <p>&nbsp List</p>
+                                </a>
+                            </li>
+                            @can('create location')
+                                <li class="nav-item">
+                                    <a href="{{ route('ward.create') }}"
+                                        class="{{ request()->is(['admin/ward/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('ward.create.multiple') }}"
+                                        class="{{ request()->is(['admin/county-ward/create-multiple']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add Multiple</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                    {{-- ./ward --}}
+
+                    {{-- location --}}
+                    <li
+                        class="{{ request()->is(['admin/location', 'admin/locations/create-multiple', 'admin/location/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                        <a href="#"
+                            class="{{ request()->is(['admin/location', 'admin/locations/create-multiple', 'admin/location/*']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-map-marker"></i>
+                            <p>
+                                Locations
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('location.index') }}"
+                                    class="{{ request()->is(['admin/location']) ? 'nav-link active' : 'nav-link' }}">
+                                    &nbsp
+                                    <i class="fas fa-list"></i>
+                                    <p>&nbsp List</p>
+                                </a>
+                            </li>
+                            @can('create location')
+                                <li class="nav-item">
+                                    <a href="{{ route('location.create') }}"
+                                        class="{{ request()->is(['admin/location/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('location.create.multiple') }}"
+                                        class="{{ request()->is(['admin/locations/create-multiple']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add Multiple</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                    {{-- ./location --}}
+
+                    {{-- sub-location --}}
+                    <li
+                        class="{{ request()->is(['admin/sub-location', 'admin/sub-locations/create-multiple', 'admin/sub-location/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                        <a href="#"
+                            class="{{ request()->is(['admin/sub-location', 'admin/sub-locations/create-multiple', 'admin/sub-location/*']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-map-marker"></i>
+                            <p>
+                                Sub-locations
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('sub-location.index') }}"
+                                    class="{{ request()->is(['admin/sub-location']) ? 'nav-link active' : 'nav-link' }}">
+                                    &nbsp
+                                    <i class="fas fa-list"></i>
+                                    <p>&nbsp List</p>
+                                </a>
+                            </li>
+                            @can('create location')
+                                <li class="nav-item">
+                                    <a href="{{ route('sub-location.create') }}"
+                                        class="{{ request()->is(['admin/sub-location/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('sub-location.create.multiple') }}"
+                                        class="{{ request()->is(['admin/sub-locations/create-multiple']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add Multiple</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                    {{-- ./sub-location --}}
+
+                    {{-- polling stations --}}
+                    <li
+                        class="{{ request()->is(['admin/polling-station', 'admin/polling-stations/create-multiple', 'admin/polling-station/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                        <a href="#"
+                            class="{{ request()->is(['admin/polling-station', 'admin/polling-stations/create-multiple', 'admin/polling-station/*']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-map-marker"></i>
+                            <p>
+                                Polling-stations
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('polling-station.index') }}"
+                                    class="{{ request()->is(['admin/polling-station']) ? 'nav-link active' : 'nav-link' }}">
+                                    &nbsp
+                                    <i class="fas fa-list"></i>
+                                    <p>&nbsp List</p>
+                                </a>
+                            </li>
+                            @can('create location')
+                                <li class="nav-item">
+                                    <a href="{{ route('polling-station.create') }}"
+                                        class="{{ request()->is(['admin/polling-station/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('polling-station.create.multiple') }}"
+                                        class="{{ request()->is(['admin/polling-stations/create-multiple']) ? 'nav-link active' : 'nav-link' }}">
+                                        &nbsp
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p>&nbsp Add Multiple</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                    {{-- ./polling stations --}}
+                @endif
+
+                {{-- ./Locations --}}
 
                 @if (Gate::check('manage user') ||
                         Gate::check('manage staff') ||
@@ -171,15 +429,15 @@
                                         <p>&nbsp List</p>
                                     </a>
                                 </li>
-                                @can('create permission')                                    
-                                <li class="nav-item">
-                                    <a href="{{ route('permission.create') }}"
-                                        class="{{ request()->is(['admin/permission/create']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-plus-circle"></i>
-                                        <p>&nbsp Add</p>
-                                    </a>
-                                </li>
+                                @can('create permission')
+                                    <li class="nav-item">
+                                        <a href="{{ route('permission.create') }}"
+                                            class="{{ request()->is(['admin/permission/create']) ? 'nav-link active' : 'nav-link' }}">
+                                            &nbsp
+                                            <i class="fas fa-plus-circle"></i>
+                                            <p>&nbsp Add</p>
+                                        </a>
+                                    </li>
                                 @endcan
 
                             </ul>
@@ -210,14 +468,14 @@
                                     </a>
                                 </li>
                                 @can('create role')
-                                <li class="nav-item">
-                                    <a href="{{ route('role.create') }}"
-                                        class="{{ request()->is(['admin/role/create']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-plus-circle"></i>
-                                        <p>&nbsp Add</p>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('role.create') }}"
+                                            class="{{ request()->is(['admin/role/create']) ? 'nav-link active' : 'nav-link' }}">
+                                            &nbsp
+                                            <i class="fas fa-plus-circle"></i>
+                                            <p>&nbsp Add</p>
+                                        </a>
+                                    </li>
                                 @endcan
 
                             </ul>
@@ -248,14 +506,14 @@
                                     </a>
                                 </li>
                                 @can('create staff')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin/staff_users/create') }}"
-                                        class="{{ request()->is(['admin/staff-users/create']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-plus-circle"></i>
-                                        <p>&nbsp Add</p>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin/staff_users/create') }}"
+                                            class="{{ request()->is(['admin/staff-users/create']) ? 'nav-link active' : 'nav-link' }}">
+                                            &nbsp
+                                            <i class="fas fa-plus-circle"></i>
+                                            <p>&nbsp Add</p>
+                                        </a>
+                                    </li>
                                 @endcan
 
                             </ul>
@@ -285,16 +543,15 @@
                                         <p>&nbsp List</p>
                                     </a>
                                 </li>
-                                @can('create user') 
-                                
-                                <li class="nav-item">
-                                    <a href="{{ route('user.create') }}"
-                                        class="{{ request()->is(['admin/user/create']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-plus-circle"></i>
-                                        <p>&nbsp Add</p>
-                                    </a>
-                                </li>
+                                @can('create user')
+                                    <li class="nav-item">
+                                        <a href="{{ route('user.create') }}"
+                                            class="{{ request()->is(['admin/user/create']) ? 'nav-link active' : 'nav-link' }}">
+                                            &nbsp
+                                            <i class="fas fa-plus-circle"></i>
+                                            <p>&nbsp Add</p>
+                                        </a>
+                                    </li>
                                 @endcan
 
                             </ul>
@@ -324,14 +581,14 @@
                                     </a>
                                 </li>
                                 @can('create application period')
-                                <li class="nav-item">
-                                    <a href="{{ route('application-period.create') }}"
-                                        class="{{ request()->is(['admin/application-period/create']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-plus-circle"></i>
-                                        <p>&nbsp Add</p>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('application-period.create') }}"
+                                            class="{{ request()->is(['admin/application-period/create']) ? 'nav-link active' : 'nav-link' }}">
+                                            &nbsp
+                                            <i class="fas fa-plus-circle"></i>
+                                            <p>&nbsp Add</p>
+                                        </a>
+                                    </li>
                                 @endcan
 
                             </ul>
@@ -363,15 +620,14 @@
                                     </a>
                                 </li>
                                 @can('create system setting')
-                                
-                                <li class="nav-item">
-                                    <a href="{{ route('system-setting.create') }}"
-                                        class="{{ request()->is(['admin/system-setting/create']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-plus-circle"></i>
-                                        <p>&nbsp Add</p>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('system-setting.create') }}"
+                                            class="{{ request()->is(['admin/system-setting/create']) ? 'nav-link active' : 'nav-link' }}">
+                                            &nbsp
+                                            <i class="fas fa-plus-circle"></i>
+                                            <p>&nbsp Add</p>
+                                        </a>
+                                    </li>
                                 @endcan
 
                             </ul>
@@ -379,8 +635,6 @@
                     @endif
                     {{-- /System Settings --}}
                 @endif
-
-
 
             </ul>
         </nav>

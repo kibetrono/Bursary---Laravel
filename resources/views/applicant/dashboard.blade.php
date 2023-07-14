@@ -56,7 +56,7 @@
         <!-- /.content-header -->
         <div class="row px-3">
             <div class="col-sm-12">
-                @include('layouts.flash-messages')  
+                @include('layouts.flash-messages')
             </div>
 
         </div>
@@ -70,8 +70,7 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>-</h3>
-
-                                <p>Apply Bursary</p>
+                                <span class="info-box-text">Apply Bursary</span>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-hand-holding"></i>
@@ -86,8 +85,7 @@
                         <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3>-</h3>
-
-                                <p>Application History</p>
+                                <span class="info-box-text">Application History</span>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-history"></i>
@@ -101,9 +99,24 @@
                         <!-- small box -->
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ $approvedApplications }}</h3>
+                                <h3>{{ $totalBursaryApplications }}</h3>
+                                <span class="info-box-text">Total Applications</span>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-hand-holding"></i>
+                            </div>
+                            <a href="{{ route('user.bursary.history', encrypt(Auth::user()->id)) }}"
+                                class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
 
-                                <p>Approved Applications</p>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-olive">
+                            <div class="inner">
+                                <h3>{{ $approvedApplications }}</h3>
+                                <span class="info-box-text">Approved Applications</span>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-thumbs-up"></i>
@@ -112,29 +125,13 @@
                                 class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>{{ $rejectedApplications }}</h3>
 
-                                <p>Rejected Applications</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-thumbs-down"></i>
-                            </div>
-                            <a href="{{ route('user.bursary.history', encrypt(Auth::user()->id)) }}"
-                                class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <!-- ./col -->
                 </div>
                 <!-- /.row -->
                 <!-- Main row -->
                 <div class="row">
                     <!-- Left col -->
-                    <section class="col-lg-7 connectedSortable">
+                    <section class="col-lg-9 connectedSortable">
                         <!-- Custom tabs (Charts with tabs)-->
                         <div class="card">
                             <div class="card-header">
@@ -146,12 +143,9 @@
                                     <ul class="nav nav-pills ml-auto">
                                         <li class="nav-item">
                                             <a class="nav-link active" href="#application_status_donut"
-                                                data-toggle="tab">Area</a>
+                                                data-toggle="tab">Pie Chart</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#application_status_timeline"
-                                                data-toggle="tab">Timeline</a>
-                                        </li>
+
                                     </ul>
                                 </div>
                             </div><!-- /.card-header -->
@@ -162,10 +156,7 @@
                                         style="position: relative;height:300px">
                                         <canvas id="applicationStatusDonutChart" style="height: 300px;"></canvas>
                                     </div>
-                                    <div class="chart tab-pane" id="application_status_timeline"
-                                        style="position: relative; height: 300px;">
-                                        <canvas id="applicationTimelineChart" style="height: 300px;"></canvas>
-                                    </div>
+
                                 </div>
                             </div><!-- /.card-body -->
                         </div>
@@ -175,49 +166,57 @@
                     </section>
                     <!-- /.Left col -->
                     <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                    <section class="col-lg-5 connectedSortable">
+                    <section class="col-lg-3 connectedSortable">
+                        <!-- ./col -->
 
-
-
-                        <!-- Calendar -->
-                        <div class="card bg-gradient-success">
-                            <div class="card-header border-0">
-
-                                <h3 class="card-title">
-                                    <i class="far fa-calendar-alt"></i>
-                                    Calendar
-                                </h3>
-                                <!-- tools card -->
-                                <div class="card-tools">
-                                    <!-- button with a dropdown -->
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-success btn-sm dropdown-toggle"
-                                            data-toggle="dropdown" data-offset="-52">
-                                            <i class="fas fa-bars"></i>
-                                        </button>
-                                        <div class="dropdown-menu" role="menu">
-                                            <a href="#" class="dropdown-item">Add new event</a>
-                                            <a href="#" class="dropdown-item">Clear events</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a href="#" class="dropdown-item">View calendar</a>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <!-- /. tools -->
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>{{ $pendingApplications }}</h3>
+                                <span class="info-box-text">Pending Applications</span>
                             </div>
-                            <!-- /.card-header -->
-                            <div class="card-body pt-0">
-                                <!--The calendar -->
-                                <div id="calendar" style="width: 100%"></div>
+                            <div class="icon">
+                                <i class="fas fa-thumbs-down"></i>
                             </div>
-                            <!-- /.card-body -->
+                            <a href="{{ route('user.bursary.history', encrypt(Auth::user()->id)) }}"
+                                class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
+
+                        <!-- small box -->
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>{{ $rejectedApplications }}</h3>
+                                <span class="info-box-text">Rejected Applications</span>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-thumbs-down"></i>
+                            </div>
+                            <a href="{{ route('user.bursary.history', encrypt(Auth::user()->id)) }}"
+                                class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+
+                        <!-- small box -->
+                        <div class="small-box bg-primary">
+                            <div class="inner mb-3">
+                                {{-- <span class="info-box-text">Consttuencies</span> --}}
+
+                                <h5>
+                                    @if ($applicationActive)
+                                        {{ $periodFrom }} to {{ $periodTo }}
+                                    @else
+                                        Not set
+                                    @endif
+                                </h5>
+                                <span class="info-box-text">Application Period</span>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <a href="{{ url('home') }}" class="small-box-footer"><i
+                                    class="fas fa-calendar-alt"></i></a>
+                        </div>
+
+                        <!-- ./col -->
                         <!-- /.card -->
                     </section>
                     <!-- right col -->
@@ -267,8 +266,6 @@
 
     <script>
         var applicationStatuses = @json($applicationStatuses);
-        var dates = @json($dates);
-        var totals = @json($totals);
     </script>
     <!-- Custom js -->
     <script src="{{ url('Admin/js/dashboard/applicant/app.js') }}"></script>

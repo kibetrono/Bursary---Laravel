@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Applicant;
+use App\Models\ApplicationPeriod;
 use App\Models\Bursary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 class ApplicantController extends Controller
 {
@@ -34,34 +37,35 @@ class ApplicantController extends Controller
             ->groupBy('status')
             ->get();
 
-        // Retrieve the data from the database
-        $applicationTimeline = DB::table('bursaries')
-            ->select(DB::raw('DATE(created_at) AS date'), DB::raw('COUNT(*) AS total'))
-            ->where('user_id', Auth::user()->id)
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
-            ->get();
-
-        $dates = [];
-        $totals = [];
-
-        // Format dates and calculate percentages
-        $totalApplications = 0;
-        foreach ($applicationTimeline as $entry) {
-            $dates[] = $entry->date;
-            $totalApplications += $entry->total;
-        }
-
-        foreach ($applicationTimeline as $entry) {
-            $percentage = ($entry->total / $totalApplications) * 100;
-            $totals[] = round($percentage, 2);
-        }
-
+        // $period_from = ApplicationPeriod
 
         $approvedApplications = Bursary::where('user_id', Auth::user()->id)->where('bursaries.status', '=', '1')->count();
         $rejectedApplications = Bursary::where('user_id', Auth::user()->id)->where('bursaries.status', '=', '2')->count();
+        $pendingApplications = Bursary::where('user_id', Auth::user()->id)->where('bursaries.status', '=', '0')->count();
+        $totalBursaryApplications = Bursary::where('user_id', Auth::user()->id)->count();
 
-        return view('applicant.dashboard', compact('approvedApplications', 'rejectedApplications', 'applicationStatuses', 'dates', 'totals'));
+        $result = ApplicationPeriod::isApplicationAllowed();
+        $isAllowed = $result['allowed'];
+
+        // Retrieve the system settings
+        $applicationPeriod = ApplicationPeriod::first();
+
+        if ($applicationPeriod && $isAllowed) {
+            // Application is allowed
+            // Your application logic here
+            $applicationActive = true;
+
+            $periodFrom = $result['period_from'];
+            $periodTo = $result['period_to'];
+        } else {
+            // Application is not allowed
+            // Show a message indicating that applications are not allowed at the moment
+            $applicationActive = false;
+            $periodFrom = '';
+            $periodTo = '';
+        }
+
+        return view('applicant.dashboard', compact('totalBursaryApplications', 'approvedApplications', 'rejectedApplications', 'pendingApplications', 'applicationStatuses', 'applicationActive', 'periodFrom', 'periodTo'));
     }
 
     /**

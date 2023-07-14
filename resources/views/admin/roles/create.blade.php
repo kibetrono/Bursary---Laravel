@@ -346,6 +346,48 @@
                                     </div>
                                     {{-- ./Bursary Permissions --}}
 
+                                    {{-- Location Permissions --}}
+                                    <div class="row">
+                                        <div class="col-md-12 permissions-group">
+                                            <div class="px-1">
+                                                <input type="checkbox" id="select-all-location" class="group-checkbox"
+                                                    name="select_all_location">
+                                                <label style="font-weight:bold" for="select-all-location">Locations
+                                                    Permissions</label>
+                                            </div>
+                                            <div class="permissions-row">
+                                                {{-- Manage Location --}}
+                                                @forelse ($permissions as $index => $permission)
+                                                    @if ($permission->name === 'manage location')
+                                                        <div class="permission-item">
+                                                            <input type="checkbox" id="{{ $permission->name }}"
+                                                                name="permissions[]" value="{{ $permission->id }}">
+                                                            <label style="font-weight:normal"
+                                                                for="{{ $permission->name }}">{{ $permission->name }}</label>
+                                                        </div>
+                                                    @endif
+                                                @empty
+                                                    <p class="fas fa-folder-open">No Location Permissions Found</p>
+                                                @endforelse
+
+                                                {{-- Other Location Permissions --}}
+                                                @forelse ($permissions as $index => $permission)
+                                                    @if ($permission->name !== 'manage location' && strpos($permission->name, 'location') !== false)
+                                                        <div class="permission-item">
+                                                            <input type="checkbox" id="{{ $permission->name }}"
+                                                                name="permissions[]" value="{{ $permission->id }}">
+                                                            <label style="font-weight:normal"
+                                                                for="{{ $permission->name }}">{{ $permission->name }}</label>
+                                                        </div>
+                                                    @endif
+                                                @empty
+                                                    <p class="fas fa-folder-open">No Locations Permissions Found</p>
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- ./Location Permissions --}}
+
                                     {{-- System Settings Permissions --}}
                                     <div class="row">
                                         <div class="col-md-12 permissions-group">
@@ -393,7 +435,6 @@
                                         </div>
                                     </div>
                                     {{-- ./System Settings Permissions --}}
-
 
 
                                     <!-- Add more sections for other groups as needed -->

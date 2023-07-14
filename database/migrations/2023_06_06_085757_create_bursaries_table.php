@@ -28,6 +28,8 @@ class CreateBursariesTable extends Migration
             $table->string('mode_of_study');
             $table->integer('year_of_study');
             $table->string('course_name')->nullable();
+            $table->string('county');
+            $table->string('constituency');
             $table->string('location');
             $table->string('sub_location');
             $table->string('ward');

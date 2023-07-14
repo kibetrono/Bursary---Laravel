@@ -1,5 +1,3 @@
-
-
 var ctx = document.getElementById('applicationStatusDonutChart').getContext('2d');
 
 var backgroundColors = applicationStatuses.map(status => {
@@ -48,43 +46,3 @@ new Chart(ctx, {
     },
 });
 
-
-
-var ctx = document.getElementById('applicationTimelineChart').getContext('2d');
-
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: dates,
-        datasets: [{
-            label: 'Applications Submitted',
-            data: totals,
-            fill: false,
-            borderColor: 'rgba(54, 162, 235, 1)', // Blue
-            borderWidth: 2,
-        }],
-    },
-    options: {
-        responsive: true,
-
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day',
-                    displayFormats: {
-                        day: 'MMM D',
-                    },
-                },
-                ticks: {
-                    autoSkip: true,
-                    maxTicksLimit: 10,
-                },
-            },
-            y: {
-                beginAtZero: true,
-                stepSize: 1,
-            },
-        },
-    },
-});

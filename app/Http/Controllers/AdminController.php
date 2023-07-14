@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Bursary;
+use App\Models\Constituency;
+use App\Models\County;
+use App\Models\Location;
+use App\Models\PollingStation;
+use App\Models\SubLocation;
+use App\Models\Ward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
@@ -38,6 +44,13 @@ class AdminController extends Controller
         $rejectedbursaryApplicationsCount = Bursary::where('bursaries.status', '=', '2')->count();
         $pendingbursaryApplicationsCount = Bursary::where('bursaries.status', '=', '0')->count();
         $totalRolesCount = Role::count();
+
+        $countiesCount = County::all()->count();
+        $constituenciesCount = Constituency::all()->count();
+        $wardsCount = Ward::all()->count();
+        $locationsCount = Location::all()->count();
+        $sublocationsCount = SubLocation::all()->count();
+        $pollingstationsCount = PollingStation::all()->count();
 
         // Approved Chart
         $startYear = Carbon::now()->subYears(10)->year;
@@ -123,7 +136,7 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.dashboard', compact('staffCount', 'bursaryApplicationsCount', 'totalApplications', 'approvalPercentages', 'rejectralPercentages', 'pendralPercentages', 'approvedbursaryApplicationsCount', 'rejectedbursaryApplicationsCount', 'pendingbursaryApplicationsCount', 'totalRolesCount'));
+        return view('admin.dashboard', compact('staffCount', 'bursaryApplicationsCount', 'totalApplications', 'approvalPercentages', 'rejectralPercentages', 'pendralPercentages', 'approvedbursaryApplicationsCount', 'rejectedbursaryApplicationsCount', 'pendingbursaryApplicationsCount', 'totalRolesCount','countiesCount','constituenciesCount','wardsCount','locationsCount','sublocationsCount','pollingstationsCount'));
     }
 
     public function list()

@@ -150,8 +150,6 @@
                                                                     class="fas fa-trash"></i></button>
                                                         </form>
 
-                                                        {{-- <a href="#" class="btn-sm btn btn-danger mx-1" title="Update"><i
-                                                            class="fas fa-trash"></i></a> --}}
                                                     @endcan
 
                                                 </td>
@@ -159,13 +157,14 @@
                                             </tr>
 
                                             <!--view bursary-->
-                                            <div class="modal fade" id="view_bursary{{ $bursary->id }}" tabindex="-1"
+                                            <div class="modal fade"  id="view_bursary{{ $bursary->id }}" tabindex="-1"
                                                 role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
-                                                <div class="modal-dialog modal-lg" role="document">
+                                                <div  class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
-                                                        <div class="modal-header p-3">
+                                                        <div class="modal-header px-3 py-2">
                                                             <h5 class="modal-title" id="myModalLabel">Name:
-                                                                {{ $bursary->first_name }} {{ $bursary->last_name }}</h5>
+                                                                {{ $bursary->first_name }} {{ $bursary->last_name }}
+                                                            </h5>
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close" title="Close">
                                                                 <span aria-hidden="true">&times;</span>
@@ -205,39 +204,39 @@
                                                                 {{-- personal details --}}
                                                                 <div class="tab-pane active"
                                                                     id="personal_data{{ $bursary->id }}">
-                                                                    <h5 style="font-weight: 500" class="text-center mt-2">
-                                                                        Personal Details:</h5>
-                                                                    <div class="row">
-                                                                        <div class="col-md-4">
+                                                                    {{-- <h5 style="font-weight: 500" class="text-center mt-2">
+                                                                        Personal Details:</h5> --}}
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">First Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->first_name }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">Last Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->last_name }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">Gender:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->gender }}" readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">ID/Passport no.:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->id_or_passport_no }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">D.O.B:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ \Carbon\Carbon::parse($bursary->date_of_birth)->format('Y-m-d') }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">Telephone Number:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->telephone_number }}"
@@ -252,23 +251,23 @@
                                                                 {{-- family background information --}}
                                                                 <div class="tab-pane"
                                                                     id="family_data{{ $bursary->id }}">
-                                                                    <h5 style="font-weight: 500" class="text-center mt-2">
-                                                                        Family Background Information:</h5>
-                                                                    <div class="row">
-                                                                        <div class="col-md-4">
+                                                                    {{-- <h5 style="font-weight: 500" class="text-center mt-2">
+                                                                        Family Background Information:</h5> --}}
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Parental Status:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->parental_status }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Number of
                                                                                 Siblings:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->number_of_siblings }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Estimated Family
                                                                                 Income:</label>
                                                                             <input type="text" class="form-control"
@@ -279,31 +278,31 @@
                                                                     <h5 style="font-size: 16px" class="text-bold mt-2">
                                                                         Father's Information:</h5>
                                                                     <div class="row">
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">First Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->fathers_firstname }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Last Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->fathers_lastname }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Telephone Number:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->fathers_telephone_number }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Occupation:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->fathers_occupation }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Employment Type:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ ucfirst($bursary->fathers_employment_type) }}"
@@ -314,31 +313,31 @@
                                                                     <h5 style="font-size: 16px" class="text-bold mt-2">
                                                                         Mother's Information:</h5>
                                                                     <div class="row">
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">First Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->mothers_firstname }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Last Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->mothers_lastname }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Telephone Number:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->mothers_telephone_number }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Occupation:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->mothers_occupation }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Employment Type:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ ucfirst($bursary->mothers_employment_type) }}"
@@ -350,31 +349,31 @@
                                                                     <h5 style="font-size: 16px" class="text-bold mt-2">
                                                                         Guardian's Information:</h5>
                                                                     <div class="row">
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">First Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->guardians_firstname }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Last Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->guardians_lastname }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Telephone Number:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->guardians_telephone_number }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Occupation:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->guardians_occupation }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Employment Type:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ ucfirst($bursary->guardians_employment_type) }}"
@@ -388,26 +387,37 @@
                                                                 {{-- address information --}}
                                                                 <div class="tab-pane"
                                                                     id="address_data{{ $bursary->id }}">
-                                                                    <h5 style="font-weight: 500" class="text-center mt-2">
-                                                                        Address Information:</h5>
-                                                                    <div class="row">
-                                                                        <div class="col-md-4">
+                                                                    {{-- <h5 style="font-weight: 500" class="text-center mt-2">
+                                                                        Address Information:</h5> --}}
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">County:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->county }}" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Constituency:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->constituency }}" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Ward:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->ward }}" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">Location:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->location }}" readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">Sub location:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->sub_location }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
-                                                                            <label for="">Ward:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                value="{{ $bursary->ward }}" readonly>
-                                                                        </div>
-                                                                        <div class="col-md-4">
+                                                                        
+                                                                        <div class="col-md-4 my-2">
                                                                             <label for="">Polling Station:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->polling_station }}"
@@ -422,48 +432,48 @@
                                                                 {{-- school details --}}
                                                                 <div class="tab-pane"
                                                                     id="school_data{{ $bursary->id }}">
-                                                                    <h5 style="font-weight: 500" class="text-center mt-2">
-                                                                        School Details:</h5>
-                                                                    <div class="row">
-                                                                        <div class="col-md-4">
+                                                                    {{-- <h5 style="font-weight: 500" class="text-center mt-2">
+                                                                        School Details:</h5> --}}
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">School Name:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->institution_name }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Admission/Registration
                                                                                 no.:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->adm_or_reg_no }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Study Mode:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->mode_of_study }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Class/Year of
                                                                                 Study:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->year_of_study }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Course:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->course_name }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Postal Address:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->instititution_postal_address }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Telephone Number:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->instititution_telephone_number }}"
@@ -474,20 +484,20 @@
                                                                     <h5 style="font-size: 16px" class="text-bold mt-2">
                                                                         Fees Payable:</h5>
                                                                     <div class="row">
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Total Fees
                                                                                 Payable:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->total_fees_payable }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Fees Paid:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->total_fees_paid }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Fee Balance:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->fee_balance }}"
@@ -498,18 +508,18 @@
                                                                     <h5 style="font-size: 16px" class="text-bold mt-2">
                                                                         Account Details:</h5>
                                                                     <div class="row">
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Name of Bank:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->bank_name }}"
                                                                                 readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Branch:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->branch }}" readonly>
                                                                         </div>
-                                                                        <div class="col-md-4">
+                                                                        <div class="col-md-4 my-1">
                                                                             <label for="">Account Number:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->account_number }}"
@@ -523,9 +533,9 @@
                                                                 {{-- key attachments --}}
                                                                 <div class="tab-pane"
                                                                     id="attachments_data{{ $bursary->id }}">
-                                                                    <h5 style="font-weight: 500" class="text-center mt-2">
-                                                                        Key Attachments:</h5>
-                                                                    <div class="row">
+                                                                    {{-- <h5 style="font-weight: 500" class="text-center mt-2">
+                                                                        Key Attachments:</h5> --}}
+                                                                    <div class="row mt-3">
                                                                         <div class="col-md-4 p-2">
                                                                             <div class="attachment">
                                                                                 <span

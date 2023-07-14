@@ -28,7 +28,6 @@ class ApplicationPeriod extends Model
 
             $startYear = (int) $applicationPeriod->financial_year;
             $endYear = $startYear + 1;
-           
 
             if ($currentYear == $startYear && $currentYear + 1 == $endYear && $applicationPeriod->status === 1) {
 
@@ -36,12 +35,20 @@ class ApplicationPeriod extends Model
                 $period_to = Carbon::parse($applicationPeriod->period_to)->format('Y-m-d');
     
                 if ($currentDate >= $period_from && $currentDate <= $period_to) {
-                    return true;
+                    return [
+                        'allowed' => true,
+                        'period_from' => $period_from,
+                        'period_to' => $period_to,
+                    ];
                 }
             }
         }
 
-        return false;
+        return [
+            'allowed' => false,
+            'period_from' => null,
+            'period_to' => null,
+        ];
     }
     
 }

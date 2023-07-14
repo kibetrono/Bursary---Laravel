@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ url('./assets/image/cdfLogo.png') }}" type="image/x-icon">
     <title> @yield('title')</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"

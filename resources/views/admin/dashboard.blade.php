@@ -3,7 +3,7 @@
 @section('title')
     Dashboard
 @endsection
- 
+
 @section('css')
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -56,13 +56,13 @@
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
-            
+
         </div>
         <!-- /.content-header -->
 
         <div class="row px-3">
             <div class="col-sm-12">
-                @include('layouts.flash-messages')  
+                @include('layouts.flash-messages')
             </div>
 
         </div>
@@ -76,7 +76,7 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>
-                                    @if(Gate::check('manage user'))
+                                    @if (Gate::check('manage user'))
                                         @if (count($users) > 0)
                                             {{ count($users) }}
                                         @else
@@ -86,8 +86,7 @@
                                         -
                                     @endif
                                 </h3>
-
-                                <p>Total Users</p>
+                                <span class="info-box-text">Total Users</span>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-user-secret"></i>
@@ -101,13 +100,19 @@
                         <!-- small box -->
                         <div class="small-box bg-primary">
                             <div class="inner">
-                                @if(Gate::check('manage staff'))
-                                <h3>{{ $staffCount }}</h3>
-                                @else
-                                <h3> - </h3>
-                                @endif
+                                <h3>
+                                    @if (Gate::check('manage staff'))
+                                        @if ($staffCount > 0)
+                                            {{ $staffCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Total Staffs</span>
 
-                                <p>Total Staffs</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-users"></i>
@@ -122,13 +127,18 @@
                         <!-- small box -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                @if(Gate::check('manage role'))
-                                <h3>{{ $totalRolesCount }}</h3>
-                                @else
-                                <h3> - </h3>
-                                @endif
-
-                                <p>Total Roles</p>
+                                <h3>
+                                    @if (Gate::check('manage role'))
+                                        @if ($totalRolesCount > 0)
+                                            {{ $totalRolesCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Total Roles</span>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-tasks"></i>
@@ -143,14 +153,133 @@
                         <!-- small box -->
                         <div class="small-box bg-primary">
                             <div class="inner">
-                                <h3>{{ $bursaryApplicationsCount }}</h3>
-
-                                <p>Total Applications</p>
+                                <h3>
+                                    @if (Gate::check('manage bursary'))
+                                        @if ($bursaryApplicationsCount > 0)
+                                            {{ $bursaryApplicationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Total Applications</span>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-hand-holding"></i>
                             </div>
                             <a href="{{ route('bursary.index') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>
+                                    @if (Gate::check('manage bursary'))
+                                        @if ($approvedbursaryApplicationsCount > 0)
+                                            {{ $approvedbursaryApplicationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Approved Applications</span>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-thumbs-up"></i>
+                            </div>
+                            <a href="{{ route('approved.applications') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>
+                                    @if (Gate::check('manage bursary'))
+                                        @if ($pendingbursaryApplicationsCount > 0)
+                                            {{ $pendingbursaryApplicationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Pending Applications</span>
+                            </div>
+                            <div class="icon">
+                                <i class="far fa-circle"></i>
+                            </div>
+                            <a href="{{ route('bursary.index') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>
+                                    @if (Gate::check('manage bursary'))
+                                        @if ($rejectedbursaryApplicationsCount > 0)
+                                            {{ $rejectedbursaryApplicationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Rejected Applications</span>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-thumbs-down"></i>
+                            </div>
+                            <a href="{{ route('rejected.applications') }}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>
+                                    @if (Gate::check('manage location'))
+                                        @if ($countiesCount > 0)
+                                            {{ $countiesCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </h3>
+                                <span class="info-box-text">Counties</span>
+
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-location"></i>
+
+                            </div>
+                            <a href="{{ route('county.index') }}" class="small-box-footer">More info <i
                                     class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
@@ -166,7 +295,7 @@
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <i class="fas fa-chart-pie mr-1"></i>
-                                    Last Ten Finacial Years
+                                    Last Ten Financial Years
                                 </h3>
                                 <div class="card-tools">
                                     <ul class="nav nav-pills ml-auto">
@@ -175,7 +304,8 @@
                                                 data-toggle="tab">Approved</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#rejected_chart_area" data-toggle="tab">Rejected</a>
+                                            <a class="nav-link" href="#rejected_chart_area"
+                                                data-toggle="tab">Rejected</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="#pending_chart_area" data-toggle="tab">Pending</a>
@@ -217,71 +347,107 @@
                         </div>
                         <!-- /.card -->
 
-
                     </section>
                     <!-- /.Left col -->
-                    <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                    <section class="col-lg-3 connectedSortable">
+                    <div class="col-md-3">
+                        <!-- Info Boxes Style 2 -->
+                        <div class="info-box mb-3 bg-success">
+                            <span class="info-box-icon"><i class="ion ion-location"></i></span>
 
-                        <div class="row">
-                            <!-- ./col -->
-                            <div class="col-lg-12 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-success">
-                                    <div class="inner text-center">
-                                        <h3>{{ $approvedbursaryApplicationsCount }}</h3>
-
-                                        <p>Approved Applications</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-thumbs-up"></i>
-                                    </div>
-                                    <a href="{{ route('approved.applications') }}" class="small-box-footer">More info <i
-                                            class="fas fa-arrow-circle-right"></i></a>
-                                </div>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Constituencies</span>
+                                <span class="info-box-number">
+                                    @if (Gate::check('manage location'))
+                                        @if ($constituenciesCount > 0)
+                                            {{ $constituenciesCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </span>
                             </div>
-                            <!-- ./col -->
-
-                            <!-- ./col -->
-                            <div class="col-lg-12 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-warning">
-                                    <div class="inner text-center">
-                                        <h3>{{ $pendingbursaryApplicationsCount }}</h3>
-
-                                        <p>Pending Applications</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-thumbs-down"></i>
-                                    </div>
-                                    <a href="{{ route('bursary.index') }}" class="small-box-footer">More info <i
-                                            class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                            <!-- ./col -->
-
-                            <!-- ./col -->
-                            <div class="col-lg-12 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-danger">
-                                    <div class="inner text-center">
-                                        <h3>{{ $rejectedbursaryApplicationsCount }}</h3>
-
-                                        <p>Rejected Applications</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-thumbs-down"></i>
-                                    </div>
-                                    <a href="{{ route('rejected.applications') }}" class="small-box-footer">More info <i
-                                            class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                            <!-- ./col -->
-
+                            <!-- /.info-box-content -->
                         </div>
+                        <!-- /.info-box -->
+                        <div class="info-box mb-3 bg-info">
+                            <span class="info-box-icon"><i class="ion ion-location"></i></span>
 
-                    </section>
-                    <!-- right col -->
+                            <div class="info-box-content">
+                                <span class="info-box-text">Wards</span>
+                                <span class="info-box-number">
+                                    @if (Gate::check('manage location'))
+                                        @if ($wardsCount > 0)
+                                            {{ $wardsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                        <div class="info-box mb-3 bg-primary">
+                            <span class="info-box-icon"><i class="ion ion-location"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Locations</span>
+                                <span class="info-box-number">
+                                    @if (Gate::check('manage location'))
+                                        @if ($locationsCount > 0)
+                                            {{ $locationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+
+                        <div class="info-box mb-3 bg-olive">
+                            <span class="info-box-icon"><i class="ion ion-location"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Sub-Locations</span>
+                                <span class="info-box-number">
+                                    @if (Gate::check('manage location'))
+                                        @if ($sublocationsCount > 0)
+                                            {{ $sublocationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-box mb-3 bg-danger">
+                            <span class="info-box-icon"><i class="ion ion-location"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Polling Stations</span>
+                                <span class="info-box-number">
+                                    @if (Gate::check('manage location'))
+                                        @if ($pollingstationsCount > 0)
+                                            {{ $pollingstationsCount }}
+                                        @else
+                                            0
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- /.row (main row) -->
             </div><!-- /.container-fluid -->

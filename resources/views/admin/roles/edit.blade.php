@@ -323,6 +323,46 @@
                                     </div>
                                     {{-- /Bursary Permissions --}}
 
+                                    {{-- Location Permissions --}}
+                                    <div class="row">
+                                        <div class="col-md-12 permissions-group">
+                                            <div class="px-1">
+                                                <input type="checkbox" id="select-all-location" class="group-checkbox"
+                                                    name="select_all_location">
+                                                <label style="font-weight:bold" for="select-all-location">Locations
+                                                    Permissions</label>
+                                            </div>
+                                            <div class="permissions-row">
+                                                {{-- Display the permission with "manage" first --}}
+                                                @foreach ($permissions as $index => $permission)
+                                                    @if ($permission->name === 'manage location')
+                                                        <div class="permission-item">
+                                                            <input type="checkbox" id="{{ $permission->name }}"
+                                                                name="permissions[]" value="{{ $permission->id }}"
+                                                                {{ $role->permissions->pluck('id')->contains($permission->id) ? 'checked' : '' }}>
+                                                            <label style="font-weight:normal"
+                                                                for="{{ $permission->name }}">{{ $permission->name }}</label>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+
+                                                {{-- Display other location permissions --}}
+                                                @foreach ($permissions as $index => $permission)
+                                                    @if (strpos($permission->name, 'location') !== false && $permission->name !== 'manage location')
+                                                        <div class="permission-item">
+                                                            <input type="checkbox" id="{{ $permission->name }}"
+                                                                name="permissions[]" value="{{ $permission->id }}"
+                                                                {{ $role->permissions->pluck('id')->contains($permission->id) ? 'checked' : '' }}>
+                                                            <label style="font-weight:normal"
+                                                                for="{{ $permission->name }}">{{ $permission->name }}</label>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Location Permissions --}}
+
 
                                     {{-- System Permissions --}}
                                     <div class="row">

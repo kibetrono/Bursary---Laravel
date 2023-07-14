@@ -44,6 +44,14 @@ Route::prefix('user-bursary')->middleware(['auth'])->group(function () {
     Route::get('history/{id}', [App\Http\Controllers\BursaryController::class, 'history'])->name('user.bursary.history');
     Route::get('apply', [App\Http\Controllers\BursaryController::class, 'create'])->name('user.bursary.create.form');
     Route::post('save', [App\Http\Controllers\BursaryController::class, 'store'])->name('user.bursary.store');
+
+    // select dependent
+    Route::get('/fetch-constituencies/{county}', [App\Http\Controllers\BursaryController::class, 'fetchConstituencies']);
+    Route::get('/fetch-wards/{constituency}', [App\Http\Controllers\BursaryController::class, 'fetchWards']); 
+    Route::get('/fetch-locations/{ward}', [App\Http\Controllers\BursaryController::class, 'fetchLocations']);
+    Route::get('/fetch-sub-locations/{location}', [App\Http\Controllers\BursaryController::class, 'fetchSubLocations']);
+    Route::get('/fetch-polling-stations/{subLocation}', [App\Http\Controllers\BursaryController::class, 'fetchPollingStations']);
+    
 });
 
 
@@ -102,9 +110,35 @@ Route::prefix('admin')->middleware(['auth'])->group(
         // application periods
         Route::resource('application-period', 'ApplicationPeriodController');
 
+        // CountyController
+        Route::resource('county', 'CountyController');
+
+        // ConstituencyController
+        Route::resource('constituency', 'ConstituencyController');
+        Route::get('county-constituency/create-multiple', [App\Http\Controllers\ConstituencyController::class, 'createMultiple'])->name('constituency.create.multiple');
+
+        // WardController
+        Route::resource('ward', 'WardController');
+        Route::get('county-ward/create-multiple', [App\Http\Controllers\WardController::class, 'createMultiple'])->name('ward.create.multiple');
+
+        // LocationController
+        Route::resource('location', 'LocationController');
+        Route::get('locations/create-multiple', [App\Http\Controllers\LocationController::class, 'createMultiple'])->name('location.create.multiple');
+
+
+        // SubLocationController
+        Route::resource('sub-location', 'SubLocationController');
+        Route::get('sub-locations/create-multiple', [App\Http\Controllers\SubLocationController::class, 'createMultiple'])->name('sub-location.create.multiple');
+
+
+        // PollingStationController
+        Route::resource('polling-station', 'PollingStationController');
+        Route::get('polling-stations/create-multiple', [App\Http\Controllers\PollingStationController::class, 'createMultiple'])->name('polling-station.create.multiple');
+
+
         // system settings
         Route::resource('system-setting', 'SystemSettingController');
-
+        
     }
 );
 

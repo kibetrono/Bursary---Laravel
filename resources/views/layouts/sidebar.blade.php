@@ -1,13 +1,22 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-
     <!-- Brand Logo -->
     <a href="{{ url('home') }}" class="brand-link">
+        @if (isset($settingsfields['logo']))
+            <img src="{{ asset('storage/' . $settingsfields['logo']) }}" alt="Logo"
+                class="brand-image img-circle elevation-3 bg-light"
+                style="opacity: .8;border-radius:100px;width:35px;height:40px" alt="Logo">
+        @else
+            <img src="{{ url('./assets/image/noLogo.png') }}" alt="Logo"
+                class="brand-image img-circle elevation-3 bg-light"
+                style="opacity: .8;border-radius:100px;width:35px;height:40px">
+        @endif
 
-        <img src="{{ url('./assets/image/cdfLogo.png') }}" alt="Logo"
-            class="brand-image img-circle elevation-3 bg-light"
-            style="opacity: .8;border-radius:100px;width:35px;height:40px">
-        <span class="brand-text font-weight-light">Bursary</span>
+        @if (isset($settingsfields['title_text']))
+            <span class="brand-text font-weight-light">{{ $settingsfields['title_text'] }}</span>
+        @else
+            <span class="brand-text font-weight-light">Title Text</span>
+        @endif
     </a>
 
     <!-- Sidebar -->
@@ -402,8 +411,7 @@
                         Gate::check('manage staff') ||
                         Gate::check('manage role') ||
                         Gate::check('manage permission') ||
-                        Gate::check('manage application period') ||
-                        Gate::check('manage system setting'))
+                        Gate::check('manage application period'))
 
                     <li class="nav-header">ADMINISTRATION</li>
 
@@ -487,9 +495,9 @@
                     {{-- Staff --}}
                     @if (Gate::check('manage staff'))
                         <li
-                            class="{{ request()->is(['admin/staff-users', 'admin/staff-users/*', 'admin/staff-user-edit/*', 'admin/staff-user-view-approved-tasks/*', 'admin/staff-user-view-rejected-tasks/*']) ? 'nav-item menu-open' : 'nav-item' }}">
+                            class="{{ request()->is(['admin/staff', 'admin/staff/*', 'admin/staff-user-view-approved-tasks/*', 'admin/staff-user-view-rejected-tasks/*']) ? 'nav-item menu-open' : 'nav-item' }}">
                             <a href="#"
-                                class="{{ request()->is(['admin/staff-users', 'admin/staff-users/*', 'admin/staff-user-edit/*', 'admin/staff-user-view-approved-tasks/*', 'admin/staff-user-view-rejected-tasks/*']) ? 'nav-link active' : 'nav-link' }}">
+                                class="{{ request()->is(['admin/staff', 'admin/staff/*', 'admin/staff-user-view-approved-tasks/*', 'admin/staff-user-view-rejected-tasks/*']) ? 'nav-link active' : 'nav-link' }}">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
                                     Staffs
@@ -498,8 +506,8 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('staff_users.list') }}"
-                                        class="{{ request()->is(['admin/staff-users']) ? 'nav-link active' : 'nav-link' }}">
+                                    <a href="{{ route('staff.index') }}"
+                                        class="{{ request()->is(['admin/staff']) ? 'nav-link active' : 'nav-link' }}">
                                         &nbsp
                                         <i class="fas fa-list"></i>
                                         <p>&nbsp List</p>
@@ -507,8 +515,8 @@
                                 </li>
                                 @can('create staff')
                                     <li class="nav-item">
-                                        <a href="{{ route('admin/staff_users/create') }}"
-                                            class="{{ request()->is(['admin/staff-users/create']) ? 'nav-link active' : 'nav-link' }}">
+                                        <a href="{{ route('staff.create') }}"
+                                            class="{{ request()->is(['admin/staff/create']) ? 'nav-link active' : 'nav-link' }}">
                                             &nbsp
                                             <i class="fas fa-plus-circle"></i>
                                             <p>&nbsp Add</p>
@@ -595,47 +603,23 @@
                         </li>
                     @endif
                     {{-- /Application Period --}}
-
-                    {{-- System Settings --}}
-                    @if (Gate::check('manage system setting'))
-                        <li
-                            class="{{ request()->is(['admin/system-setting', 'admin/system-setting/*']) ? 'nav-item menu-open' : 'nav-item' }}">
-                            <a href="#"
-                                class="{{ request()->is(['admin/system-setting', 'admin/system-setting/*']) ? 'nav-link active' : 'nav-link' }}">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                    System Settings
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-
-
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('system-setting.index') }}"
-                                        class="{{ request()->is(['admin/system-setting']) ? 'nav-link active' : 'nav-link' }}">
-                                        &nbsp
-                                        <i class="fas fa-list"></i>
-                                        <p>&nbsp List</p>
-                                    </a>
-                                </li>
-                                @can('create system setting')
-                                    <li class="nav-item">
-                                        <a href="{{ route('system-setting.create') }}"
-                                            class="{{ request()->is(['admin/system-setting/create']) ? 'nav-link active' : 'nav-link' }}">
-                                            &nbsp
-                                            <i class="fas fa-plus-circle"></i>
-                                            <p>&nbsp Add</p>
-                                        </a>
-                                    </li>
-                                @endcan
-
-                            </ul>
-                        </li>
-                    @endif
-                    {{-- /System Settings --}}
                 @endif
 
+                {{-- System Settings --}}
+                @if (Gate::check('manage system setting'))
+                    <li class="nav-header">SETTINGS</li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('system-setting.index') }}"
+                            class="{{ request()->is(['admin/system-setting']) ? 'nav-link active' : 'nav-link' }}">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p>
+                                System Settings
+                            </p>
+                        </a>
+                    </li>
+                @endif
+                {{-- /System Settings --}}
             </ul>
         </nav>
     </div>

@@ -33,7 +33,7 @@ $startIndex = ($approvedBursaries->currentPage() - 1) * $approvedBursaries->perP
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">
-                                <a href="{{ route('staff.users.show', encrypt($user->id)) }}">{{$user->name}}</a>
+                                <a href="{{ route('staff.show', encrypt($user->id)) }}">{{$user->name}}</a>
                             </li>
                             <li class="breadcrumb-item active">Approved Application List</li>
                         </ol>

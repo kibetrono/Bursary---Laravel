@@ -98,7 +98,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('profile.show', encrypt($id))->with('success', 'User updated successfully');
+        return redirect()->route('profile.show', encrypt($id))->with('success', 'User profile updated successfully');
     }
  
     /**

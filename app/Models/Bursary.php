@@ -21,12 +21,12 @@ class Bursary extends Model
         'mode_of_study',
         'year_of_study',
         'course_name',
-        'county',
-        'constituency',
-        'ward',
-        'location',
-        'sub_location',
-        'polling_station',
+        'county_id',
+        'constituency_id',
+        'ward_id',
+        'location_id',
+        'sub_location_id',
+        'polling_station_id',
         'instititution_postal_address',
         'instititution_telephone_number',
         'total_fees_payable',
@@ -64,4 +64,28 @@ class Bursary extends Model
         'admission_letter',
         'status'
     ];
+
+    // public function county(){
+    //     return $this->belongsTo(County::class);
+    // }
+    public function constituency(){
+        return $this->belongsTo(Constituency::class);
+    }
+
+    public function county(){
+        return $this->belongsTo(County::class);
+    }
+    public function ward(){
+        return $this->belongsTo(Ward::class);
+    }
+    public function location(){
+        return $this->belongsTo(Location::class);
+    }
+    public function sublocation(){
+        return $this->belongsTo(SubLocation::class,'sub_location_id');
+    }
+    public function pollingstation(){
+        return $this->belongsTo(PollingStation::class,'polling_station_id');
+    }
+
 }

@@ -67,14 +67,14 @@
                                 <div class="row">
                                     <label for="">Sub-Location Name</label>
                                     <div class="input-group mb-3">
-                                        <select id="sublocation_name" class="form-control @error('sublocation_name') is-invalid @enderror"
-                                            name="sublocation_name" aria-required="true" required>
+                                        <select id="sublocation_name" class="form-control @error('sublocation_id') is-invalid @enderror"
+                                            name="sublocation_id" aria-required="true" required>
                                             <option value="" selected disabled>Select sub-location</option>
                                             @foreach ($sub_locations as $sub_location)
-                                                <option value="{{ $sub_location->name }}">{{ $sub_location->name }}</option>
+                                                <option value="{{ $sub_location->id }}">{{ $sub_location->name }}</option>
                                             @endforeach
                                         </select>
-                                        @error('sublocation_name')
+                                        @error('sublocation_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

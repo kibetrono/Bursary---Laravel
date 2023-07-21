@@ -1,7 +1,9 @@
 <footer class="main-footer">
-    <strong>Copyright &copy; 2023 <a href="https://www.softwareske.com/">Softwareske</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-        <b>Version</b> 1.1.0
-    </div>
+
+    @if (isset($settingsfields['footer_text']))
+        <strong>{{ $settingsfields['footer_text'] }}</strong>
+    @else
+        <strong>Footer text</strong>
+    @endif
+
 </footer>

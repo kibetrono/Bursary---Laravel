@@ -101,8 +101,7 @@ $startIndex = ($constituencies->currentPage() - 1) * $constituencies->perPage();
                                             <tr>
                                                 <td>{{ $startIndex + $index + 1 }}</td>
                                                 <td>{{ $constituency->name }}</td>
-                                                <td>{{ $constituency->county_name }}</td>
-                                                <td>{{ $constituency->created_at->format('Y-m-d') }}</td>
+                                                <td>{{ $constituency->county->name }}</td>                                                <td>{{ $constituency->created_at->format('Y-m-d') }}</td>
                                                 <td>{{ $constituency->updated_at->format('Y-m-d') }}</td>
                                                 @canany(['create location', 'update location', 'delete location'])
                                                     <td class="text-end">

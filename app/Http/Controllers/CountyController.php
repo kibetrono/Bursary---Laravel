@@ -120,8 +120,6 @@ class CountyController extends Controller
     {
         if (Auth::user()->can('update location')) {
 
-            dd($request->all());
-
             $this->validate($request, [
                 'name' => 'required|max:120|unique:counties,name,' . $id,
                 'county_number' => 'required'

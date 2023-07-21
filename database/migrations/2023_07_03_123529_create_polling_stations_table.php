@@ -16,7 +16,7 @@ class CreatePollingStationsTable extends Migration
         Schema::create('polling_stations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('sublocation_name');
+            $table->integer('sublocation_id');
             $table->timestamps();
         });
     }

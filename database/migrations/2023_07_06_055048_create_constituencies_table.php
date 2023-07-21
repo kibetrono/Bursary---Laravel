@@ -16,7 +16,7 @@ class CreateConstituenciesTable extends Migration
         Schema::create('constituencies', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('county_name');
+            $table->integer('county_id');
             $table->timestamps();
         });
     }

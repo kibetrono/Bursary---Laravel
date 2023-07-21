@@ -61,14 +61,14 @@
 
                                     <label for="">Location Name</label>
                                     <div class="input-group mb-3">
-                                        <select id="location_name" class="form-control @error('location_name') is-invalid @enderror"
-                                            name="location_name" aria-required="true" required>
+                                        <select id="location_name" class="form-control @error('location_id') is-invalid @enderror"
+                                            name="location_id" aria-required="true" required>
                                             <option value="" selected disabled>Select location</option>
                                             @foreach ($locations as $location)
-                                                <option value="{{ $location->name }}">{{ $location->name }}</option>
+                                                <option value="{{ $location->id }}">{{ $location->name }}</option>
                                             @endforeach
                                         </select>
-                                        @error('location_name')
+                                        @error('location_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

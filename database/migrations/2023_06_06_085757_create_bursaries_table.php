@@ -28,12 +28,12 @@ class CreateBursariesTable extends Migration
             $table->string('mode_of_study');
             $table->integer('year_of_study');
             $table->string('course_name')->nullable();
-            $table->string('county');
-            $table->string('constituency');
-            $table->string('location');
-            $table->string('sub_location');
-            $table->string('ward');
-            $table->string('polling_station');
+            $table->integer('county_id');
+            $table->integer('constituency_id');
+            $table->integer('location_id');
+            $table->integer('sub_location_id');
+            $table->integer('ward_id');
+            $table->integer('polling_station_id');
             $table->string('instititution_postal_address');
             $table->string('instititution_telephone_number');
             $table->decimal('total_fees_payable', 10, 2);

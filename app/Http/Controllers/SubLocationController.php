@@ -75,7 +75,7 @@ class SubLocationController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|max:120',
-                'location_name' => 'required'
+                'location_id' => 'required'
             ]);
     
             $names = is_array($request->name) ? $request->name : [$request->name];
@@ -90,7 +90,7 @@ class SubLocationController extends Controller
             foreach ($names as $name) {
                 $sub_location = new SubLocation();
                 $sub_location->name = $name;
-                $sub_location->location_name = $request->location_name;
+                $sub_location->location_id = $request->location_id;
                 $sub_location->save();
             }
     
@@ -124,13 +124,10 @@ class SubLocationController extends Controller
 
             $sub_location = SubLocation::findOrFail($id);
 
-            $location_name = $sub_location->location_name;
-
-
             $locations = Location::all(); // Example: Retrieve all wards for the dropdown menu
 
             // dd($roles);
-            return view('admin.sub-locations.edit', compact('sub_location','location_name','locations'));
+            return view('admin.sub-locations.edit', compact('sub_location','locations'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -149,13 +146,13 @@ class SubLocationController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|unique:sub_locations,name,' . $id,
-                'location_name' => 'required'
+                'location_id' => 'required'
             ]);
 
             $sub_location = SubLocation::findOrFail($id);
 
             $sub_location->name      = $request->name;
-            $sub_location->location_name      = $request->location_name;
+            $sub_location->location_id      = $request->location_id;
 
             $sub_location->touch();
 

@@ -69,8 +69,8 @@
 
                             @if ($applicationActive)
                                 @if ($existingApplication)
-                                    <h5 class="text-center text-success fas fa-folder p-4">You have already submitted your
-                                        application for the year {{ $currentYear }} - {{ $currentYear + 1 }}</h5>
+                                    <h6 class="text-center text-success fas fa-folder p-4"> You have already submitted your
+                                        application for the year {{ $currentYear }} - {{ $currentYear + 1 }}</h6>
                                 @else
                                     <!-- Step Indicator -->
                                     <div class="step-indicator pt-3 px-4">
@@ -567,12 +567,12 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group county required">
                                                             <label class="control-label" for="county">County:</label>
-                                                            <select id="county" class="form-control" name="county"
+                                                            <select id="county" class="form-control" name="county_id"
                                                                 aria-required="true" required>
                                                                 <option value="" selected disabled> --- Select county --- 
                                                                 </option>
                                                                 @foreach ($counties as $county)
-                                                                    <option value="{{ $county->name }}">
+                                                                    <option value="{{ $county->id }}">
                                                                         {{ $county->name }}
                                                                     </option>
                                                                 @endforeach
@@ -585,14 +585,10 @@
                                                             <label class="control-label"
                                                                 for="constituency">Constituency:</label>
                                                             <select id="constituency" class="form-control"
-                                                                name="constituency" aria-required="true" required>
+                                                                name="constituency_id" aria-required="true" required>
                                                                 <option value="" selected disabled> --- Select constituency --- 
                                                                 </option>
-                                                                @foreach ($constituencies as $constituency)
-                                                                    <option value="{{ $constituency->name }}">
-                                                                        {{ $constituency->name }}
-                                                                    </option>
-                                                                @endforeach
+                                                                
                                                             </select>
                                                         </div>
                                                     </div>
@@ -600,15 +596,11 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group ward required">
                                                             <label class="control-label" for="ward">Ward:</label>
-                                                            <select id="ward" class="form-control" name="ward"
+                                                            <select id="ward" class="form-control" name="ward_id"
                                                                 aria-required="true" required>
                                                                 <option value="" selected disabled> --- Select ward --- 
                                                                 </option>
-                                                                @foreach ($wards as $ward)
-                                                                    <option value="{{ $ward->name }}">
-                                                                        {{ $ward->name }}
-                                                                    </option>
-                                                                @endforeach
+                                                            
                                                             </select>
                                                         </div>
                                                     </div>
@@ -616,7 +608,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group location required">
                                                             <label class="control-label" for="location">Location:</label>
-                                                            <select id="location" class="form-control" name="location"
+                                                            <select id="location" class="form-control" name="location_id"
                                                                 aria-required="true" required disabled>
                                                                 <option value="" selected disabled> --- Select location --- 
                                                                 </option>
@@ -629,7 +621,7 @@
                                                             <label class="control-label" for="sub_location">Sub
                                                                 Location:</label>
                                                             <select id="sub_location" class="form-control"
-                                                                name="sub_location" aria-required="true" required
+                                                                name="sub_location_id" aria-required="true" required
                                                                 disabled>
                                                                 <option value="" selected disabled> --- Select
                                                                     sub-location --- 
@@ -643,7 +635,7 @@
                                                             <label class="control-label" for="polling_station">Polling
                                                                 Station:</label>
                                                             <select id="polling_station" class="form-control"
-                                                                name="polling_station" aria-required="true" required
+                                                                name="polling_station_id" aria-required="true" required
                                                                 disabled>
                                                                 <option value="" selected disabled> --- Select polling
                                                                     station --- </option>

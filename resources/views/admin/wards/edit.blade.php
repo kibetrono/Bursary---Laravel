@@ -72,18 +72,20 @@
 
                                     <label for="" class="px-4">Constituency Name</label>
                                     <div class="input-group mb-3 px-4">
-                                        <select id="constituency_name" class="form-control @error('constituency_name') is-invalid @enderror"
-                                            name="constituency_name" aria-required="true" required>
+                                        <select id="constituency_name" class="form-control @error('constituency_id') is-invalid @enderror"
+                                            name="constituency_id" aria-required="true" required>
                                             <option value="" disabled>Select Ward</option>
                                             @foreach ($constituencies as $constituency)
-                                                <option value="{{ $constituency->name }}"
-                                                    {{ $constituency->name == $constituency_name ? 'selected' : '' }}>
+                                                <option value="{{ $constituency->id }}"
+                                                    {{ $constituency->id == $ward->constituency_id ? 'selected' : '' }}>
                                                     {{ $constituency->name }}
                                                 </option>
                                             @endforeach
 
+                                          
+
                                         </select>
-                                        @error('constituency_name')
+                                        @error('constituency_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

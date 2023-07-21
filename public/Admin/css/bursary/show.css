@@ -3,3 +3,8 @@
     font-weight: normal !important
 }
 
+#loadingMessage {
+    display: none;
+    text-align: center;
+    font-weight: bold;
+}

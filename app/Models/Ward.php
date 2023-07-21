@@ -11,6 +11,16 @@ class Ward extends Model
 
     protected $fillable = [
         'name',
-        'constituency_name'
+        'constituency_id'
     ];
+
+    public function constituency()
+    {
+        return $this->belongsTo(Constituency::class);
+    }
+
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
 }

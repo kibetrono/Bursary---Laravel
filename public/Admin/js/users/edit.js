@@ -30,3 +30,12 @@ function togglePasswordConfirmVisibility() {
 }
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    var updateUserButton = document.getElementById("updateUserButton");
+    // Add a click event listener to the button
+    updateUserButton.addEventListener("click", function () {
+        // Disable the button
+        updateUserButton.disabled = true;
+        updateUserButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Updating...';
+    });
+});

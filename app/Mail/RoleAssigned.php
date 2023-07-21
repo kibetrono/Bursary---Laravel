@@ -6,9 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
 
-class SuccessfulRegistrationEmail extends Mailable
+class RoleAssigned extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,11 +16,13 @@ class SuccessfulRegistrationEmail extends Mailable
      *
      * @return void
      */
-    public $user;
+    public $name;
+    public $role;
 
-    public function __construct(User $user)
+    public function __construct($name,$role)
     {
-        $this->user = $user;
+        $this->name = $name;
+        $this->role = $role;
     }
 
     /**
@@ -29,9 +30,9 @@ class SuccessfulRegistrationEmail extends Mailable
      *
      * @return $this
      */
-    
     public function build()
     {
-        return $this->view('emails.welcome')->with('user', $this->user);
+        return $this->markdown('admin.customEmail.role-assigned',['name' => $this->name,'role' => $this->role])->subject('Congratulations');
+
     }
 }

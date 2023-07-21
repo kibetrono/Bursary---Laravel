@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use App\Models\Bursary;
+use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,8 +19,9 @@ class NotificationController extends Controller
     {
         $loggedinUser = Auth::user()->id;
         $bursaryNotifications = Bursary::where('status', '!=', '0')->where('user_id', $loggedinUser)->paginate('10');
+        $settingsfields = SystemSetting::pluck('value', 'name')->toArray();
 
-        return view('applicant.notifications', compact('bursaryNotifications'));
+        return view('applicant.notifications', compact('bursaryNotifications','settingsfields'));
     }
 
     /**

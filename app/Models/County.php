@@ -13,4 +13,10 @@ class County extends Model
         'name',
         'county_number'
     ];
+
+    public function constituencies()
+    {
+        return $this->hasMany(Constituency::class);
+    }
+    
 }

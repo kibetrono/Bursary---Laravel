@@ -60,14 +60,14 @@
 
                                     <label for="">County Name</label>
                                     <div class="input-group mb-3">
-                                        <select id="county_name" class="form-control @error('county_name') is-invalid @enderror"
-                                            name="county_name" aria-required="true" required>
+                                        <select id="county_name" class="form-control @error('county_id') is-invalid @enderror"
+                                            name="county_id" aria-required="true" required>
                                             <option value="" selected disabled>Select county</option>
                                             @foreach ($counties as $county)
-                                                <option value="{{ $county->name }}">{{ $county->name }}</option>
+                                                <option value="{{ $county->id }}">{{ $county->name }}</option>
                                             @endforeach
                                         </select>
-                                        @error('county_name')
+                                        @error('county_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

@@ -68,14 +68,14 @@
 
                                     <label for="">Constituency Name</label>
                                     <div class="input-group mb-3">
-                                        <select id="constituency_name" class="form-control @error('constituency_name') is-invalid @enderror"
-                                            name="constituency_name" aria-required="true" required>
+                                        <select id="constituency_name" class="form-control @error('constituency_id') is-invalid @enderror"
+                                            name="constituency_id" aria-required="true" required>
                                             <option value="" selected disabled>Select constituency</option>
                                             @foreach ($constituencies as $constituency)
-                                                <option value="{{ $constituency->name }}">{{ $constituency->name }}</option>
+                                                <option value="{{ $constituency->id }}">{{ $constituency->name }}</option>
                                             @endforeach
                                         </select>
-                                        @error('constituency_name')
+                                        @error('constituency_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSubLocationsTable extends Migration
 {
-    /**
+    /**k
      * Run the migrations.
      *
      * @return void
@@ -16,7 +16,7 @@ class CreateSubLocationsTable extends Migration
         Schema::create('sub_locations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('location_name');
+            $table->integer('location_id');
             $table->timestamps();
         });
     }

@@ -101,7 +101,7 @@ $startIndex = ($wards->currentPage() - 1) * $wards->perPage();
                                             <tr>
                                                 <td>{{ $startIndex + $index + 1 }}</td>
                                                 <td>{{ $ward->name }}</td>
-                                                <td>{{ $ward->constituency_name }}</td>
+                                                <td>{{ $ward->constituency->name }}</td>
                                                 <td>{{ $ward->created_at->format('Y-m-d') }}</td>
                                                 <td>{{ $ward->updated_at->format('Y-m-d') }}</td>
                                                 @canany(['create location', 'update location', 'delete location'])

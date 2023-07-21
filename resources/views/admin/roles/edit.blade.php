@@ -31,7 +31,7 @@
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('role.index') }}">Roles</a></li>
-                           
+
                             <li class="breadcrumb-item active">Update</li>
                         </ol>
                     </div>
@@ -61,14 +61,26 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="role name">Role Name</label>
-                                        <input type="text"readonly name='name' id="name"
-                                            class="form-control @error('name') is-invalid @enderror"
-                                            value="{{ $role->name }}" placeholder="Role Name" autocomplete="off">
-                                        @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                        @if ($role->name == 'super-admin' || $role->name == 'Staff')
+                                            <input type="text" readonly name='name' id="name"
+                                                class="form-control @error('name') is-invalid @enderror"
+                                                value="{{ $role->name }}" placeholder="Role Name" autocomplete="off">
+                                            @error('name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        @else
+                                            <input type="text" name='name' id="name"
+                                                class="form-control @error('name') is-invalid @enderror"
+                                                value="{{ $role->name }}" placeholder="Role Name" autocomplete="off">
+                                            @error('name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        @endif
+
                                     </div>
                                     <div class="row px-1">
                                         <div class="col-md-3 mt-2">
@@ -387,9 +399,14 @@
                                                     @endif
                                                 @endforeach
 
-                                                {{-- Display other system setting permissions --}}
+                                                {{-- Display other system setting permissions excluding specific ones --}}
                                                 @foreach ($permissions as $index => $permission)
-                                                    @if (strpos($permission->name, 'system setting') !== false && $permission->name !== 'manage system setting')
+                                                    @php
+                                                        $excludedPermissions = ['create system setting', 'view system setting', 'delete system setting'];
+                                                    @endphp
+                                                    @if (strpos($permission->name, 'system setting') !== false &&
+                                                            !in_array($permission->name, $excludedPermissions) &&
+                                                            $permission->name !== 'manage system setting')
                                                         <div class="permission-item">
                                                             <input type="checkbox" id="{{ $permission->name }}"
                                                                 name="permissions[]" value="{{ $permission->id }}"
@@ -403,6 +420,7 @@
                                         </div>
                                     </div>
                                     {{-- /System Permissions --}}
+
 
 
                                     <!-- Add more sections for other groups as needed -->

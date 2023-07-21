@@ -29,4 +29,17 @@ function togglePasswordConfirmVisibility() {
     }
 }
 
+  document.addEventListener("DOMContentLoaded", function () {
+    var createUserButton = document.getElementById("createUserButton");
+    var usercreateForm = document.getElementById("usercreateForm");
 
+    usercreateForm.addEventListener("submit", function () {
+      // Disable the button on form submit
+      createUserButton.disabled = true;
+
+      // Optionally, you can change the button's text or add a loading spinner.
+      createUserButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
+      // Alternatively, you can remove the icon if you don't want to show it anymore:
+      // createUserButton.innerText = 'Saving...';
+    });
+  });

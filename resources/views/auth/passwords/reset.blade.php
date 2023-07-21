@@ -2,16 +2,28 @@
 @section('title')
     Recover Password
 @endsection
-
+@php
+    $settingsfields = \App\Models\SystemSetting::pluck('value', 'name')->toArray();
+@endphp
 @section('content')
 
     <body class="hold-transition login-page">
         <div class="login-box">
             <div class="login-logo">
-                <img src="{{ asset('assets/image/cdfLogo.png') }}" style="width:50%;height:100px">
+                @if (isset($settingsfields['logo']))
+                    <img src="{{ asset('storage/' . $settingsfields['logo']) }}" alt="Logo" style="width:50%;height:100px"
+                        alt="Logo">
+                @else
+                    <img src="{{ url('./assets/image/noLogo.png') }}" alt="Logo" style="width:50%;height:100px">
+                @endif
 
             </div>
             <!-- /.login-logo -->
+            <div class="row">
+                <div class="col-sm-12">
+                    @include('layouts.flash-messages')
+                </div>
+            </div>
             <div class="card">
                 <div class="card-body login-card-body">
                     <p class="login-box-msg">Please fill out the email, password and confirm password fields to recover your
@@ -19,6 +31,7 @@
 
                     <form method="POST" action="{{ route('password.update') }}">
                         @csrf
+                        <input type="hidden" name="token" value="{{ $token }}">
 
                         <div class="input-group mb-3">
                             {{-- <input type="email" class="form-control" placeholder="Email address"> --}}

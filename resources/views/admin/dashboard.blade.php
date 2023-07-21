@@ -117,7 +117,7 @@
                             <div class="icon">
                                 <i class="fas fa-users"></i>
                             </div>
-                            <a href="{{ route('staff_users.list') }}" class="small-box-footer">More info <i
+                            <a href="{{ route('staff.index') }}" class="small-box-footer">More info <i
                                     class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
@@ -294,7 +294,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    <i class="fas fa-chart-bar mr-1"></i>
                                     Last Ten Financial Years
                                 </h3>
                                 <div class="card-tools">
@@ -315,15 +315,13 @@
                             </div><!-- /.card-header -->
                             <div class="card-body bursary_graph_display_body">
                                 <div class="tab-content p-0">
-
-
+                                    @if (Gate::check('manage bursary'))
                                     <div class="chart tab-pane active" id="approved_chart_area"
                                         style="position: relative; height: auto;">
                                         {{-- Approved chart --}}
                                         <div style="width: 100%">
                                             <canvas id="approved_chart"></canvas>
                                         </div>
-
                                     </div>
 
                                     <div class="chart tab-pane" id="rejected_chart_area"
@@ -342,12 +340,16 @@
                                         </div>
                                     </div>
 
+                                    @endif
+
                                 </div>
                             </div><!-- /.card-body -->
                         </div>
                         <!-- /.card -->
+                        
 
                     </section>
+                    
                     <!-- /.Left col -->
                     <div class="col-md-3">
                         <!-- Info Boxes Style 2 -->

@@ -29,9 +29,9 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-sm-6">
-                        <h3>Add New User</h3>
+                        <h4>Add New User</h4>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -62,7 +62,7 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form style="padding:20px;" action="{{ route('user.store') }}" method="POST">
+                            <form style="padding:20px;" action="{{ route('user.store') }}" method="POST" id="usercreateForm">
                                 @csrf
 
                                 <div class="row">
@@ -159,8 +159,8 @@
                                     </div>
 
                                     <div class="mt-3">
-                                        <button style="border:unset" type="submit"
-                                            class="btn-md btn btn-success btn-block">Create User</button>
+                                        <button style="border:unset" type="submit" id="createUserButton"
+                                            class="btn-md btn btn-success btn-block"><i class="fa fa-save"></i> Create User</button>
                                     </div>
 
                                 </div>

@@ -37,11 +37,7 @@ class HomeController extends Controller
                 return redirect()->route('admin.home');
             }
 
-            // if ($user->hasRole('super-admin')) {
-            //     return redirect()->route('admin.home');
-            // } elseif ($user->hasRole('Staff')) {
-            //     return redirect()->route('staff.home');
-            // }
+           
         }
         // Fallback if the user doesn't have any of the specified roles or permissions
         return redirect()->route('default.applicant.dashboard');

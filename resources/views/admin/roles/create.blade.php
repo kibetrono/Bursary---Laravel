@@ -399,8 +399,10 @@
                                             </div>
                                             <div class="permissions-row">
                                                 {{-- Manage System Settings --}}
+                                                @php $hasManageSettingPermission = false; @endphp
                                                 @forelse ($permissions as $index => $permission)
                                                     @if ($permission->name === 'manage system setting')
+                                                        @php $hasManageSettingPermission = true; @endphp
                                                         <div class="permission-item">
                                                             <input type="checkbox" id="{{ $permission->name }}"
                                                                 name="permissions[]" value="{{ $permission->id }}">
@@ -412,10 +414,17 @@
                                                     <p class="fas fa-folder-open">No System Settings Permissions Found</p>
                                                 @endforelse
 
+                                                @if (!$hasManageSettingPermission)
+                                                    <p class="fas fa-folder-open">No System Settings Permissions Found</p>
+                                                @endif
+
                                                 {{-- Other System Settings Permissions --}}
+                                                @php $excludedPermissions = ['create system setting', 'view system setting', 'delete system setting']; @endphp
                                                 @php $firstPermission = true; @endphp
                                                 @forelse ($permissions as $index => $permission)
-                                                    @if ($permission->name !== 'manage system setting' && strpos($permission->name, 'system setting') !== false)
+                                                    @if (strpos($permission->name, 'system setting') !== false &&
+                                                            !in_array($permission->name, $excludedPermissions) &&
+                                                            $permission->name !== 'manage system setting')
                                                         <div class="permission-item">
                                                             <input type="checkbox" id="{{ $permission->name }}"
                                                                 name="permissions[]" value="{{ $permission->id }}">
@@ -425,7 +434,13 @@
                                                         @php $firstPermission = false; @endphp
                                                     @endif
                                                 @empty
-                                                    <p class="fas fa-folder-open">No System Settings Permissions Found</p>
+                                                    @if ($hasManageSettingPermission)
+                                                        {{-- We already displayed "No System Settings Permissions Found" earlier --}}
+                                                        @php $firstPermission = false; @endphp
+                                                    @else
+                                                        <p class="fas fa-folder-open">No System Settings Permissions Found
+                                                        </p>
+                                                    @endif
                                                 @endforelse
 
                                                 @if ($firstPermission)
@@ -435,6 +450,7 @@
                                         </div>
                                     </div>
                                     {{-- ./System Settings Permissions --}}
+
 
 
                                     <!-- Add more sections for other groups as needed -->

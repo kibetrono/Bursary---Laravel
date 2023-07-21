@@ -2,8 +2,13 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SystemSettingController;
+use App\Mail\CustomEmail;
+use App\Models\SystemSetting;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,6 +19,7 @@ use App\Http\Controllers\SchoolController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -31,6 +37,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/user-dashboard', [App\Http\Controllers\ApplicantController::class, 'index'])->name('default.applicant.dashboard');
 
+Route::post('/send-test-email', [SystemSettingController::class, 'sendTestEmail'])->name('send-configuration-test-email');
+
+
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('profile', 'ProfileController');
 });
@@ -47,11 +56,10 @@ Route::prefix('user-bursary')->middleware(['auth'])->group(function () {
 
     // select dependent
     Route::get('/fetch-constituencies/{county}', [App\Http\Controllers\BursaryController::class, 'fetchConstituencies']);
-    Route::get('/fetch-wards/{constituency}', [App\Http\Controllers\BursaryController::class, 'fetchWards']); 
+    Route::get('/fetch-wards/{constituency}', [App\Http\Controllers\BursaryController::class, 'fetchWards']);
     Route::get('/fetch-locations/{ward}', [App\Http\Controllers\BursaryController::class, 'fetchLocations']);
     Route::get('/fetch-sub-locations/{location}', [App\Http\Controllers\BursaryController::class, 'fetchSubLocations']);
     Route::get('/fetch-polling-stations/{subLocation}', [App\Http\Controllers\BursaryController::class, 'fetchPollingStations']);
-    
 });
 
 
@@ -96,13 +104,6 @@ Route::prefix('admin')->middleware(['auth'])->group(
 
         // StaffController
         Route::resource('staff', 'StaffController');
-        Route::get('staff-users', [App\Http\Controllers\StaffController::class, 'staffUsersList'])->name('staff_users.list');
-        Route::get('staff-users/create', [App\Http\Controllers\StaffController::class, 'staffUsersCreate'])->name('admin/staff_users/create');
-        Route::post('staff-users/save', [App\Http\Controllers\StaffController::class, 'staffUsersStore'])->name('admin/staff_users/save');
-        Route::get('staff-users/{id}', [App\Http\Controllers\StaffController::class, 'showStaffUser'])->name('staff.users.show');
-        Route::post('staff-user-edit/{id}', [App\Http\Controllers\StaffController::class, 'editStaffUser'])->name('staff.users.edit');
-        Route::put('staff-user-update/{id}', [App\Http\Controllers\StaffController::class, 'updateStaffUser'])->name('staff.users.update');
-        Route::put('staff-user-delete/{id}', [App\Http\Controllers\StaffController::class, 'deleteStaffUser'])->name('staff.users.delete');
 
         Route::get('staff-user-view-approved-tasks/{id}', [App\Http\Controllers\StaffController::class, 'viewUserApprovedTasks'])->name('staff.view.approved.applications');
         Route::get('staff-user-view-rejected-tasks/{id}', [App\Http\Controllers\StaffController::class, 'viewUserRejectedTasks'])->name('staff.view.rejected.applications');
@@ -138,7 +139,7 @@ Route::prefix('admin')->middleware(['auth'])->group(
 
         // system settings
         Route::resource('system-setting', 'SystemSettingController');
-        
+        Route::post('system-setting-save', [App\Http\Controllers\SystemSettingController::class, 'systemSettingsFields'])->name('settings.update.fields');
     }
 );
 

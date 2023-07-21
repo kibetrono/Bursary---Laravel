@@ -54,10 +54,20 @@ $(document).ready(function() {
 
   $(document).ready(function() {
     $('#constituency, #ward, #location, #sub_location, #polling_station').prop('disabled', true);
-
+    
+    function clearDependentFields() {
+        $('#constituencyID').empty().prop('disabled', true);
+        $('#wadID').empty().prop('disabled', true);
+        $('#locationID').empty().prop('disabled', true);
+        $('#sublocationID').empty().prop('disabled', true);
+        $('#pollingStationID').empty().prop('disabled', true);
+    }
     // County change event
     $('#county').change(function() {
-        var countyName = $(this).val();
+
+        clearDependentFields()
+
+        var countyID = $(this).val();
         // Disable dependent selects
         $('#constituency').prop('disabled', true);
         $('#ward').prop('disabled', true);
@@ -78,7 +88,7 @@ $(document).ready(function() {
 
 
         // Fetch constituencies based on the selected county
-        $.get('/user-bursary/fetch-constituencies/' + countyName, function(data) {
+        $.get('/user-bursary/fetch-constituencies/' + countyID, function(data) {
             if (data.length > 0) {
                 // Enable constituency select
                 $('#constituency').prop('disabled', false);
@@ -87,7 +97,7 @@ $(document).ready(function() {
 
                 // Add the constituency options
                 $.each(data, function(index, constituency) {
-                    options += '<option value="' + constituency.name + '">' +
+                    options += '<option value="' + constituency.id + '">' +
                         constituency.name + '</option>';
                 });
 
@@ -103,7 +113,8 @@ $(document).ready(function() {
 
     // Constituency change event
     $('#constituency').change(function() {
-        var constituencyName = $(this).val();
+        clearDependentFields()
+        var constituencyID = $(this).val();
         // Disable dependent selects
         $('#ward').prop('disabled', true);
         $('#location').prop('disabled', true);
@@ -120,7 +131,7 @@ $(document).ready(function() {
 
 
         // Fetch wards based on the selected constituency
-        $.get('/user-bursary/fetch-wards/' + constituencyName, function(data) {
+        $.get('/user-bursary/fetch-wards/' + constituencyID, function(data) {
             if (data.length > 0) {
                 // Enable ward select
                 $('#ward').prop('disabled', false);
@@ -129,7 +140,7 @@ $(document).ready(function() {
 
                 // Add the constituency options
                 $.each(data, function(index, ward) {
-                    options += '<option value="' + ward.name + '">' +
+                    options += '<option value="' + ward.id + '">' +
                         ward.name + '</option>';
                 });
 
@@ -145,7 +156,8 @@ $(document).ready(function() {
 
     // Ward change event
     $('#ward').change(function() {
-        var wardName = $(this).val();
+        clearDependentFields()
+        var wardID = $(this).val();
         // Disable dependent selects
         $('#location').prop('disabled', true);
         $('#sub_location').prop('disabled', true);
@@ -159,7 +171,7 @@ $(document).ready(function() {
 
 
         // Fetch locations based on the selected ward
-        $.get('/user-bursary/fetch-locations/' + wardName, function(data) {
+        $.get('/user-bursary/fetch-locations/' + wardID, function(data) {
             if (data.length > 0) {
                 // Enable location select
                 $('#location').prop('disabled', false);
@@ -168,7 +180,7 @@ $(document).ready(function() {
 
                 // Add the constituency options
                 $.each(data, function(index, location) {
-                    options += '<option value="' + location.name + '">' +
+                    options += '<option value="' + location.id + '">' +
                         location.name + '</option>';
                 });
 
@@ -184,7 +196,8 @@ $(document).ready(function() {
 
     // Location change event
     $('#location').change(function() {
-        var locationName = $(this).val();
+        clearDependentFields()
+        var locationID = $(this).val();
         // Disable dependent selects
         $('#sub_location').prop('disabled', true);
         $('#polling_station').prop('disabled', true);
@@ -195,7 +208,7 @@ $(document).ready(function() {
 
 
         // Fetch sub-locations based on the selected location
-        $.get('/user-bursary/fetch-sub-locations/' + locationName, function(data) {
+        $.get('/user-bursary/fetch-sub-locations/' + locationID, function(data) {
             if (data.length > 0) {
                 // Enable sub-location select
                 $('#sub_location').prop('disabled', false);
@@ -204,7 +217,7 @@ $(document).ready(function() {
 
                 // Add the constituency options
                 $.each(data, function(index, subLocation) {
-                    options += '<option value="' + subLocation.name + '">' +
+                    options += '<option value="' + subLocation.id + '">' +
                         subLocation.name + '</option>';
                 });
 
@@ -220,7 +233,8 @@ $(document).ready(function() {
 
     // Sub-location change event
     $('#sub_location').change(function() {
-        var subLocationName = $(this).val();
+        clearDependentFields()
+        var subLocationID = $(this).val();
         // Disable polling station select
         $('#polling_station').prop('disabled', true);
 
@@ -228,7 +242,7 @@ $(document).ready(function() {
         $('#polling_station').empty();
 
         // Fetch polling stations based on the selected sub-location
-        $.get('/user-bursary/fetch-polling-stations/' + subLocationName, function(data) {
+        $.get('/user-bursary/fetch-polling-stations/' + subLocationID, function(data) {
             if (data.length > 0) {
                 // Enable polling station select
                 $('#polling_station').prop('disabled', false);
@@ -237,7 +251,7 @@ $(document).ready(function() {
 
                 // Add the constituency options
                 $.each(data, function(index, pollingStation) {
-                    options += '<option value="' + pollingStation.name + '">' +
+                    options += '<option value="' + pollingStation.id + '">' +
                         pollingStation.name + '</option>';
                 });
 

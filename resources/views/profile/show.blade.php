@@ -21,7 +21,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h3>{{ $user->email }}</h3>
+                        <h4>Email: {{ $user->email }}</h4>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -61,7 +61,7 @@
                             <div class="card-header d-flex">
 
                                 <a href="{{ route('profile.edit', encrypt($user->id)) }}" class="btn-sm btn btn-primary"><i
-                                        class="fas fa-edit"></i>Edit</a>
+                                        class="fas fa-edit"></i> Update</a>
 
                             </div>
                             <!-- /.card-header -->

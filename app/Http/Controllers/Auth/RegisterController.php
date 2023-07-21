@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-// use App\Mail\SuccessfulRegistrationEmail;
+use App\Mail\WelcomeEmail;
+use App\Models\SystemSetting;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
-// use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -66,20 +67,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-
-        // $user = User::create([
-        //     'name' => $data['name'],
-        //     'email' => $data['email'],
-        //     'password' => Hash::make($data['password']),
-        // ]);
-
-        // Mail::to($user->email)->send(new SuccessfulRegistrationEmail($user));
-        
-        // return redirect()->route('home')->with('success', 'You have been registered successfully!');
+        // check if user has beeb created
+        if ($user) {
+            $userSignupValue = SystemSetting::where('name', 'user_signup')->value('value');
+            if ($userSignupValue == 1) {
+                try {
+                    // Send an email to the user after successful registration
+                    Mail::to($user->email)->send(new WelcomeEmail($user));
+                } catch (\Exception $e) {
+                    $register_error = __('E-Mail has been not sent due to SMTP configuration');
+                }
+            }
+        }
+        return $user;
     }
 }

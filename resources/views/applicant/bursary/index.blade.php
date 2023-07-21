@@ -33,9 +33,9 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-sm-6">
-                        <h1>Bursary Application List</h1>
+                        <h4>Bursary Application List</h4>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -64,13 +64,21 @@
                         <div class="card">
                             <div class="card-header bg-info">
                                 <h3 class="card-title">Application List </h3>
+                                <div id="loadingMessageBursaryPage">
+                                    <div class="loading-container">
+                                        <strong>
+                                            <i class="fas fa-spinner fa-spin"></i> &nbsp; Loading...
+                                        </strong>
+                                    </div>
+                                </div>
                                 <div class="card-tools">
+                                    
                                     {{-- <a href="{{ route('user.create') }}" class="btn-sm btn btn-success"><i
                                             class="fas fa-plus-circle"></i> Create New User</a> --}}
                                 </div>
                             </div>
                             
-
+                            
                             <!-- /.card-header -->
                             <div class="card-body p-1">
                                 <table id="users-table" class="table table-bordered table-hover table-responsive">
@@ -82,6 +90,7 @@
                                             <th>Institution info.</th>
                                             <th>Total Fees</th>
                                             <th>Balance</th>
+                                            <th>Constituency</th>
                                             <th>Date Applied</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -109,6 +118,7 @@
                                                 <td>{{ $trimmed_institution }} - {{ $trimmed_adm }}</td>
                                                 <td>{{ $bursary->total_fees_payable }}</td>
                                                 <td>{{ $bursary->fee_balance }}</td>
+                                                <td>{{ $bursary->constituency->name }}</td>
                                                 <td>{{ $bursary->created_at->format('Y-m-d') }}</td>
 
                                                 @if ($user->hasRole('super-admin'))
@@ -165,6 +175,13 @@
                                                             <h5 class="modal-title" id="myModalLabel">Name:
                                                                 {{ $bursary->first_name }} {{ $bursary->last_name }}
                                                             </h5>
+                                                            <div id="loadingMessage" class="pl-4">
+                                                                <div class="loading-container">
+                                                                    <strong>
+                                                                        <i class="fas fa-spinner fa-spin"></i> &nbsp; Loading...
+                                                                    </strong>
+                                                                </div>
+                                                            </div>
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close" title="Close">
                                                                 <span aria-hidden="true">&times;</span>
@@ -393,34 +410,34 @@
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">County:</label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ $bursary->county }}" readonly>
+                                                                                value="{{ $bursary->county->name }}" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">Constituency:</label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ $bursary->constituency }}" readonly>
+                                                                                value="{{ $bursary->constituency->name }}" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">Ward:</label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ $bursary->ward }}" readonly>
+                                                                                value="{{ $bursary->ward->name }}" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">Location:</label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ $bursary->location }}" readonly>
+                                                                                value="{{ $bursary->location->name }}" readonly>
                                                                         </div>
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">Sub location:</label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ $bursary->sub_location }}"
+                                                                                value="{{ $bursary->sublocation->name }}"
                                                                                 readonly>
                                                                         </div>
                                                                         
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">Polling Station:</label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ $bursary->polling_station }}"
+                                                                                value="{{ $bursary->pollingstation->name }}"
                                                                                 readonly>
                                                                         </div>
 
@@ -692,11 +709,11 @@
                                                         </div>
                                                         <div class="modal-footer mb-2">
                                                             @can('approve bursary')
-                                                                <button type="button" class="btn-sm btn btn-success"
+                                                                <button type="button" id="approval_btn" class="btn-sm btn btn-success"
                                                                     onclick="approveApplication({{ $bursary->id }})">Approve</button>
                                                             @endcan
                                                             @can('reject bursary')
-                                                                <button type="button" class="btn-sm btn btn-danger"
+                                                                <button type="button" id="rejectral_btn" class="btn-sm btn btn-danger"
                                                                     onclick="rejectApplication({{ $bursary->id }})">Reject</button>
                                                             @endcan
 
@@ -713,7 +730,13 @@
                                             <tr>
                                                 <td></td>
                                                 <td></td>
-                                                <td class="fas fa-folder-open"> No Applications Found</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="fas fa-folder-open"> No Applications</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                         @endforelse
 
@@ -727,6 +750,7 @@
                                             <th>Institution info.</th>
                                             <th>Total Fees</th>
                                             <th>Balance</th>
+                                            <th>Constituency</th>
                                             <th>Date Applied</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -818,6 +842,9 @@
     <script>
         function approveApplication(bursaryId) {
             if (confirm("Are you sure you want to approve this application?")) {
+                $('#loadingMessage').show();
+                $('#approval_btn').prop('disabled', true);
+                $('#rejectral_btn').prop('disabled', true);
                 $.ajax({
                     url: '{{ route('bursary.updateApprovedStatus') }}',
                     type: 'POST',
@@ -828,9 +855,14 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function(response) {
+                    $('#approval_btn').prop('disabled', false);
+                    $('#rejectral_btn').prop('disabled', false);
+
                         window.location.href = response.url;
                     },
                     error: function(xhr, status, error) {
+                    $('#approval_btn').prop('disabled', false);
+                    $('#rejectral_btn').prop('disabled', false);
                         
                     }
                 });
@@ -839,9 +871,12 @@
             }
         }
 
-
         function rejectApplication(bursaryId) {
             if (confirm("Are you sure you want to reject this application?")) {
+                $('#loadingMessage').show();
+                $('#rejectral_btn').prop('disabled', true);
+                $('#approval_btn').prop('disabled', true);
+                
                 $.ajax({
                     url: '{{ route('bursary.updateRejectedStatus') }}',
                     type: 'POST',
@@ -852,10 +887,15 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function(response) {
+                        $('#rejectral_btn').prop('disabled', false);
+                        $('#approval_btn').prop('disabled', false);
+
                         window.location.href = response.url;
                     },
                     error: function(xhr, status, error) {
-                        
+                    $('#rejectral_btn').prop('disabled', false);
+                        $('#approval_btn').prop('disabled', false);
+
                     }
                 });
 

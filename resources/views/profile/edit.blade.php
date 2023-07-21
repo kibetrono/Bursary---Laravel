@@ -30,7 +30,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h3>Update User</h3>
+                        <h4>Update Profile</h4>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -66,7 +66,7 @@
                         <!-- general form elements -->
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title">Update User: {{ $user->email }}</h3>
+                                <h3 class="card-title">Update: {{ $user->email }}</h3>
                                 <div class="card-tools">
                                     {{-- <a href="{{ route('user.index') }}" class="btn-md btn btn-danger"><i class="fas fa-users"></i> All Users</a> --}}
                                 </div>
@@ -104,12 +104,13 @@
                                             <div class="input-group-text">
                                                 <span class="fas fa-envelope"></span>
                                             </div>
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+
                                         </div>
+                                        @error('email')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                     <label for="" class="px-4">Password</label>
                                     <div class="input-group mb-3 px-4">
@@ -144,7 +145,8 @@
 
                                     <div class="px-4">
                                         <button style="border:unset" type="submit"
-                                            class="btn-md btn btn-success btn-block">Update User</button>
+                                            class="btn-md btn btn-success btn-block"><i class="fas fa-save"></i> Update
+                                            User</button>
                                     </div>
                                 </div>
 

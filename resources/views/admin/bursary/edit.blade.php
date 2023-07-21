@@ -91,7 +91,7 @@
                                     <div class="step-number">4</div>
                                     <div class="step-title">School Information</div>
                                 </div>
-                               
+
                             </div>
 
                             <!-- form start -->
@@ -104,7 +104,7 @@
                                     {{-- Personal Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                            
+
                                             <div class="col-md-4">
                                                 <div class="form-group first_name required">
                                                     <label class="control-label" for="first_name">First Name:</label>
@@ -177,7 +177,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group date_of_birth required">
-                                                    <label class="control-label" for="date_of_birth">Date of Birth:</label>
+                                                    <label class="control-label" for="date_of_birth">Date of
+                                                        Birth:</label>
                                                     <input type="date" id="date_of_birth"
                                                         class="form-control @error('date_of_birth') is-invalid @enderror"
                                                         name="date_of_birth" aria-required="true"
@@ -215,7 +216,7 @@
                                     {{-- /Family Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                           
+
                                             <div class="col-md-4">
                                                 <div class="form-group parental_status required">
                                                     <label class="control-label" for="parental_status">Parental
@@ -605,21 +606,34 @@
                                     <div class="form-section">
                                         <div class="row">
 
+                                            {{-- Hidden fields for dependent select values --}}
+                                    <input type="hidden" id="constituencyID" name="constituency_id"
+                                    value="{{ $bursaryapplied->constituency_id }}">
+                                <input type="hidden" id="wadID" name="ward_id"
+                                    value="{{ $bursaryapplied->ward_id }}">
+                                <input type="hidden" id="locationID" name="location_id"
+                                    value="{{ $bursaryapplied->location_id }}">
+                                <input type="hidden" id="sublocationID" name="sub_location_id"
+                                    value="{{ $bursaryapplied->sub_location_id }}">
+                                <input type="hidden" id="pollingStationID" name="polling_station_id"
+                                    value="{{ $bursaryapplied->polling_station_id }}">
+
                                             <div class="col-md-4">
                                                 <div class="form-group county required">
                                                     <label class="control-label" for="county">County:</label>
                                                     <select id="county"
-                                                        class="form-control @error('county') is-invalid @enderror"
-                                                        name="county" aria-required="true" required>
+                                                        class="form-control @error('county_id') is-invalid @enderror"
+                                                        name="county_id" aria-required="true" required>
                                                         <option value="" disabled selected>Select county</option>
                                                         @foreach ($counties as $county)
-                                                            <option value="{{ $county->name }}"
-                                                                {{ $bursaryapplied->county == $county->name ? 'selected' : '' }}>
+                                                            <option value="{{ $county->id }}"
+                                                                {{ $county->id == $bursaryapplied->county_id ? 'selected' : '' }}>
                                                                 {{ $county->name }}
                                                             </option>
                                                         @endforeach
+
                                                     </select>
-                                                    @error('county')
+                                                    @error('county_id')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -629,19 +643,20 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group constituency required">
+
                                                     <label class="control-label" for="constituency">Constitution:</label>
                                                     <select id="constituency"
-                                                        class="form-control @error('constituency') is-invalid @enderror"
-                                                        name="constituency" aria-required="true" required>
-                                                        <option value="">Select a ward</option>
+                                                        class="form-control @error('constituency_id') is-invalid @enderror"
+                                                        name="constituency_id" aria-required="true" required>
+                                                        <option value="">Select a constituency</option>
                                                         @foreach ($constituencies as $constituency)
-                                                            <option value="{{ $constituency->name }}"
-                                                                {{ $bursaryapplied->constituency == $constituency->name ? 'selected' : '' }}>
+                                                            <option value="{{ $constituency->id }}"
+                                                                {{ $bursaryapplied->constituency_id == $constituency->id ? 'selected' : '' }}>
                                                                 {{ $constituency->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('constituency')
+                                                    @error('constituency_id')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -653,17 +668,17 @@
                                                 <div class="form-group ward required">
                                                     <label class="control-label" for="ward">Ward:</label>
                                                     <select id="ward"
-                                                        class="form-control @error('ward') is-invalid @enderror"
-                                                        name="ward" aria-required="true" required>
+                                                        class="form-control @error('ward_id') is-invalid @enderror"
+                                                        name="ward_id" aria-required="true" required>
                                                         <option value="">Select a ward</option>
                                                         @foreach ($wards as $ward)
-                                                            <option value="{{ $ward->name }}"
-                                                                {{ $bursaryapplied->ward == $ward->name ? 'selected' : '' }}>
+                                                            <option value="{{ $ward->id }}"
+                                                                {{ $bursaryapplied->ward_id == $ward->id ? 'selected' : '' }}>
                                                                 {{ $ward->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('ward')
+                                                    @error('ward_id')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -676,17 +691,17 @@
                                                 <div class="form-group location required">
                                                     <label class="control-label" for="location">Location:</label>
                                                     <select id="location"
-                                                        class="form-control @error('location') is-invalid @enderror"
-                                                        name="location" aria-required="true" required>
+                                                        class="form-control @error('location_id') is-invalid @enderror"
+                                                        name="location_id" aria-required="true" required>
                                                         <option value="">Select a location</option>
                                                         @foreach ($locations as $location)
-                                                            <option value="{{ $location->name }}"
-                                                                {{ $bursaryapplied->location == $location->name ? 'selected' : '' }}>
+                                                            <option value="{{ $location->id }}"
+                                                                {{ $bursaryapplied->location_id == $location->id ? 'selected' : '' }}>
                                                                 {{ $location->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('location')
+                                                    @error('location_id')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -698,17 +713,17 @@
                                                 <div class="form-group sub_location required">
                                                     <label class="control-label" for="sub_location">Sub Location:</label>
                                                     <select id="sub_location"
-                                                        class="form-control @error('sub_location') is-invalid @enderror"
-                                                        name="sub_location" aria-required="true" required>
+                                                        class="form-control @error('sub_location_id') is-invalid @enderror"
+                                                        name="sub_location_id" aria-required="true" required>
                                                         <option value="">Select a sub location</option>
                                                         @foreach ($subLocations as $subLocation)
-                                                            <option value="{{ $subLocation->name }}"
-                                                                {{ $bursaryapplied->sub_location == $subLocation->name ? 'selected' : '' }}>
+                                                            <option value="{{ $subLocation->id }}"
+                                                                {{ $bursaryapplied->sub_location_id == $subLocation->id ? 'selected' : '' }}>
                                                                 {{ $subLocation->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('sub_location')
+                                                    @error('sub_location_id')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -722,17 +737,17 @@
                                                     <label class="control-label" for="polling_station">Polling
                                                         Station:</label>
                                                     <select id="polling_station"
-                                                        class="form-control @error('polling_station') is-invalid @enderror"
-                                                        name="polling_station" aria-required="true" required>
+                                                        class="form-control @error('polling_station_id') is-invalid @enderror"
+                                                        name="polling_station_id" aria-required="true" required>
                                                         <option value="">Select a polling station</option>
                                                         @foreach ($pollingStations as $pollingStation)
-                                                            <option value="{{ $pollingStation->name }}"
-                                                                {{ $bursaryapplied->polling_station == $pollingStation->name ? 'selected' : '' }}>
+                                                            <option value="{{ $pollingStation->id }}"
+                                                                {{ $bursaryapplied->polling_station_id == $pollingStation->id ? 'selected' : '' }}>
                                                                 {{ $pollingStation->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('polling_station')
+                                                    @error('polling_station_id')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -744,10 +759,12 @@
                                     </div>
                                     {{-- /Address Information --}}
 
+
+
                                     {{-- /School Information --}}
                                     <div class="form-section">
                                         <div class="row">
-                                           
+
                                             <div class="col-md-4">
                                                 <div class="form-group institution_name required">
                                                     <label class="control-label" for="date_of_birth">Name of
@@ -847,8 +864,6 @@
 
                                                 </div>
                                             </div>
-
-
 
                                             <div class="col-md-4">
                                                 <div class="form-group instititution_postal_address required">
@@ -1073,10 +1088,12 @@
                                     {{-- previous, next and submit buttons --}}
 
                                     <div class="form-navigation">
-                                        <button type="button"
-                                            class="btn-sm previous btn btn-info float-left"><span aria-hidden="true">&laquo;</span> Previous</button>
-                                        <button type="button" class="btn-sm next btn btn-info float-right">Next <span aria-hidden="true">&raquo;</span></button>
-                                        <button type="submit" class="btn-sm btn btn-success float-right"><i class="fas fa-edit"></i> Update
+                                        <button type="button" class="btn-sm previous btn btn-info float-left"><span
+                                                aria-hidden="true">&laquo;</span> Previous</button>
+                                        <button type="button" class="btn-sm next btn btn-info float-right">Next <span
+                                                aria-hidden="true">&raquo;</span></button>
+                                        <button type="submit" class="btn-sm btn btn-success float-right"><i
+                                                class="fas fa-edit"></i> Update
                                             Application</button>
                                     </div>
 

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CreateUser;
+use App\Mail\RoleAssigned;
 use App\Models\Bursary;
+use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +13,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -143,6 +147,7 @@ class UserController extends Controller
             // saving role
             $user->assignRole($request->role);
 
+
             // saving permission
             // if($request->has('permissions')){
             //     $user->givePermissionTo($request->permission);
@@ -151,7 +156,24 @@ class UserController extends Controller
 
             $user->save();
 
-            return redirect()->route('user.index')->with('success', 'User created successfully');
+            if ($user->save()) {
+                $createUserValue = SystemSetting::where('name', 'create_user')->value('value');
+                if ($createUserValue == 1) {
+                    try {
+                        $name = $request->name;
+                    $role = Role::findorFail($request->role);
+
+                    Mail::to($request->email)->send(new CreateUser($name, $role));
+                    } catch (\Exception $e) {
+                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+
+                    }
+                    
+                }
+            }
+
+            return redirect()->route('user.index')->with('success', __('User created successfully.'))->with('smtp_error', (isset($smtp_error)) ? $smtp_error  : '');
+
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -166,7 +188,7 @@ class UserController extends Controller
     public function show($encryptedID)
     {
         if (Auth::user()->can('view user')) {
-            $id= decrypt($encryptedID);
+            $id = decrypt($encryptedID);
             $user = User::find($id);
             return view('admin.users.show', compact('user'));
         } else {
@@ -184,8 +206,8 @@ class UserController extends Controller
     public function edit($encryptedID)
     {
         if (Auth::user()->can('edit user')) {
-            $id= decrypt($encryptedID);
-            
+            $id = decrypt($encryptedID);
+
             $roles = Role::all();
 
             $user = User::findOrFail($id);
@@ -218,6 +240,7 @@ class UserController extends Controller
             ]);
 
             $user = User::findOrFail($id);
+            $myOriginalRoles = $user->getRoleNames(); // for using to send emails
 
             $user->name      = $request->name;
             $user->email      = $request->email;
@@ -252,7 +275,29 @@ class UserController extends Controller
 
             $user->save();
 
-            return redirect()->route('user.index')->with('success', 'User updated successfully');
+            $updatedRoles = $user->getRoleNames(); // to allow me to send email
+
+            if ($user->save()) {
+                if ($request->has('role')) {
+                    $userAssignRoleValue = SystemSetting::where('name', 'role_assigned')->value('value');
+                    if ($userAssignRoleValue == 1) {
+                        try{
+                        // send email only if role changed
+                        if ($myOriginalRoles != $updatedRoles) {
+                            $name = $request->name;
+                            $role = Role::findorFail($request->role);
+                            Mail::to($request->email)->send(new RoleAssigned($name, $role));
+                        }
+                    } catch (\Exception $e) {
+                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+
+                    }
+                    }
+                }
+            }
+
+            return redirect()->route('user.index')->with('success', __('User updated successfully.'))->with('smtp_error', (isset($smtp_error)) ? $smtp_error  : '');
+
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -303,5 +348,4 @@ class UserController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
-    
 }

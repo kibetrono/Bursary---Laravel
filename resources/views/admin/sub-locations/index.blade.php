@@ -67,8 +67,9 @@
                                     <form action="{{ route('sub-location.index') }}" method="GET">
 
                                         <div class="input-group input-group-sm">
-                                            <input type="text" name="sublocation_search" value="{{request('sublocation_search')}}"
-                                                class="form-control float-right" placeholder="Search by name">
+                                            <input type="text" name="sublocation_search"
+                                                value="{{ request('sublocation_search') }}" class="form-control float-right"
+                                                placeholder="Search by name">
 
                                             <div class="input-group-append">
                                                 <button type="submit" class="btn btn-default">
@@ -82,7 +83,8 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-1">
-                                <table class="table table-hover text-nowrap table-bordered">
+                                <table class="table table-hover text-nowrap table-bordered table-striped">
+
                                     <thead>
                                         <tr>
                                             <th style="width:5%">#</th>
@@ -100,7 +102,7 @@
                                             <tr>
                                                 <td>{{ $startIndex + $index + 1 }}</td>
                                                 <td>{{ $subLocation->name }}</td>
-                                                <td>{{ $subLocation->location_name }}</td>
+                                                <td>{{ $subLocation->location->name }}</td>
                                                 <td>{{ $subLocation->created_at->format('Y-m-d') }}</td>
                                                 <td>{{ $subLocation->updated_at->format('Y-m-d') }}</td>
                                                 @canany(['create location', 'update location', 'delete location'])
@@ -123,83 +125,85 @@
                                                                 </form>
                                                             @endcan
                                                         </div>
-                                </div>
-                            @endcanany
-                            </tr>
+                                                    </td>
+                                                @endcanany
+                                            </tr>
 
-                        @empty
+                                        @empty
 
-                            <tr>
-                                <td colspan="6" class="text-center text-bold">
-                                    <i class="fas fa-folder-open"></i> No Sub-Location Found
-                                </td>
-                               
-                            </tr>
-                            @endforelse
+                                            <tr>
+                                                <td colspan="6" class="text-center text-bold">
+                                                    <i class="fas fa-folder-open"></i> No Sub-Location Found
+                                                </td>
 
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                            </tr>
+                                        @endforelse
 
-                                </tr>
-                            </tfoot>
-                            </table>
-                            <div class="row">
-                                <div class="col-md-12 pt-2">
-                                    @if ($subLocations->hasPages())
-                                        <div class="d-flex justify-content-end">
-                                            <nav aria-label="Page navigation">
-                                                <ul class="pagination">
-                                                    {{-- Previous Page Link --}}
-                                                    <li
-                                                        class="page-item {{ $subLocations->onFirstPage() ? 'disabled' : '' }}">
-                                                        <a class="page-link" href="{{ $subLocations->previousPageUrl() }}"
-                                                            aria-label="Previous">
-                                                            <span aria-hidden="true">&laquo;</span>
-                                                        </a>
-                                                    </li>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
 
-                                                    {{-- Numbered Page Links --}}
-                                                    @foreach ($subLocations->getUrlRange(1, $subLocations->lastPage()) as $page => $url)
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <div class="row">
+                                    <div class="col-md-12 pt-2">
+                                        @if ($subLocations->hasPages())
+                                            <div class="d-flex justify-content-end">
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination">
+                                                        {{-- Previous Page Link --}}
                                                         <li
-                                                            class="page-item {{ $subLocations->currentPage() === $page ? 'active' : '' }}">
+                                                            class="page-item {{ $subLocations->onFirstPage() ? 'disabled' : '' }}">
                                                             <a class="page-link"
-                                                                href="{{ $url }}">{{ $page }}</a>
+                                                                href="{{ $subLocations->previousPageUrl() }}"
+                                                                aria-label="Previous">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
                                                         </li>
-                                                    @endforeach
 
-                                                    {{-- Next Page Link --}}
-                                                    <li
-                                                        class="page-item {{ !$subLocations->hasMorePages() ? 'disabled' : '' }}">
-                                                        <a class="page-link" href="{{ $subLocations->nextPageUrl() }}"
-                                                            aria-label="Next">
-                                                            <span aria-hidden="true">&raquo;</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                    @endif
+                                                        {{-- Numbered Page Links --}}
+                                                        @foreach ($subLocations->getUrlRange(1, $subLocations->lastPage()) as $page => $url)
+                                                            <li
+                                                                class="page-item {{ $subLocations->currentPage() === $page ? 'active' : '' }}">
+                                                                <a class="page-link"
+                                                                    href="{{ $url }}">{{ $page }}</a>
+                                                            </li>
+                                                        @endforeach
 
+                                                        {{-- Next Page Link --}}
+                                                        <li
+                                                            class="page-item {{ !$subLocations->hasMorePages() ? 'disabled' : '' }}">
+                                                            <a class="page-link" href="{{ $subLocations->nextPageUrl() }}"
+                                                                aria-label="Next">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        @endif
+
+                                    </div>
                                 </div>
                             </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-body -->
+
+                        <!-- /.card -->
                     </div>
-                    <!-- /.card -->
+                    <!-- /.col -->
                 </div>
-                <!-- /.col -->
-            </div>
-            <!-- /.row -->
-    </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
 
     </div>
     <!-- /.content-wrapper -->

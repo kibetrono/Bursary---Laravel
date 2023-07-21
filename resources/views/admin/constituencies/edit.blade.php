@@ -70,18 +70,17 @@
                                 <div class="row">
                                     <label for="" class="px-4">County Name</label>
                                     <div class="input-group mb-3 px-4">
-                                        <select id="county_name" class="form-control @error('county_name') is-invalid @enderror"
-                                            name="county_name" aria-required="true" required>
+                                        <select id="county_name" class="form-control @error('county_id') is-invalid @enderror"
+                                            name="county_id" aria-required="true" required>
                                             <option value="" disabled>Select Ward</option>
                                             @foreach ($counties as $county)
-                                                <option value="{{ $county->name }}"
-                                                    {{ $county->name == $county_name ? 'selected' : '' }}>
-                                                    {{ $county->name }}
-                                                </option>
-                                            @endforeach
+                                            <option value="{{ $county->id }}" {{ $county->id == $constituency->county_id ? 'selected' : '' }}>
+                                                {{ $county->name }}
+                                            </option>
+                                        @endforeach
 
                                         </select>
-                                        @error('county_name')
+                                        @error('county_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

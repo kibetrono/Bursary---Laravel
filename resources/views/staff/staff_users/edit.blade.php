@@ -30,15 +30,15 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
-      <div class="row mb-2">
+      <div class="row">
         <div class="col-sm-6">
-          <h3>Update Staff</h3>
+          <h4>Update Staff</h4>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{url('admin/dashboard')}}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('home')}}">Home</a></li>
             <li class="breadcrumb-item active">
-              <a href="{{route('staff_users.list')}}">Staffs</a>
+              <a href="{{route('staff.index')}}">Staffs</a>
             </li>
             <li class="breadcrumb-item active">{{$user->email}}</li>
             <li class="breadcrumb-item active">Update</li>
@@ -64,7 +64,7 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form  action="{{ route('staff.users.update',$user->id) }}"  method="POST" class="my-4">
+            <form  action="{{ route('staff.update',$user->id) }}"  method="POST" class="my-4">
               @csrf
               @method('PUT')
               <div class="row">
@@ -91,12 +91,13 @@
                           <div class="input-group-text">
                               <span class="fas fa-envelope"></span>
                           </div>
-                          @error('email')
+                          
+                      </div>
+                      @error('email')
                               <span class="invalid-feedback" role="alert">
                                   <strong>{{ $message }}</strong>
                               </span>
                           @enderror
-                      </div>
                   </div>
                   <label for="" class="px-4">Password</label>
                   <div class="input-group mb-3 px-4">
@@ -127,7 +128,7 @@
                   </div>
                   <label for="" class="px-4">Role</label>
                   <div class="input-group mb-3 px-4">
-                    <select class="form-control" id="select_role" name="role">
+                    <select class="form-control" id="select_staff_role" name="role">
                       @foreach($roles as $role)
                           <option value="{{ $role->id }}" {{ $user->roles->contains('id', $role->id) ? 'selected' : '' }}>
                               {{ $role->name }}
@@ -142,17 +143,14 @@
                   </div>
 
                   <div class="px-4">
-                      <button style="border:unset" type="submit" class="btn-md btn btn-success btn-block">Update Staff</button>
+                      <button style="border:unset" id="updateStaffButton" type="submit" class="btn-md btn btn-success btn-block"><i class="fas fa-save"></i> Update Staff</button>
                   </div>
-          
                   
               </div>
             
           </form>
           </div>
           <!-- /.card -->
-
-      
 
         </div>
         <!--/.col (left) -->
@@ -181,8 +179,6 @@
   <!-- AdminLTE App -->
   <script src="{{url('Admin/dist/js/adminlte.min.js')}}"></script>
 
-
-
   {{-- select 2 --}}
 
   <!-- jQuery -->
@@ -196,5 +192,7 @@
 
 <!-- Custom js -->
 <script src="{{ url('Admin/js/users/select2.js') }}"></script>
+<script src="{{ url('Admin/js/staffs/edit.js') }}"></script>
+
 
 @endsection

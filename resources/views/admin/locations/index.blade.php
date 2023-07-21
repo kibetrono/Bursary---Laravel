@@ -83,7 +83,8 @@ $startIndex = ($locations->currentPage() - 1) * $locations->perPage();
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-1">
-                                <table class="table table-hover text-nowrap table-bordered">
+                                <table class="table table-hover text-nowrap table-bordered table-striped">
+
                                     <thead>
                                         <tr>
                                             <th style="width:5%">#</th>
@@ -101,7 +102,7 @@ $startIndex = ($locations->currentPage() - 1) * $locations->perPage();
                                             <tr>
                                                 <td>{{ $startIndex + $index + 1 }}</td>
                                                 <td>{{ $location->name }}</td>
-                                                <td>{{ $location->ward_name }}</td>
+                                                <td>{{ $location->ward->name }}</td>
                                                 <td>{{ $location->created_at->format('Y-m-d') }}</td>
                                                 <td>{{ $location->updated_at->format('Y-m-d') }}</td>
                                                 @canany(['create location', 'view location', 'update location','delete location'])                                            

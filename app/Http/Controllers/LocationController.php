@@ -76,7 +76,7 @@ class LocationController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|max:120',
-                'ward_name' => 'required'
+                'ward_id' => 'required'
             ]);
     
             $names = is_array($request->name) ? $request->name : [$request->name];
@@ -91,7 +91,7 @@ class LocationController extends Controller
             foreach ($names as $name) {
                 $location = new Location();
                 $location->name = $name;
-                $location->ward_name = $request->ward_name;
+                $location->ward_id = $request->ward_id;
                 $location->save();
             }
     
@@ -125,13 +125,10 @@ class LocationController extends Controller
 
             $location = Location::findOrFail($id);
 
-            $ward_name = $location->ward_name;
-
-
             $wards = Ward::all(); // Example: Retrieve all wards for the dropdown menu
 
             // dd($roles);
-            return view('admin.locations.edit', compact('location','ward_name','wards'));
+            return view('admin.locations.edit', compact('location','wards'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -151,13 +148,13 @@ class LocationController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|unique:locations,name,' . $id,
-                'ward_name' => 'required'
+                'ward_id' => 'required'
             ]);
 
             $location = Location::findOrFail($id);
 
             $location->name      = $request->name;
-            $location->ward_name      = $request->ward_name;
+            $location->ward_id      = $request->ward_id;
 
             $location->touch();
 

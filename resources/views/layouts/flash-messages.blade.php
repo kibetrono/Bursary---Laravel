@@ -12,6 +12,16 @@
     </div>
 @endif
 
+@if ($message = Session::get('smtp_error'))
+    <div class="alert alert-danger alert-block p-0 position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
+        <button type='button' class="close" data-dismiss='alert' aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <i class="icon fas fa-ban"></i> {{ $message }}
+    </div>
+@endif
+
+
 @if ($message = Session::get('warning'))
     <div class="alert alert-warning alert-block p-2">
         <button type="button" class="close" data-dismiss="alert">×</button>

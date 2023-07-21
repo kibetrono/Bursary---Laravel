@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BursaryApproved;
+use App\Mail\BursaryReject;
+use App\Mail\SuccessfullBursaryApplication;
 use App\Models\Bursary;
 use App\Models\ApplicationPeriod;
 use App\Models\Constituency;
@@ -9,10 +12,12 @@ use App\Models\County;
 use App\Models\Location;
 use App\Models\PollingStation;
 use App\Models\SubLocation;
+use App\Models\SystemSetting;
 use App\Models\User;
 use App\Models\Ward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
@@ -21,6 +26,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Permission;
 
 
@@ -98,7 +104,7 @@ class BursaryController extends Controller
             $existingApplication = false;
         }
 
-        return view('applicant.bursary.create', compact('applicationActive', 'existingApplication', 'currentYear', 'counties','constituencies','wards','locations','sublocations','pollingstations'));
+        return view('applicant.bursary.create', compact('applicationActive', 'existingApplication', 'currentYear', 'counties', 'constituencies', 'wards', 'locations', 'sublocations', 'pollingstations'));
     }
 
     /**
@@ -123,12 +129,12 @@ class BursaryController extends Controller
             'mode_of_study' => 'required',
             'year_of_study' => 'required',
             'course_name' => 'nullable',
-            'county' => 'required',
-            'constituency' => 'required',
-            'ward' => 'required',
-            'location' => 'required',
-            'sub_location' => 'required',
-            'polling_station' => 'required',
+            'county_id' => 'required',
+            'constituency_id' => 'required',
+            'ward_id' => 'required',
+            'location_id' => 'required',
+            'sub_location_id' => 'required',
+            'polling_station_id' => 'required',
             'instititution_postal_address' => 'required',
             'instititution_telephone_number' => 'required',
             'total_fees_payable' => 'required',
@@ -213,12 +219,12 @@ class BursaryController extends Controller
             if ($request->has('course_name') && $request['course_name'] !== null) {
                 $bursary->course_name   = $request->course_name;
             }
-            $bursary->county      = $request->county;
-            $bursary->constituency      = $request->constituency;
-            $bursary->location      = $request->location;
-            $bursary->sub_location      = $request->sub_location;
-            $bursary->ward      = $request->ward;
-            $bursary->polling_station      = $request->polling_station;
+            $bursary->county_id      = $request->county_id;
+            $bursary->constituency_id      = $request->constituency_id;
+            $bursary->location_id      = $request->location_id;
+            $bursary->sub_location_id      = $request->sub_location_id;
+            $bursary->ward_id      = $request->ward_id;
+            $bursary->polling_station_id      = $request->polling_station_id;
             $bursary->instititution_postal_address      = $request->instititution_postal_address;
             $bursary->instititution_telephone_number      = $request->instititution_telephone_number;
             $bursary->total_fees_payable      = $request->total_fees_payable;
@@ -311,6 +317,20 @@ class BursaryController extends Controller
 
             // Commit the transaction if everything is successful
             DB::commit();
+            if ($bursary->save()) {
+
+                $userBursaryApplyValue = SystemSetting::where('name', 'apply_bursary')->value('value');
+                if ($userBursaryApplyValue == 1) {
+                    try {
+                        $user = Auth::user();
+                        $currentYear = Carbon::now()->year;
+
+                        Mail::to($user->email)->send(new SuccessfullBursaryApplication($user, $currentYear));
+                    } catch (\Exception $e) {
+                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                    }
+                }
+            }
             return redirect()->route('user.bursary.history', encrypt(Auth::user()->id))->with('success', 'Application sent successfully.');
         } catch (\Exception $e) {
             // An error occurred, so rollback the transaction
@@ -327,7 +347,6 @@ class BursaryController extends Controller
      */
     public function show(Bursary $bursary)
     {
-        
     }
 
     /**
@@ -350,7 +369,7 @@ class BursaryController extends Controller
             $subLocations = SubLocation::all();
             $pollingStations = PollingStation::all();
 
-            return view('admin.bursary.edit', compact('bursaryapplied','counties','constituencies','wards','locations','subLocations','pollingStations'));
+            return view('admin.bursary.edit', compact('bursaryapplied', 'counties', 'constituencies', 'wards', 'locations', 'subLocations', 'pollingStations'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -382,12 +401,12 @@ class BursaryController extends Controller
                 'mode_of_study' => 'required',
                 'year_of_study' => 'required',
                 'course_name' => 'nullable',
-                'county' => 'required',
-                'constituency' => 'required',
-                'location' => 'required',
-                'sub_location' => 'required',
-                'ward' => 'required',
-                'polling_station' => 'required',
+                'county_id' => 'required',
+                'constituency_id' => 'required',
+                'location_id' => 'required',
+                'sub_location_id' => 'required',
+                'ward_id' => 'required',
+                'polling_station_id' => 'required',
                 'instititution_postal_address' => 'required',
                 'instititution_telephone_number' => 'required',
                 'total_fees_payable' => 'required',
@@ -574,8 +593,23 @@ class BursaryController extends Controller
         $bursary->touch();
         $bursary->save();
 
-        Session::flash('success', 'Application approved successfully');
+        if ($bursary->save()) {
+            $userBursaryApproveValue = SystemSetting::where('name', 'approve_bursary')->value('value');
+            if ($userBursaryApproveValue == 1) {
+                try {
+                    $user = User::where('id', $bursary->user_id)->first();
+                    $currentYear = Carbon::now()->year;
+                    $institution = $bursary->institution_name;
 
+                    Mail::to($user->email)->send(new BursaryApproved($user, $currentYear, $institution));
+                } catch (\Exception $e) {
+                    $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                }
+            }
+        }
+
+        Session::flash('success', 'Application approved successfully');
+        Session::flash('smtp_error', (isset($smtp_error)) ? $smtp_error : null);
 
         // Prepare the response data
         $data = [
@@ -599,8 +633,24 @@ class BursaryController extends Controller
         $bursary->touch();
         $bursary->save();
 
+        if ($bursary->save()) {
+
+            $userBursaryRejectValue = SystemSetting::where('name', 'reject_bursary')->value('value');
+            if ($userBursaryRejectValue == 1) {
+                try {
+                    $user = User::where('id', $bursary->user_id)->first();
+                    $currentYear = Carbon::now()->year;
+
+                    Mail::to($user->email)->send(new BursaryReject($user, $currentYear));
+                } catch (\Exception $e) {
+                    $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                }
+            }
+        }
+
         Session::flash('success', 'Application rejected successfully');
 
+        Session::flash('smtp_error', (isset($smtp_error)) ? $smtp_error : null);
 
         // Prepare the response data
         $data = [
@@ -621,17 +671,55 @@ class BursaryController extends Controller
         // Perform different actions based on the selected option
         if ($action === 'approve') {
             // Handle the 'approve' action
-            DB::table('bursaries')
+            $affectedRows = DB::table('bursaries')
                 ->whereIn('id', $ids)
                 ->update(['status' => '1', 'staff_id' => Auth::user()->id, 'updated_at' => Carbon::now()]);
+
+            if ($affectedRows > 0) {
+                $userBursaryApproveValue = SystemSetting::where('name', 'approve_bursary')->value('value');
+                if ($userBursaryApproveValue == 1) {
+                    try {
+                        foreach ($ids as $id) {
+                            $bursary  = Bursary::findOrFail($id);
+                            $user = User::where('id', $bursary->user_id)->first();
+                            $currentYear = Carbon::now()->year;
+                            $institution = $bursary->institution_name;
+
+                            Mail::to($user->email)->send(new BursaryApproved($user, $currentYear, $institution));
+                        }
+                    } catch (\Exception $e) {
+                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                    }
+                }
+            }
             Session::flash('success', 'Applications approved successfully');
+            Session::flash('smtp_error', (isset($smtp_error)) ? $smtp_error : null);
             $data = ['url' => route('bursary.index')];
         } elseif ($action === 'reject') {
             // Handle the 'reject' action
-            DB::table('bursaries')
+            $affectedRows = DB::table('bursaries')
                 ->whereIn('id', $ids)
                 ->update(['status' => '2', 'staff_id' => Auth::user()->id, 'updated_at' => Carbon::now()]);
+
+            if ($affectedRows > 0) {
+                $userBursaryRejectValue = SystemSetting::where('name', 'reject_bursary')->value('value');
+                if ($userBursaryRejectValue == 1) {
+                    try {
+                        foreach ($ids as $id) {
+                            $bursary  = Bursary::findOrFail($id);
+                            $user = User::where('id', $bursary->user_id)->first();
+                            $currentYear = Carbon::now()->year;
+
+                            Mail::to($user->email)->send(new BursaryReject($user, $currentYear));
+                        }
+                    } catch (\Exception $e) {
+                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                    }
+                }
+            }
+
             Session::flash('success', 'Applications rejected successfully');
+            Session::flash('smtp_error', (isset($smtp_error)) ? $smtp_error : null);
             $data = ['url' => route('bursary.index')];
         }
         // elseif ($action === 'pending') {
@@ -664,12 +752,12 @@ class BursaryController extends Controller
             return redirect()->back()->with('error', 'File not found.');
         }
     }
-    
+
     public function fetchConstituencies($county)
     {
-    
+
         // Retrieve locations based on the selected ward
-        $constituencies = Constituency::where('county_name', $county)->get();
+        $constituencies = Constituency::where('county_id', $county)->get();
 
         return response()->json($constituencies);
     }
@@ -677,16 +765,16 @@ class BursaryController extends Controller
     public function fetchWards($constituency)
     {
         // Retrieve locations based on the selected ward
-        $wards = Ward::where('constituency_name', $constituency)->get();
+        $wards = Ward::where('constituency_id', $constituency)->get();
 
         return response()->json($wards);
     }
 
     public function fetchLocations($ward)
     {
-    
+
         // Retrieve locations based on the selected ward
-        $locations = Location::where('ward_name', $ward)->get();
+        $locations = Location::where('ward_id', $ward)->get();
 
         return response()->json($locations);
     }
@@ -694,7 +782,7 @@ class BursaryController extends Controller
     public function fetchSubLocations($location)
     {
         // Retrieve sub-locations based on the selected location
-        $subLocations = SubLocation::where('location_name', $location)->get();
+        $subLocations = SubLocation::where('location_id', $location)->get();
 
         return response()->json($subLocations);
     }
@@ -702,10 +790,8 @@ class BursaryController extends Controller
     public function fetchPollingStations($subLocation)
     {
         // Retrieve polling stations based on the selected sub-location
-        $pollingStations = PollingStation::where('sublocation_name', $subLocation)->get();
+        $pollingStations = PollingStation::where('sublocation_id', $subLocation)->get();
 
         return response()->json($pollingStations);
     }
-
-    
 }

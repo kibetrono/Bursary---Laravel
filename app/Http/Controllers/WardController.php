@@ -72,11 +72,14 @@ class WardController extends Controller
      */
     public function store(Request $request)
     {
+
+        // dd($request->all());
+
         if (Auth::user()->can('create location')) {
 
             $this->validate($request, [
                 'name' => 'required|max:120',
-                'constituency_name' => 'required'
+                'constituency_id' => 'required'
             ]);
     
             $names = is_array($request->name) ? $request->name : [$request->name];
@@ -91,7 +94,7 @@ class WardController extends Controller
             foreach ($names as $name) {
                 $ward = new Ward();
                 $ward->name = $name;
-                $ward->constituency_name = $request->constituency_name;
+                $ward->constituency_id = $request->constituency_id;
                 $ward->save();
             }
     
@@ -127,13 +130,10 @@ class WardController extends Controller
 
             $ward = Ward::findOrFail($id);
 
-            $constituency_name = $ward->constituency_name;
-
-
             $constituencies = Constituency::all(); 
 
             // dd($roles);
-            return view('admin.wards.edit', compact('ward','constituencies','constituency_name'));
+            return view('admin.wards.edit', compact('ward','constituencies'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -152,14 +152,14 @@ class WardController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|unique:wards,name,' . $id,
-                'constituency_name' => 'required'
+                'constituency_id' => 'required'
 
             ]);
 
             $ward = Ward::findOrFail($id);
 
             $ward->name      = $request->name;
-            $ward->constituency_name      = $request->constituency_name;
+            $ward->constituency_id      = $request->constituency_id;
 
             $ward->touch();
 

@@ -24,18 +24,18 @@ $startIndex = ($staffUsers->currentPage() - 1) * $staffUsers->perPage();
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-sm-6">
-                        <h1>Staff List</h1>
+                        <h4>Staff List</h4>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">Staffs</li>
                         </ol>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-1">
                     <div class="col-sm-12">
                         @include('layouts.flash-messages')
                     </div>
@@ -63,7 +63,7 @@ $startIndex = ($staffUsers->currentPage() - 1) * $staffUsers->perPage();
 
                             <div class="card-header mt-1">
                                 <div class="card-tools">
-                                    <form action="{{ route('staff_users.list') }}" method="GET">
+                                    <form action="{{ route('staff.index') }}" method="GET">
 
                                         <div class="input-group input-group-sm">
                                             <input type="text" name="staff_user_search" value="{{ request('staff_user_search') }}"
@@ -106,26 +106,20 @@ $startIndex = ($staffUsers->currentPage() - 1) * $staffUsers->perPage();
 
                                                 <td class="d-flex">
                                                     @can('view staff')
-                                                    <a href="{{ route('staff.users.show', encrypt($user->id)) }}"
+                                                    <a href="{{ route('staff.show', encrypt($user->id)) }}"
                                                         class="btn-sm btn btn-info mx-1" title="View"><i
                                                             class="fas fa-eye"></i></a>
                                                     @endcan
                                                     @can('edit staff')
-                                                    <form class="mx-1"
-                                                        action="{{ route('staff.users.edit', encrypt($user->id)) }}"
-                                                        method="POST" title="Edit">
-                                                        @csrf
-                                                        <button class="btn-sm btn btn-warning" type="submit"><i
-                                                                class="fas fa-edit"></i></button>
-                                                    </form>
+                                                    <a href="{{ route('staff.edit', encrypt($user->id)) }}" class="btn-sm btn btn-warning mx-1" title="Update"><i class="fas fa-edit"></i></a>
                                                     @endcan
                                                     @can('delete staff')
                                                     <form class="mx-1"
                                                         onclick="return confirm('Are you sure you want to delete {{ $user->name }}?')"
-                                                        action="{{ route('staff.users.delete', $user->id) }}"
+                                                        action="{{ route('staff.destroy', $user->id) }}"
                                                         method="POST" title="Delete">
                                                         @csrf
-                                                        @method('PUT')
+                                                        @method('DELETE')
 
                                                         <button class="btn-sm btn btn-danger" type="submit"><i
                                                                 class="fas fa-trash"></i></button>

@@ -13,6 +13,8 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{url('Admin/dist/css/adminlte.min.css')}}">
 
+  {{-- custom css --}}
+  <link rel="stylesheet" href="{{ url('Admin/css/staffs/create.css') }}">
 
 @endsection
 
@@ -22,15 +24,15 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row">
           <div class="col-sm-6">
-            <h3>Add New Staff</h3>
+            <h4>Add New Staff</h4>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{url('admin/dashboard')}}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{url('home')}}">Home</a></li>
               <li class="breadcrumb-item active">
-                <a href="{{route('staff_users.list')}}">Staffs</a>
+                <a href="{{route('staff.index')}}">Staffs</a>
               </li>
               <li class="breadcrumb-item active">Add New Staff
               </li>
@@ -55,7 +57,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form style="padding:20px;" action="{{ route('admin/staff_users/save') }}" method="POST">
+              <form style="padding:20px;" action="{{ route('staff.store') }}" method="POST" id="staffcreateForm">
                 @csrf
 
                 <div class="row">
@@ -82,12 +84,13 @@
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
-                            @error('email')
+                            
+                        </div>
+                        @error('email')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>
                     </div>
                     {{-- <div class="input-group mb-3">
 
@@ -110,11 +113,11 @@
                         <input id="password" type="password"
                             class="form-control @error('password') is-invalid @enderror" name="password" required
                             autocomplete="new-password" placeholder="Password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
+                       
+                        <span class="input-group-text password-toggle"
+                                            onclick="togglePasswordVisibility()">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -125,11 +128,12 @@
                     <div class="input-group mb-3">
                         <input id="password-confirm" type="password" name="password_confirmation"
                             class="form-control" placeholder="Retype password" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                            <div class="input-group-append">
+                                <span class="input-group-text password-toggle-confirm"
+                                    onclick="togglePasswordConfirmVisibility()">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
-                        </div>
                     </div>
                     <label for="">Role</label>
                     <div class="input-group mb-3">
@@ -148,7 +152,7 @@
                     </div>
 
                     <div class="mt-3">
-                        <button style="border:unset" type="submit" class="btn-md btn btn-success btn-block">Create Staff</button>
+                        <button style="border:unset" type="submit" id="createStaffButton" class="btn-md btn btn-success btn-block"><i class="fa fa-save"></i> Create Staff</button>
                     </div>
 
                    
@@ -191,5 +195,6 @@
 <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+<script src="{{ url('Admin/js/staffs/create.js') }}"></script>
 
 @endsection

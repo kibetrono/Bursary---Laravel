@@ -83,7 +83,8 @@ $startIndex = ($pollingStations->currentPage() - 1) * $pollingStations->perPage(
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-1">
-                                <table class="table table-hover text-nowrap table-bordered">
+                                <table class="table table-hover text-nowrap table-bordered table-striped">
+
                                     <thead>
                                         <tr>
                                             <th style="width:5%">#</th>
@@ -101,7 +102,7 @@ $startIndex = ($pollingStations->currentPage() - 1) * $pollingStations->perPage(
                                             <tr>
                                                 <td>{{ $startIndex + $index + 1 }}</td>
                                                 <td>{{ $pollingStation->name }}</td>
-                                                <td>{{ $pollingStation->sublocation_name }}</td>
+                                                <td>{{ $pollingStation->sublocation->name }}</td>
                                                 <td>{{ $pollingStation->created_at->format('Y-m-d') }}</td>
                                                 <td>{{ $pollingStation->updated_at->format('Y-m-d') }}</td>
                                                 @canany(['create location', 'view location', 'update location','delete location'])                                            

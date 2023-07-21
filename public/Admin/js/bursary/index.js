@@ -25,6 +25,7 @@ $(document).ready(function () {
     ];
 
     if (hasApprovePermission) {
+        // options.push({ value: 'approve', text: 'Approve' });
         options.push({ value: 'approve', text: 'Approve' });
     }
 
@@ -36,6 +37,7 @@ $(document).ready(function () {
     options.forEach(function (option) {
         var optionElement = document.createElement('option');
         optionElement.setAttribute('value', option.value);
+        optionElement.setAttribute('id', 'approve_option_id');
         optionElement.textContent = option.text;
         selectElement.appendChild(optionElement);
     });
@@ -71,6 +73,15 @@ $(document).ready(function () {
                 }).get();
                 if (selectedOption == 'approve') {
                     if (confirm("Are you sure you want to approve all the selected applications?")) {
+                        let alloptions = selectElement.getElementsByTagName('option');
+                        $('#loadingMessageBursaryPage').show();
+                        $('#doaction').prop('disabled', true);                       
+                        for (let i = 0; i < alloptions.length; i++) {
+                            if (alloptions[i].id === 'approve_option_id') {
+                              alloptions[i].style.display = 'none';
+                            }
+                          }
+                          
                         // Perform your AJAX request here
                         $.ajax({
                             url: bulkActionRoute,
@@ -85,9 +96,25 @@ $(document).ready(function () {
                             },
                             success: function (response) {
                                 // Handle the success response
+                                $('#loadingMessageBursaryPage').hide();
+                                $('#doaction').prop('disabled', false);                       
+                                
+                                for (let i = 0; i < alloptions.length; i++) {
+                                    if (alloptions[i].id === 'approve_option_id') {
+                                      alloptions[i].style.display = 'block';
+                                    }
+                                  }
                                 window.location.href = response.url;
                             },
                             error: function (xhr) {
+                                $('#loadingMessageBursaryPage').hide();
+                                $('#doaction').prop('disabled', false);                       
+                                
+                                for (let i = 0; i < alloptions.length; i++) {
+                                    if (alloptions[i].id === 'approve_option_id') {
+                                      alloptions[i].style.display = 'block';
+                                    }
+                                  }
                                 // Handle the error response
                             }
                         });
@@ -97,6 +124,16 @@ $(document).ready(function () {
                     }
                 } else if (selectedOption == 'reject') {
                     if (confirm("Are you sure you want to reject all the selected applications?")) {
+                        let alloptions = selectElement.getElementsByTagName('option');
+
+                        $('#loadingMessageBursaryPage').show();
+                        $('#doaction').prop('disabled', true);                       
+
+                        for (let i = 0; i < alloptions.length; i++) {
+                            if (alloptions[i].id === 'approve_option_id') {
+                              alloptions[i].style.display = 'none';
+                            }
+                          }
                         // Perform your AJAX request here
                         $.ajax({
                             url: bulkActionRoute,
@@ -111,9 +148,25 @@ $(document).ready(function () {
                             },
                             success: function (response) {
                                 // Handle the success response
+                                $('#loadingMessageBursaryPage').show();
+                                $('#doaction').prop('disabled', false);                       
+
+                        for (let i = 0; i < alloptions.length; i++) {
+                            if (alloptions[i].id === 'approve_option_id') {
+                              alloptions[i].style.display = 'block';
+                            }
+                          }
                                 window.location.href = response.url;
                             },
                             error: function (xhr) {
+                                $('#loadingMessageBursaryPage').show();
+                                $('#doaction').prop('disabled', false);                       
+
+                        for (let i = 0; i < alloptions.length; i++) {
+                            if (alloptions[i].id === 'approve_option_id') {
+                              alloptions[i].style.display = 'block';
+                            }
+                          }
                                 // Handle the error response
                             }
                         });

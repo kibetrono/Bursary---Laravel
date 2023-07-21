@@ -77,7 +77,7 @@ class PollingStationController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|max:120',
-                'sublocation_name' => 'required'
+                'sublocation_id' => 'required'
             ]);
     
             $names = is_array($request->name) ? $request->name : [$request->name];
@@ -92,7 +92,7 @@ class PollingStationController extends Controller
             foreach ($names as $name) {
                 $polling_station = new PollingStation();
                 $polling_station->name = $name;
-                $polling_station->sublocation_name = $request->sublocation_name;
+                $polling_station->sublocation_id = $request->sublocation_id;
                 $polling_station->save();
             }
     
@@ -126,13 +126,10 @@ class PollingStationController extends Controller
 
             $pollingStation = PollingStation::findOrFail($id);
 
-            $sub_location_name = $pollingStation->sublocation_name;
-
-
             $subLocations = SubLocation::all(); // Example: Retrieve all wards for the dropdown menu
 
             // dd($roles);
-            return view('admin.polling-stations.edit', compact('pollingStation','sub_location_name','subLocations'));
+            return view('admin.polling-stations.edit', compact('pollingStation','subLocations'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -151,13 +148,13 @@ class PollingStationController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|unique:polling_stations,name,' . $id,
-                'sublocation_name' => 'required'
+                'sublocation_id' => 'required'
             ]);
 
             $polling_station = PollingStation::findOrFail($id);
 
             $polling_station->name      = $request->name;
-            $polling_station->sublocation_name      = $request->sublocation_name;
+            $polling_station->sublocation_id      = $request->sublocation_id;
 
             $polling_station->touch();
 

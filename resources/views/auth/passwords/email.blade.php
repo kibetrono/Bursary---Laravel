@@ -2,15 +2,23 @@
 @section('title')
     Forgot Password
 @endsection
-
+@php
+    $settingsfields = \App\Models\SystemSetting::pluck('value', 'name')->toArray();
+@endphp
 @section('content')
 
     <body class="hold-transition login-page">
         <div class="login-box">
             <div class="login-logo">
-                <img src="{{ asset('assets/image/cdfLogo.png') }}" style="width:50%;height:100px">
+                @if (isset($settingsfields['logo']))
+                    <img src="{{ asset('storage/' . $settingsfields['logo']) }}" alt="Logo" style="width:50%;height:100px"
+                        alt="Logo">
+                @else
+                    <img src="{{ url('./assets/image/noLogo.png') }}" alt="Logo" style="width:50%;height:100px">
+                @endif
             </div>
             <!-- /.login-logo -->
+
             <div class="card">
                 <div class="card-body login-card-body">
                     @if (session('status'))
@@ -22,8 +30,8 @@
                         you provide.</p>
 
 
-                    {{-- <form method="POST" action="{{ route('password.email') }}"> --}}
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('password.email') }}">
+                        {{-- <form method="POST" action="#"> --}}
                         @csrf
                         <div class="input-group mb-3">
                             <input type="email" class="form-control @error('email') is-invalid @enderror" name="email"

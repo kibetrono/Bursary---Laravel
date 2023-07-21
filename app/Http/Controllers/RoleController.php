@@ -180,8 +180,11 @@ class RoleController extends Controller
             $role = Role::findOrFail($id);
 
             if ($role->name == 'super-admin') {
-
                 return redirect()->back()->with('warning', '"super-admin" role cannot be deleted !!!');
+            }
+
+            if ($role->name == 'Staff') {
+                return redirect()->back()->with('warning', '"Staff" role cannot be deleted !!!');
             }
 
             // Step 2: Revoke all permissions from the role

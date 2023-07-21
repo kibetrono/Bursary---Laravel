@@ -10,6 +10,10 @@ class PollingStation extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'sublocation_name'
+        'sublocation_id'
     ];
+
+    public function sublocation() {
+        return $this->belongsTo(SubLocation::class);
+    }
 }

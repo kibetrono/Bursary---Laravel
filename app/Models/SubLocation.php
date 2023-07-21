@@ -10,6 +10,15 @@ class SubLocation extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'location_name'
+        'location_id'
     ];
+
+    public function location(){
+        return $this->belongsTo(Location::class);
+    }
+
+    public function polling_stations(){
+        return $this->hasMany(PollingStation::class);
+    }
+
 }

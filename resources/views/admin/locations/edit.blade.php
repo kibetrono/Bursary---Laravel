@@ -71,18 +71,18 @@
                                     
                                     <label for="" class="px-4">Ward Name</label>
                                     <div class="input-group mb-3 px-4">
-                                        <select id="ward_name" class="form-control @error('ward_name') is-invalid @enderror"
-                                            name="ward_name" aria-required="true" required>
+                                        <select id="ward_name" class="form-control @error('ward_id') is-invalid @enderror"
+                                            name="ward_id" aria-required="true" required>
                                             <option value="" disabled>Select Ward</option>
                                             @foreach ($wards as $ward)
-                                                <option value="{{ $ward->name }}"
-                                                    {{ $ward->name == $ward_name ? 'selected' : '' }}>
+                                                <option value="{{ $ward->id }}"
+                                                    {{ $ward->id == $location->ward_id ? 'selected' : '' }}>
                                                     {{ $ward->name }}
                                                 </option>
                                             @endforeach
 
                                         </select>
-                                        @error('ward_name')
+                                        @error('ward_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

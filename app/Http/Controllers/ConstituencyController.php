@@ -73,11 +73,12 @@ class ConstituencyController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         if (Auth::user()->can('create location')) {
 
             $this->validate($request, [
                 'name' => 'required|max:120',
-                'county_name' => 'required'
+                'county_id' => 'required'
             ]);
     
             $names = is_array($request->name) ? $request->name : [$request->name];
@@ -92,7 +93,7 @@ class ConstituencyController extends Controller
             foreach ($names as $name) {
                 $constituency = new Constituency();
                 $constituency->name = $name;
-                $constituency->county_name = $request->county_name;
+                $constituency->county_id = $request->county_id;
                 $constituency->save();
             }
     
@@ -126,13 +127,12 @@ class ConstituencyController extends Controller
 
             $constituency = Constituency::findOrFail($id);
 
-            $county_name = $constituency->county_name;
-
+            // $county_id = $constituency->county_id;
 
             $counties = County::all(); // Example: Retrieve all counties for the dropdown menu
 
             // dd($roles);
-            return view('admin.constituencies.edit', compact('constituency','county_name','counties'));
+            return view('admin.constituencies.edit', compact('constituency','counties'));
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -151,12 +151,12 @@ class ConstituencyController extends Controller
 
             $this->validate($request, [
                 'name' => 'required|unique:constituencies,name,' . $id,
-                'county_name' => 'required'
+                'county_id' => 'required'
             ]);
 
             $constituency = Constituency::findOrFail($id);
             $constituency->name      = $request->name;
-            $constituency->county_name      = $request->county_name;
+            $constituency->county_id      = $request->county_id;
 
             $constituency->touch();
             $constituency->save();

@@ -70,18 +70,18 @@
                                 <div class="row">
                                     <label for="" class="px-4">Sub-Location Name</label>
                                     <div class="input-group mb-3 px-4">
-                                        <select id="sublocation_name" class="form-control @error('sublocation_name') is-invalid @enderror"
-                                            name="sublocation_name" aria-required="true" required>
+                                        <select id="sublocation_name" class="form-control @error('sublocation_id') is-invalid @enderror"
+                                            name="sublocation_id" aria-required="true" required>
                                             <option value="" disabled>Select Ward</option>
                                             @foreach ($subLocations as $subLocations)
-                                                <option value="{{ $subLocations->name }}"
-                                                    {{ $subLocations->name == $sub_location_name ? 'selected' : '' }}>
+                                                <option value="{{ $subLocations->id }}"
+                                                    {{ $subLocations->id == $pollingStation->sublocation_id ? 'selected' : '' }}>
                                                     {{ $subLocations->name }}
                                                 </option>
                                             @endforeach
 
                                         </select>
-                                        @error('sublocation_name')
+                                        @error('sublocation_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

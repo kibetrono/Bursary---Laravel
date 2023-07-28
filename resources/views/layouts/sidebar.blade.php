@@ -2,10 +2,11 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('home') }}" class="brand-link">
+
         @if (isset($settingsfields['logo']))
-            <img src="{{ asset('storage/' . $settingsfields['logo']) }}" alt="Logo"
+            <img src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}" alt="Logo"
                 class="brand-image img-circle elevation-3 bg-light"
-                style="opacity: .8;border-radius:100px;width:35px;height:40px" alt="Logo">
+                style="opacity: .8; border-radius: 100px; width: 35px; height: 40px;">
         @else
             <img src="{{ url('./assets/image/noLogo.png') }}" alt="Logo"
                 class="brand-image img-circle elevation-3 bg-light"
@@ -142,7 +143,6 @@
                                     <p>&nbsp Rejected Applications</p>
                                 </a>
                             </li>
-
                         </ul>
                     </li>
                     {{-- application status --}}
@@ -414,8 +414,6 @@
                         Gate::check('manage application period'))
 
                     <li class="nav-header">ADMINISTRATION</li>
-
-
                     {{-- Permissions --}}
                     {{-- @if (Gate::check('manage permission'))
                         <li
@@ -452,7 +450,6 @@
                         </li>
                     @endif --}}
                     {{-- /Permissions --}}
-
 
                     {{-- Roles --}}
                     @if (Gate::check('manage role'))
@@ -529,7 +526,6 @@
                     @endif
                     {{-- /Staff --}}
 
-
                     {{-- Users --}}
                     @if (Gate::check('manage user'))
                         <li
@@ -561,7 +557,6 @@
                                         </a>
                                     </li>
                                 @endcan
-
                             </ul>
                         </li>
                     @endif
@@ -598,7 +593,6 @@
                                         </a>
                                     </li>
                                 @endcan
-
                             </ul>
                         </li>
                     @endif

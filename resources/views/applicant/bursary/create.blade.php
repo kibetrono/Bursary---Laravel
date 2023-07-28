@@ -109,8 +109,9 @@
 
                                                     <div class="col-md-4">
                                                         <div class="form-group first_name required">
-                                                            <label class="control-label" for="first_name">First
-                                                                Name:</label>
+                                                            <label class="control-label" for="first_name">First Name: <span
+                                                                    class="text-danger">*</span></label>
+
                                                             <input type="text" id="first_name"
                                                                 class="form-control @error('first_name') is-invalid @enderror"
                                                                 name="first_name" aria-required="true"
@@ -124,7 +125,8 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group last_name required">
-                                                            <label class="control-label" for="last_name">Last Name:</label>
+                                                            <label class="control-label" for="last_name">Last Name: <span
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" id="last_name"
                                                                 class="form-control @error('last_name') is-invalid @enderror"
                                                                 name="last_name" aria-required="true"
@@ -139,7 +141,8 @@
 
                                                     <div class="col-md-4">
                                                         <div class="form-group gender required">
-                                                            <label class="control-label" for="gender">Gender:</label>
+                                                            <label class="control-label" for="gender">Gender: <span
+                                                                    class="text-danger">*</span></label>
                                                             <select id="gender" name="gender"
                                                                 class="form-control @error('gender') is-invalid @enderror"
                                                                 required>
@@ -159,7 +162,8 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group id_or_passport_no required">
-                                                            <label class="control-label" for="id_or_passport_no">ID/Passport
+                                                            <label class="control-label"
+                                                                for="id_or_passport_no">ID/Passport
                                                                 no.:</label>
                                                             <input type="number" id="id_or_passport_no"
                                                                 class="form-control @error('id_or_passport_no') is-invalid @enderror"
@@ -176,7 +180,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group date_of_birth required">
                                                             <label class="control-label" for="date_of_birth">Date of
-                                                                Birth:</label>
+                                                                Birth: <span class="text-danger">*</span></label>
                                                             <input type="date" id="date_of_birth"
                                                                 class="form-control @error('date_of_birth') is-invalid @enderror"
                                                                 name="date_of_birth" aria-required="true" required>
@@ -215,7 +219,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group parental_status required">
                                                             <label class="control-label" for="parental_status">Parental
-                                                                Status:</label>
+                                                                Status: <span class="text-danger">*</span></label>
                                                             <select id="parental_status" name="parental_status"
                                                                 class="form-control @error('parental_status') is-invalid @enderror"
                                                                 required>
@@ -241,8 +245,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group number_of_siblings required">
                                                             <label class="control-label" for="number_of_siblings">Number
-                                                                of
-                                                                Siblings:</label>
+                                                                of Siblings: <span class="text-danger">*</span></label>
                                                             <input type="number" id="number_of_siblings"
                                                                 class="form-control @error('number_of_siblings') is-invalid @enderror"
                                                                 name="number_of_siblings" aria-required="true"
@@ -259,7 +262,7 @@
                                                         <div class="form-group estimated_family_income required">
                                                             <label class="control-label"
                                                                 for="estimated_family_income">Estimated
-                                                                Family Income:</label>
+                                                                Family Income: <span class="text-danger">*</span></label>
                                                             <input type="number" id="estimated_family_income"
                                                                 class="form-control @error('estimated_family_income') is-invalid @enderror"
                                                                 name="estimated_family_income" aria-required="true"
@@ -566,10 +569,12 @@
 
                                                     <div class="col-md-4">
                                                         <div class="form-group county required">
-                                                            <label class="control-label" for="county">County:</label>
+                                                            <label class="control-label" for="county">County: <span
+                                                                    class="text-danger">*</span></label>
                                                             <select id="county" class="form-control" name="county_id"
                                                                 aria-required="true" required>
-                                                                <option value="" selected disabled> --- Select county --- 
+                                                                <option value="" selected disabled> --- Select county
+                                                                    ---
                                                                 </option>
                                                                 @foreach ($counties as $county)
                                                                     <option value="{{ $county->id }}">
@@ -582,35 +587,40 @@
 
                                                     <div class="col-md-4">
                                                         <div class="form-group constituency required">
-                                                            <label class="control-label"
-                                                                for="constituency">Constituency:</label>
+                                                            <label class="control-label" for="constituency">Constituency:
+                                                                <span class="text-danger">*</span></label>
                                                             <select id="constituency" class="form-control"
                                                                 name="constituency_id" aria-required="true" required>
-                                                                <option value="" selected disabled> --- Select constituency --- 
+                                                                <option value="" selected disabled> --- Select
+                                                                    constituency ---
                                                                 </option>
-                                                                
+
                                                             </select>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-4">
                                                         <div class="form-group ward required">
-                                                            <label class="control-label" for="ward">Ward:</label>
+                                                            <label class="control-label" for="ward">Ward: <span
+                                                                    class="text-danger">*</span></label>
                                                             <select id="ward" class="form-control" name="ward_id"
                                                                 aria-required="true" required>
-                                                                <option value="" selected disabled> --- Select ward --- 
+                                                                <option value="" selected disabled> --- Select ward
+                                                                    ---
                                                                 </option>
-                                                            
+
                                                             </select>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-4">
                                                         <div class="form-group location required">
-                                                            <label class="control-label" for="location">Location:</label>
-                                                            <select id="location" class="form-control" name="location_id"
-                                                                aria-required="true" required disabled>
-                                                                <option value="" selected disabled> --- Select location --- 
+                                                            <label class="control-label" for="location">Location: <span
+                                                                    class="text-danger">*</span></label>
+                                                            <select id="location" class="form-control"
+                                                                name="location_id" aria-required="true" required disabled>
+                                                                <option value="" selected disabled> --- Select
+                                                                    location ---
                                                                 </option>
                                                             </select>
                                                         </div>
@@ -619,12 +629,12 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group sub_location required">
                                                             <label class="control-label" for="sub_location">Sub
-                                                                Location:</label>
+                                                                Location: <span class="text-danger">*</span></label>
                                                             <select id="sub_location" class="form-control"
                                                                 name="sub_location_id" aria-required="true" required
                                                                 disabled>
                                                                 <option value="" selected disabled> --- Select
-                                                                    sub-location --- 
+                                                                    sub-location ---
                                                                 </option>
                                                             </select>
                                                         </div>
@@ -633,11 +643,12 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group polling_station required">
                                                             <label class="control-label" for="polling_station">Polling
-                                                                Station:</label>
+                                                                Station: <span class="text-danger">*</span></label>
                                                             <select id="polling_station" class="form-control"
                                                                 name="polling_station_id" aria-required="true" required
                                                                 disabled>
-                                                                <option value="" selected disabled> --- Select polling
+                                                                <option value="" selected disabled> --- Select
+                                                                    polling
                                                                     station --- </option>
                                                             </select>
                                                         </div>
@@ -653,7 +664,8 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group institution_name required">
                                                             <label class="control-label" for="date_of_birth">Name of
-                                                                school/college/university:</label>
+                                                                school/college/university: <span
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" id="institution_name"
                                                                 class="form-control @error('institution_name') is-invalid @enderror"
                                                                 name="institution_name" aria-required="true"
@@ -670,7 +682,7 @@
                                                         <div class="form-group adm_or_reg_no required">
                                                             <label class="control-label"
                                                                 for="adm_or_reg_no">Admission/Registration
-                                                                no.:</label>
+                                                                no.: <span class="text-danger">*</span></label>
                                                             <input type="text" id="adm_or_reg_no"
                                                                 class="form-control @error('adm_or_reg_no') is-invalid @enderror"
                                                                 name="adm_or_reg_no" aria-required="true"
@@ -688,7 +700,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group mode_of_study required">
                                                             <label class="control-label" for="mode_of_study">Study
-                                                                Mode:</label>
+                                                                Mode: <span class="text-danger">*</span></label>
                                                             <select id="mode_of_study" name="mode_of_study"
                                                                 class="form-control @error('mode_of_study') is-invalid @enderror"
                                                                 required>
@@ -712,7 +724,7 @@
                                                             <label class="control-label"
                                                                 for="year_of_study">Grade/Class/Year
                                                                 of
-                                                                Study:</label>
+                                                                Study: <span class="text-danger">*</span></label>
                                                             <input type="number" id="year_of_study"
                                                                 class="form-control @error('year_of_study') is-invalid @enderror"
                                                                 name="year_of_study" aria-required="true"
@@ -749,7 +761,7 @@
                                                         <div class="form-group instititution_postal_address required">
                                                             <label class="control-label"
                                                                 for="instititution_postal_address">Institution's Postal
-                                                                Address:</label>
+                                                                Address: <span class="text-danger">*</span></label>
                                                             <input type="text" id="instititution_postal_address"
                                                                 class="form-control @error('instititution_postal_address') is-invalid @enderror"
                                                                 name="instititution_postal_address" aria-required="true"
@@ -767,7 +779,7 @@
                                                             <label class="control-label"
                                                                 for="instititution_telephone_number">Institution's
                                                                 Telephone
-                                                                Number:</label>
+                                                                Number: <span class="text-danger">*</span></label>
                                                             <input type="text" id="instititution_telephone_number"
                                                                 class="form-control @error('instititution_telephone_number') is-invalid @enderror"
                                                                 name="instititution_telephone_number" aria-required="true"
@@ -789,7 +801,7 @@
                                                         <div class="form-group total_fees_payable required">
                                                             <label class="control-label" for="total_fees_payable">Total
                                                                 Fees
-                                                                Payable:</label>
+                                                                Payable: <span class="text-danger">*</span></label>
                                                             <input type="number" id="total_fees_payable"
                                                                 class="form-control @error('total_fees_payable') is-invalid @enderror"
                                                                 name="total_fees_payable" aria-required="true"
@@ -805,7 +817,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group total_fees_paid required">
                                                             <label class="control-label" for="total_fees_paid">Total Fees
-                                                                Paid:</label>
+                                                                Paid: <span class="text-danger">*</span></label>
                                                             <input type="number" id="total_fees_paid"
                                                                 class="form-control @error('total_fees_paid') is-invalid @enderror"
                                                                 name="total_fees_paid" aria-required="true"
@@ -821,7 +833,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group fee_balance required">
                                                             <label class="control-label" for="fee_balance">Fee
-                                                                Balance:</label>
+                                                                Balance: <span class="text-danger">*</span></label>
                                                             <input type="number" id="fee_balance"
                                                                 class="form-control @error('fee_balance') is-invalid @enderror"
                                                                 name="fee_balance" aria-required="true"
@@ -842,7 +854,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group bank_name required">
                                                             <label class="control-label" for="bank_name">Name of
-                                                                Bank:</label>
+                                                                Bank: <span class="text-danger">*</span></label>
                                                             <select id="bank_name" name="bank_name"
                                                                 class="form-control @error('bank_name') is-invalid @enderror"
                                                                 required>
@@ -908,7 +920,8 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group branch required">
-                                                            <label class="control-label" for="branch">Branch:</label>
+                                                            <label class="control-label" for="branch">Branch: <span
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" id="branch"
                                                                 class="form-control @error('branch') is-invalid @enderror"
                                                                 name="branch" aria-required="true" placeholder="Branch"
@@ -924,7 +937,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group account_number required">
                                                             <label class="control-label" for="account_number">Account
-                                                                Number:</label>
+                                                                Number: <span class="text-danger">*</span></label>
                                                             <input type="number" id="account_number"
                                                                 class="form-control @error('account_number') is-invalid @enderror"
                                                                 name="account_number" aria-required="true"
@@ -949,7 +962,8 @@
                                                         <div class="form-group transcript_report_form required">
                                                             <label class="control-label"
                                                                 for="transcript_report_form">Recent
-                                                                Transcipt/Report form:</label>
+                                                                Transcipt/Report form: <span
+                                                                    class="text-danger">*</span></label>
                                                             <input type="file" id="transcript_report_form"
                                                                 class="form-control @error('transcript_report_form') is-invalid @enderror"
                                                                 name="transcript_report_form" aria-required="true"
@@ -966,7 +980,7 @@
                                                         <div class="form-group parents_or_guardian_id required">
                                                             <label class="control-label"
                                                                 for="parents_or_guardian_id">Parents/Guardian
-                                                                ID Photocopy:</label>
+                                                                ID Photocopy: <span class="text-danger">*</span></label>
                                                             <input type="file" id="parents_or_guardian_id"
                                                                 class="form-control @error('parents_or_guardian_id') is-invalid @enderror"
                                                                 name="parents_or_guardian_id" aria-required="true"
@@ -999,7 +1013,7 @@
                                                         <div class="form-group birth_certificate required">
                                                             <label class="control-label" for="birth_certificate">Birth
                                                                 Certificate
-                                                                Photocopy:</label>
+                                                                Photocopy: <span class="text-danger">*</span></label>
                                                             <input type="file" id="birth_certificate"
                                                                 class="form-control @error('birth_certificate') is-invalid @enderror"
                                                                 name="birth_certificate" aria-required="true" required>
@@ -1063,7 +1077,7 @@
                                                             <label class="control-label"
                                                                 for="current_fee_structure">Current
                                                                 Fee
-                                                                Structure:</label>
+                                                                Structure: <span class="text-danger">*</span></label>
                                                             <input type="file" id="current_fee_structure"
                                                                 class="form-control @error('current_fee_structure') is-invalid @enderror"
                                                                 name="current_fee_structure" aria-required="true"
@@ -1079,7 +1093,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group admission_letter required">
                                                             <label class="control-label" for="admission_letter">Admission
-                                                                Letter:</label>
+                                                                Letter: <span class="text-danger">*</span></label>
                                                             <input type="file" id="admission_letter"
                                                                 class="form-control @error('admission_letter') is-invalid @enderror"
                                                                 name="admission_letter" aria-required="true" required>
@@ -1099,11 +1113,13 @@
 
                                             <div class="form-navigation">
                                                 <button type="button"
-                                                    class="btn-sm previous btn btn-info float-left"><span aria-hidden="true">&laquo;</span> Previous</button>
-                                                <button type="button"
-                                                    class="btn-sm next btn btn-info float-right">Next <span aria-hidden="true">&raquo;</span></button>
+                                                    class="btn-sm previous btn btn-info float-left"><span
+                                                        aria-hidden="true">&laquo;</span> Previous</button>
+                                                <button type="button" class="btn-sm next btn btn-info float-right">Next
+                                                    <span aria-hidden="true">&raquo;</span></button>
                                                 <button type="submit" id="submitButton"
-                                                    class="btn-sm btn btn-success float-right"><i class="fas fa-save"></i> Submit</button>
+                                                    class="btn-sm btn btn-success float-right"><i class="fas fa-save"></i>
+                                                    Submit</button>
                                             </div>
 
                                         </form>
@@ -1162,7 +1178,7 @@
     {{-- /parsley js --}}
 
     {{-- sections of previous, next, etc --}}
-    
+
     <!-- Custom js -->
     <script src="{{ url('Admin/js/bursary/create.js') }}"></script>
     {{-- sections of previous, next, etc --}}

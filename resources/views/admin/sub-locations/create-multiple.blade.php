@@ -9,17 +9,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
-
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     {{-- /select 2 --}}
-
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">  
-
 @endsection
 
 @section('content')
@@ -155,8 +151,6 @@
             });
         });
     </script>
-    
-
     <!-- Custom js -->
     <script src="{{ url('Admin/js/locations/select2.js') }}"></script>
     

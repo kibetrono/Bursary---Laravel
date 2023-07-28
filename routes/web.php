@@ -4,10 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\StaffController;
-use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SystemSettingController;
-use App\Mail\CustomEmail;
-use App\Models\SystemSetting;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +37,11 @@ Route::get('/user-dashboard', [App\Http\Controllers\ApplicantController::class, 
 
 Route::post('/send-test-email', [SystemSettingController::class, 'sendTestEmail'])->name('send-configuration-test-email');
 
+// route to fetch logo image
+Route::get('custom-fetch-logo-storage/{filename}', [SystemSettingController::class, 'fetchLogo'])->name('fetchLogo');
+
+// route to fetch favicon image
+Route::get('custom-fetch-favicon-storage/{filename}', [SystemSettingController::class, 'fetchFavicon'])->name('fetchFavicon');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('profile', 'ProfileController');
@@ -147,8 +150,3 @@ Route::prefix('staff')->middleware(['auth', 'permission:approve bursary'])->grou
     Route::get('dashboard', [StaffController::class, 'index'])->name('staff.home');
 });
 
-Route::prefix('school')->group(
-    function () {
-        Route::get('dashboard', [SchoolController::class, 'index'])->name('school.home');
-    }
-);

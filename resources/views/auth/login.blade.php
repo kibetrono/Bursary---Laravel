@@ -67,7 +67,7 @@
                                             @enderror
                                         </div>
 
-                                        <div class="col-md-8">
+                                        <div class="col-md-7">
                                             <div class="icheck-primary">
                                                 <input class="form-check-input" type="checkbox" name="remember"
                                                     id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -77,8 +77,8 @@
                                             </div>
                                         </div>
                                         <!-- /.col -->
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn-md btn btn-primary btn-block">Sign
+                                        <div class="col-md-5">
+                                            <button type="submit" class="btn-md btn btn-primary btn-block "> <i class="fa fa-save"></i> Sign
                                                 In</button>
                                         </div>
                                         <!-- /.col -->

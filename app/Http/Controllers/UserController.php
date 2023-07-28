@@ -162,7 +162,7 @@ class UserController extends Controller
                     try {
                         $name = $request->name;
                     $role = Role::findorFail($request->role);
-
+                           
                     Mail::to($request->email)->send(new CreateUser($name, $role));
                     } catch (\Exception $e) {
                         $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
@@ -228,6 +228,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         if (Auth::user()->can('edit user')) {
 
             // dd($request->all());
@@ -274,11 +275,11 @@ class UserController extends Controller
             $user->touch();
 
             $user->save();
-
+ 
             $updatedRoles = $user->getRoleNames(); // to allow me to send email
 
             if ($user->save()) {
-                if ($request->has('role')) {
+                if ($request->has('role') && $request['role'] !== null) {
                     $userAssignRoleValue = SystemSetting::where('name', 'role_assigned')->value('value');
                     if ($userAssignRoleValue == 1) {
                         try{
@@ -286,11 +287,12 @@ class UserController extends Controller
                         if ($myOriginalRoles != $updatedRoles) {
                             $name = $request->name;
                             $role = Role::findorFail($request->role);
-                            Mail::to($request->email)->send(new RoleAssigned($name, $role));
+                            $url = url('home');
+                           
+                            Mail::to($request->email)->send(new RoleAssigned($name, $role,$url));
                         }
                     } catch (\Exception $e) {
                         $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
-
                     }
                     }
                 }

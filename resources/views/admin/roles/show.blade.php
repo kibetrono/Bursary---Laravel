@@ -20,7 +20,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-sm-6">
                         <h3>Role: {{ $role->name }}</h3>
                     </div>
@@ -58,7 +58,7 @@
                                     @can('edit role')                                                    
                                     <div class="mb-3">
                                         <a href="{{ route('role.edit', encrypt($role->id)) }}" class="btn-sm btn btn-primary"><i
-                                                class="fas fa-edit"></i>Update</a>
+                                                class="fas fa-edit"></i> Update</a>
                                     </div>
                                     @endcan
                                     <thead>

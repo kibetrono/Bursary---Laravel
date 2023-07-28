@@ -9,10 +9,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
-
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/role/style.css') }}">
 @endsection
@@ -23,7 +21,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-sm-6">
                         <h3>Update Role: {{ $role->name }}</h3>
                     </div>
@@ -455,13 +453,10 @@
 @section('js')
     <!-- jQuery -->
     <script src="{{ url('Admin/plugins/jquery/jquery.min.js') }}"></script>
-
     <!-- Bootstrap 4 -->
     <script src="{{ url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
     <!-- Custom js -->
     <script src="{{ url('Admin/js/role/app.js') }}"></script>
-
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
 @endsection

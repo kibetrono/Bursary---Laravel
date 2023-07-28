@@ -9,14 +9,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
-
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     {{-- /select 2 --}}
-
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
     <link rel="stylesheet" href="{{ url('Admin/css/bursary/edit.css') }}">
@@ -67,9 +64,7 @@
                         <div class="card card-info">
                             <div class="card-header">
                                 <h3 class="card-title">Update Bursary</h3>
-                                <div class="card-tools">
-
-                                </div>
+                                <div class="card-tools"> </div>
                             </div>
                             <!-- /.card-header -->
 
@@ -91,7 +86,6 @@
                                     <div class="step-number">4</div>
                                     <div class="step-title">School Information</div>
                                 </div>
-
                             </div>
 
                             <!-- form start -->
@@ -100,14 +94,13 @@
                                     action="{{ route('admin.update.bursary', $bursaryapplied->id) }}" class="bursary-form">
                                     @csrf
                                     @method('PUT')
-
                                     {{-- Personal Information --}}
                                     <div class="form-section">
                                         <div class="row">
-
                                             <div class="col-md-4">
                                                 <div class="form-group first_name required">
-                                                    <label class="control-label" for="first_name">First Name:</label>
+                                                    <label class="control-label" for="first_name">First Name: <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" id="first_name"
                                                         class="form-control @error('first_name') is-invalid @enderror"
                                                         name="first_name" aria-required="true" placeholder="First name"
@@ -121,7 +114,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group last_name required">
-                                                    <label class="control-label" for="last_name">Last Name:</label>
+                                                    <label class="control-label" for="last_name">Last Name: <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" id="last_name"
                                                         class="form-control @error('last_name') is-invalid @enderror"
                                                         name="last_name" aria-required="true" placeholder="Last name"
@@ -135,7 +129,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group gender required">
-                                                    <label class="control-label" for="gender">Gender:</label>
+                                                    <label class="control-label" for="gender">Gender: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="gender" name="gender"
                                                         class="form-control @error('gender') is-invalid @enderror" required>
                                                         <option value="male"
@@ -153,8 +148,6 @@
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
-
-
 
                                                 </div>
                                             </div>
@@ -178,7 +171,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group date_of_birth required">
                                                     <label class="control-label" for="date_of_birth">Date of
-                                                        Birth:</label>
+                                                        Birth: <span class="text-danger">*</span></label>
                                                     <input type="date" id="date_of_birth"
                                                         class="form-control @error('date_of_birth') is-invalid @enderror"
                                                         name="date_of_birth" aria-required="true"
@@ -220,7 +213,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group parental_status required">
                                                     <label class="control-label" for="parental_status">Parental
-                                                        Status:</label>
+                                                        Status: <span class="text-danger">*</span></label>
                                                     <select id="parental_status" name="parental_status"
                                                         class="form-control @error('parental_status') is-invalid @enderror"
                                                         required>
@@ -251,7 +244,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group number_of_siblings required">
                                                     <label class="control-label" for="number_of_siblings">Number of
-                                                        Siblings:</label>
+                                                        Siblings: <span class="text-danger">*</span></label>
                                                     <input type="number" id="number_of_siblings"
                                                         class="form-control @error('number_of_siblings') is-invalid @enderror"
                                                         name="number_of_siblings" aria-required="true"
@@ -268,7 +261,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group estimated_family_income required">
                                                     <label class="control-label" for="estimated_family_income">Estimated
-                                                        Family Income:</label>
+                                                        Family Income: <span class="text-danger">*</span></label>
                                                     <input type="number" id="estimated_family_income"
                                                         class="form-control @error('estimated_family_income') is-invalid @enderror"
                                                         name="estimated_family_income" aria-required="true"
@@ -607,20 +600,21 @@
                                         <div class="row">
 
                                             {{-- Hidden fields for dependent select values --}}
-                                    <input type="hidden" id="constituencyID" name="constituency_id"
-                                    value="{{ $bursaryapplied->constituency_id }}">
-                                <input type="hidden" id="wadID" name="ward_id"
-                                    value="{{ $bursaryapplied->ward_id }}">
-                                <input type="hidden" id="locationID" name="location_id"
-                                    value="{{ $bursaryapplied->location_id }}">
-                                <input type="hidden" id="sublocationID" name="sub_location_id"
-                                    value="{{ $bursaryapplied->sub_location_id }}">
-                                <input type="hidden" id="pollingStationID" name="polling_station_id"
-                                    value="{{ $bursaryapplied->polling_station_id }}">
+                                            <input type="hidden" id="constituencyID" name="constituency_id"
+                                                value="{{ $bursaryapplied->constituency_id }}">
+                                            <input type="hidden" id="wadID" name="ward_id"
+                                                value="{{ $bursaryapplied->ward_id }}">
+                                            <input type="hidden" id="locationID" name="location_id"
+                                                value="{{ $bursaryapplied->location_id }}">
+                                            <input type="hidden" id="sublocationID" name="sub_location_id"
+                                                value="{{ $bursaryapplied->sub_location_id }}">
+                                            <input type="hidden" id="pollingStationID" name="polling_station_id"
+                                                value="{{ $bursaryapplied->polling_station_id }}">
 
                                             <div class="col-md-4">
                                                 <div class="form-group county required">
-                                                    <label class="control-label" for="county">County:</label>
+                                                    <label class="control-label" for="county">County: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="county"
                                                         class="form-control @error('county_id') is-invalid @enderror"
                                                         name="county_id" aria-required="true" required>
@@ -644,7 +638,8 @@
                                             <div class="col-md-4">
                                                 <div class="form-group constituency required">
 
-                                                    <label class="control-label" for="constituency">Constitution:</label>
+                                                    <label class="control-label" for="constituency">Constitution: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="constituency"
                                                         class="form-control @error('constituency_id') is-invalid @enderror"
                                                         name="constituency_id" aria-required="true" required>
@@ -666,7 +661,8 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group ward required">
-                                                    <label class="control-label" for="ward">Ward:</label>
+                                                    <label class="control-label" for="ward">Ward: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="ward"
                                                         class="form-control @error('ward_id') is-invalid @enderror"
                                                         name="ward_id" aria-required="true" required>
@@ -686,10 +682,10 @@
                                                 </div>
                                             </div>
 
-
                                             <div class="col-md-4">
                                                 <div class="form-group location required">
-                                                    <label class="control-label" for="location">Location:</label>
+                                                    <label class="control-label" for="location">Location: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="location"
                                                         class="form-control @error('location_id') is-invalid @enderror"
                                                         name="location_id" aria-required="true" required>
@@ -711,7 +707,8 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group sub_location required">
-                                                    <label class="control-label" for="sub_location">Sub Location:</label>
+                                                    <label class="control-label" for="sub_location">Sub Location: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="sub_location"
                                                         class="form-control @error('sub_location_id') is-invalid @enderror"
                                                         name="sub_location_id" aria-required="true" required>
@@ -731,11 +728,10 @@
                                                 </div>
                                             </div>
 
-
                                             <div class="col-md-4">
                                                 <div class="form-group polling_station required">
                                                     <label class="control-label" for="polling_station">Polling
-                                                        Station:</label>
+                                                        Station: <span class="text-danger">*</span></label>
                                                     <select id="polling_station"
                                                         class="form-control @error('polling_station_id') is-invalid @enderror"
                                                         name="polling_station_id" aria-required="true" required>
@@ -759,8 +755,6 @@
                                     </div>
                                     {{-- /Address Information --}}
 
-
-
                                     {{-- /School Information --}}
                                     <div class="form-section">
                                         <div class="row">
@@ -768,7 +762,8 @@
                                             <div class="col-md-4">
                                                 <div class="form-group institution_name required">
                                                     <label class="control-label" for="date_of_birth">Name of
-                                                        school/college/university:</label>
+                                                        school/college/university: <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" id="institution_name"
                                                         class="form-control @error('institution_name') is-invalid @enderror"
                                                         name="institution_name" aria-required="true"
@@ -786,7 +781,7 @@
                                                 <div class="form-group adm_or_reg_no required">
                                                     <label class="control-label"
                                                         for="adm_or_reg_no">Admission/Registration
-                                                        no.:</label>
+                                                        no.: <span class="text-danger">*</span></label>
                                                     <input type="text" id="adm_or_reg_no"
                                                         class="form-control @error('adm_or_reg_no') is-invalid @enderror"
                                                         name="adm_or_reg_no" aria-required="true"
@@ -801,10 +796,10 @@
                                                 </div>
                                             </div>
 
-
                                             <div class="col-md-4">
                                                 <div class="form-group mode_of_study required">
-                                                    <label class="control-label" for="mode_of_study">Study Mode:</label>
+                                                    <label class="control-label" for="mode_of_study">Study Mode: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="mode_of_study" name="mode_of_study"
                                                         class="form-control @error('mode_of_study') is-invalid @enderror"
                                                         required>
@@ -833,7 +828,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group year_of_study required">
                                                     <label class="control-label" for="year_of_study">Grade/Class/Year of
-                                                        Study:</label>
+                                                        Study: <span class="text-danger">*</span></label>
                                                     <input type="number" id="year_of_study"
                                                         class="form-control @error('year_of_study') is-invalid @enderror"
                                                         name="year_of_study" aria-required="true"
@@ -869,7 +864,7 @@
                                                 <div class="form-group instititution_postal_address required">
                                                     <label class="control-label"
                                                         for="instititution_postal_address">Institution's Postal
-                                                        Address:</label>
+                                                        Address: <span class="text-danger">*</span></label>
                                                     <input type="text" id="instititution_postal_address"
                                                         class="form-control @error('instititution_postal_address') is-invalid @enderror"
                                                         name="instititution_postal_address" aria-required="true"
@@ -888,7 +883,7 @@
                                                 <div class="form-group instititution_telephone_number required">
                                                     <label class="control-label"
                                                         for="instititution_telephone_number">Institution's Telephone
-                                                        Number:</label>
+                                                        Number: <span class="text-danger">*</span></label>
                                                     <input type="text" id="instititution_telephone_number"
                                                         class="form-control @error('instititution_telephone_number') is-invalid @enderror"
                                                         name="instititution_telephone_number" aria-required="true"
@@ -905,13 +900,13 @@
                                             </div>
 
                                             <div class="col-md-12">
-                                                <p><b>Fees Payable:</b></p>
+                                                <p><b>Fees Payable: </b></p>
                                             </div>
 
                                             <div class="col-md-4">
                                                 <div class="form-group total_fees_payable required">
                                                     <label class="control-label" for="total_fees_payable">Total Fees
-                                                        Payable:</label>
+                                                        Payable: <span class="text-danger">*</span></label>
                                                     <input type="number" id="total_fees_payable"
                                                         class="form-control @error('total_fees_payable') is-invalid @enderror"
                                                         name="total_fees_payable" aria-required="true"
@@ -928,7 +923,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group total_fees_paid required">
                                                     <label class="control-label" for="total_fees_paid">Total Fees
-                                                        Paid:</label>
+                                                        Paid: <span class="text-danger">*</span></label>
                                                     <input type="number" id="total_fees_paid"
                                                         class="form-control @error('total_fees_paid') is-invalid @enderror"
                                                         name="total_fees_paid" aria-required="true"
@@ -944,7 +939,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group fee_balance required">
-                                                    <label class="control-label" for="fee_balance">Fee Balance:</label>
+                                                    <label class="control-label" for="fee_balance">Fee Balance: <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="number" id="fee_balance"
                                                         class="form-control @error('fee_balance') is-invalid @enderror"
                                                         name="fee_balance" aria-required="true"
@@ -965,7 +961,8 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group bank_name required">
-                                                    <label class="control-label" for="bank_name">Name of Bank:</label>
+                                                    <label class="control-label" for="bank_name">Name of Bank: <span
+                                                            class="text-danger">*</span></label>
                                                     <select id="bank_name" name="bank_name"
                                                         class="form-control @error('bank_name') is-invalid @enderror"
                                                         required>
@@ -1047,7 +1044,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group branch required">
-                                                    <label class="control-label" for="branch">Branch:</label>
+                                                    <label class="control-label" for="branch">Branch: <span
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" id="branch"
                                                         class="form-control @error('branch') is-invalid @enderror"
                                                         name="branch" aria-required="true" placeholder="Branch"
@@ -1063,7 +1061,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group account_number required">
                                                     <label class="control-label" for="account_number">Account
-                                                        Number:</label>
+                                                        Number: <span class="text-danger">*</span></label>
                                                     <input type="number" id="account_number"
                                                         class="form-control @error('account_number') is-invalid @enderror"
                                                         name="account_number" aria-required="true"
@@ -1121,24 +1119,18 @@
 @section('js')
     <!-- jQuery -->
     <script src="{{ url('Admin/plugins/jquery/jquery.min.js') }}"></script>
-
     <!-- Bootstrap 4 -->
     <script src="{{ url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ url('Admin/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
     {{-- select 2 --}}
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <!-- Custom js -->
     <script src="{{ url('Admin/js/bursary/select2.js') }}"></script>
-
     {{-- parsley js --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"
         integrity="sha512-eyHL1atYNycXNXZMDndxrDhNAegH2BDWt1TmkXJPoGf1WLlNYt08CSjkqF5lnCRmdm3IrkHid8s2jOUY4NIZVQ=="
@@ -1147,6 +1139,4 @@
 
     <!-- Custom js -->
     <script src="{{ url('Admin/js/bursary/edit.js') }}"></script>
-
-    {{-- sections of previous, next, etc --}}
 @endsection

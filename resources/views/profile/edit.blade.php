@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Update User: {{ $user->name }}
+    Update Profile: {{ $user->name }}
 @endsection
 
 @section('css')
@@ -9,14 +9,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
-
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
-
-
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     {{-- /select 2 --}}
@@ -146,7 +142,7 @@
                                     <div class="px-4">
                                         <button style="border:unset" type="submit"
                                             class="btn-md btn btn-success btn-block"><i class="fas fa-save"></i> Update
-                                            User</button>
+                                            Profile</button>
                                     </div>
                                 </div>
 
@@ -172,15 +168,11 @@
 @section('js')
     <!-- jQuery -->
     <script src="{{ url('Admin/plugins/jquery/jquery.min.js') }}"></script>
-
     <!-- Bootstrap 4 -->
     <script src="{{ url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ url('Admin/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     {{-- custom js --}}

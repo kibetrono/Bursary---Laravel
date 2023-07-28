@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\CustomEmail;
 use App\Mail\CustomTestMailConfiguration;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 class SystemSettingController extends Controller
 {
@@ -254,5 +256,35 @@ class SystemSettingController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
+    }
+
+    public function fetchLogo($filename)
+    {
+
+        $path = 'public/logos/' . $filename;
+
+        if (!Storage::exists($path)) {
+            abort(404);
+        }
+
+        $file = Storage::get($path);
+        $type = Storage::mimeType($path);
+
+        return Response::make($file, 200, ['Content-Type' => $type]);
+    }
+
+    public function fetchFavicon($filename)
+    {
+
+        $path = 'public/favicons/' . $filename;
+
+        if (!Storage::exists($path)) {
+            abort(404);
+        }
+
+        $file = Storage::get($path);
+        $type = Storage::mimeType($path);
+
+        return Response::make($file, 200, ['Content-Type' => $type]);
     }
 }

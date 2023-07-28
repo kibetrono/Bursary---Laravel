@@ -7,15 +7,11 @@ $settingsfields = \App\Models\SystemSetting::pluck('value', 'name')->toArray();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{-- <link rel="icon" href="{{ url('./assets/image/cdfLogo.png') }}" type="image/x-icon"> --}}
-
     @if (isset($settingsfields['favicon']))
-    <link rel="icon" href="{{ asset('storage/' . $settingsfields['favicon']) }}">
+    <link rel="icon" href="{{ route('fetchFavicon', ['filename' => basename($settingsfields['favicon'])]) }}">
     @endif
-    
     <title>@yield('title')</title>
-
     @yield('css')
-
     {{-- custom header css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/header.css') }}">
 </head>

@@ -11,7 +11,7 @@
         <div class="login-box">
             <div class="login-logo">
                 @if (isset($settingsfields['logo']))
-                    <img src="{{ asset('storage/' . $settingsfields['logo']) }}" alt="Logo" style="width:50%;height:100px"
+                    <img src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}" alt="Logo" style="width:50%;height:100px"
                         alt="Logo">
                 @else
                     <img src="{{ url('./assets/image/noLogo.png') }}" alt="Logo" style="width:50%;height:100px">

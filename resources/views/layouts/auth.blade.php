@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @if (isset($settingsfields['favicon']))
-        <link rel="icon" href="{{ asset('storage/' . $settingsfields['favicon']) }}">
+        <link rel="icon" href="{{ route('fetchFavicon', ['filename' => basename($settingsfields['favicon'])]) }}">
     @endif
     <title> @yield('title')</title>
     <!-- Google Font: Source Sans Pro -->
@@ -34,5 +34,4 @@
 <script src="{{ url('Admin/js/adminlte.min.js') }}"></script>
 <!-- Custom js -->
 <script src="{{ url('Admin/js/auth/auth.js') }}"></script>
-
 </html>

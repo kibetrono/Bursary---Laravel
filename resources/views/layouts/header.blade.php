@@ -5,12 +5,10 @@
         <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
-
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <div class="avatar avatar-sm avatar-circle">
@@ -22,7 +20,6 @@
                         @endif
                     </span>
                 </div>
-
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div class="dropdown-divider"></div>
@@ -60,7 +57,6 @@
                     <div class="col-md-4 user_btns">
                         <p>
                     @if(Auth::check())
-
                             <!-- Authentication Links -->
                         <form id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
@@ -70,15 +66,11 @@
                         </form>
                         </p>
                     @endif
-
                     </div>
                 </div>
                 <div class="dropdown-divider "></div>
-
             </div>
         </li>
-
-
     </ul>
 </nav>
 <!-- /.navbar -->

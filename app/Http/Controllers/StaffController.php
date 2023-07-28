@@ -210,26 +210,25 @@ class StaffController extends Controller
 
             $updatedRoles = $user->getRoleNames(); // to allow me to send email
 
-
             if ($user->save()) {
                 if ($request->has('role')) {
                     $staffAssignRoleValue = SystemSetting::where('name', 'role_assigned')->value('value');
                     if ($staffAssignRoleValue == 1) {
-                        try{
-                        // send email only if role changed
-                        if ($myOriginalRoles != $updatedRoles) {
-                            $name = $request->name;
-                            $role = Role::findorFail($request->role);
-                            Mail::to($request->email)->send(new RoleAssigned($name, $role));
+                        try {
+                            // send email only if role changed
+                            if ($myOriginalRoles != $updatedRoles) {
+                                $name = $request->name;
+                                $role = Role::findorFail($request->role);
+                                $url = url('home');
+                                Mail::to($request->email)->send(new RoleAssigned($name, $role, $url));
+                            }
+                        } catch (\Exception $e) {
+                            $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
                         }
-                    } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
-                    }
                     }
                 }
             }
             return redirect()->route('staff.index')->with('success', __('Staff updated successfully.'))->with('smtp_error', (isset($smtp_error)) ? $smtp_error  : '');
-
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }

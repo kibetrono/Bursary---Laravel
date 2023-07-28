@@ -18,11 +18,13 @@ class RoleAssigned extends Mailable
      */
     public $name;
     public $role;
+    public $url;
 
-    public function __construct($name,$role)
+    public function __construct($name,$role,$url)
     {
         $this->name = $name;
         $this->role = $role;
+        $this->url = $url;
     }
 
     /**
@@ -32,7 +34,7 @@ class RoleAssigned extends Mailable
      */
     public function build()
     {
-        return $this->markdown('admin.customEmail.role-assigned',['name' => $this->name,'role' => $this->role])->subject('Congratulations');
+        return $this->markdown('admin.customEmail.role-assigned',['name' => $this->name,'role' => $this->role,'url' => $this->url])->subject('Congratulations');
 
     }
 }

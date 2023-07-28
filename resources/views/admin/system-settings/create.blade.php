@@ -9,14 +9,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
-
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('Admin/dist/css/adminlte.min.css') }}">
-
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     {{-- /select 2 --}}
-
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
 @endsection
@@ -87,24 +84,16 @@
 @section('js')
     <!-- jQuery -->
     <script src="{{ url('Admin/plugins/jquery/jquery.min.js') }}"></script>
-
     <!-- Bootstrap 4 -->
     <script src="{{ url('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ url('Admin/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-
     <!-- AdminLTE App -->
     <script src="{{ url('Admin/dist/js/adminlte.min.js') }}"></script>
-
-
     {{-- select 2 --}}
-
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-
     <!-- Custom js -->
     <script src="{{ url('Admin/js/application-period/select2.js') }}"></script>
 @endsection

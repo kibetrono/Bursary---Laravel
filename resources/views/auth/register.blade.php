@@ -23,7 +23,7 @@
                             <div class="card-body register-card-body">
                                 <p class="login-box-msg">Register a new membership</p>
 
-                                <form action="{{ route('register') }}" method="post">
+                                <form action="{{ route('register') }}" method="post" id="userRegisterForm">
                                     @csrf
 
                                     <div class="row">
@@ -60,7 +60,7 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                      
+
                                         <div class="input-group mb-3">
                                             <input id="password" type="password"
                                                 class="form-control @error('password') is-invalid @enderror" name="password"
@@ -88,10 +88,10 @@
                                                     <i class="fas fa-eye"></i>
                                                 </span>
                                             </div>
-                                            
+
                                         </div>
 
-                                        <div class="col-md-8">
+                                        <div class="col-md-7">
                                             <div class="icheck-primary">
                                                 <input type="checkbox" id="agreeTerms" name="terms" value="agree">
                                                 <label for="agreeTerms">
@@ -100,10 +100,15 @@
                                             </div>
                                         </div>
                                         <!-- /.col -->
-                                        <div class="col-md-4">
-                                            <button type="submit"
-                                                class="btn-md btn btn-primary btn-block">Register</button>
+
+
+                                        <div class="col-md-5">
+                                            <button type="submit" id="registerUserButton"
+                                                class="btn-md btn btn-primary btn-block px-3"><i class="fa fa-save"></i>
+                                                Register</button>
                                         </div>
+
+
                                         <!-- /.col -->
                                     </div>
                                 </form>
@@ -119,7 +124,6 @@
                         </div><!-- /.card -->
                     </div>
                     <!-- /.register-box -->
-
 
                 </div>
 

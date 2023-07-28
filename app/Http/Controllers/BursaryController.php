@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 
 
@@ -282,34 +283,29 @@ class BursaryController extends Controller
                 $bursary->guardians_employment_type   = $request->guardians_employment_type;
             }
 
-            $attachments = [];
+            // saving attachment files
+            $filesToUpload = [
+                'transcript_report_form',
+                'parents_or_guardian_id',
+                'personal_id',
+                'birth_certificate',
+                'school_id',
+                'fathers_death_certificate',
+                'mothers_death_certificate',
+                'current_fee_structure',
+                'admission_letter',
+            ];
 
-            foreach ($request->allFiles() as $key => $file) {
-                if ($request->hasFile($key)) {
-                    // Generate a unique file name
-                    $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-
-                    // Specify the file storage path
-                    // $filePath = 'Attachments/' . $fileName;
-                    $filePath = $fileName;
-
-                    // Save the file to the desired location
-                    $file->storeAs('public/attachments', $filePath);
-
-                    // Add the file path to the attachments array
-                    $attachments[$key] = $filePath;
+            foreach ($filesToUpload as $fileField) {
+                if ($request->hasFile($fileField)) {
+                    $file = $request->file($fileField);
+                    $filePath = $file->store('attachments', 'public');
+                    $bursary->{$fileField} = basename($filePath);
+                } else {
+                    $bursary->{$fileField} = null;
                 }
             }
 
-            $bursary->transcript_report_form = $attachments['transcript_report_form'] ?? null;
-            $bursary->parents_or_guardian_id = $attachments['parents_or_guardian_id'] ?? null;
-            $bursary->personal_id = $attachments['personal_id'] ?? null;
-            $bursary->birth_certificate = $attachments['birth_certificate'] ?? null;
-            $bursary->school_id = $attachments['school_id'] ?? null;
-            $bursary->fathers_death_certificate = $attachments['fathers_death_certificate'] ?? null;
-            $bursary->mothers_death_certificate = $attachments['mothers_death_certificate'] ?? null;
-            $bursary->current_fee_structure = $attachments['current_fee_structure'] ?? null;
-            $bursary->admission_letter = $attachments['admission_letter'] ?? null;
 
             $bursary->status      = '0';
 
@@ -741,14 +737,13 @@ class BursaryController extends Controller
 
     public function downloadAttachment($filename)
     {
-        // $filePath = public_path('Attachments/' . $file->filename);
         $filePath = storage_path('app/public/attachments/' . $filename);
 
-        // dd($filePath);
-
-        if (file_exists($filePath)) {
-            return response()->download($filePath);
+        if (Storage::exists('public/attachments/' . $filename)) {
+            return response()->download($filePath, $filename);
         } else {
+            // File not found, handle the error as needed
+            // For example, redirect back or display a custom error message
             return redirect()->back()->with('error', 'File not found.');
         }
     }

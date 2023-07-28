@@ -148,7 +148,7 @@ $(document).ready(function () {
                             },
                             success: function (response) {
                                 // Handle the success response
-                                $('#loadingMessageBursaryPage').show();
+                                $('#loadingMessageBursaryPage').hide();
                                 $('#doaction').prop('disabled', false);                       
 
                         for (let i = 0; i < alloptions.length; i++) {
@@ -159,7 +159,7 @@ $(document).ready(function () {
                                 window.location.href = response.url;
                             },
                             error: function (xhr) {
-                                $('#loadingMessageBursaryPage').show();
+                                $('#loadingMessageBursaryPage').hide();
                                 $('#doaction').prop('disabled', false);                       
 
                         for (let i = 0; i < alloptions.length; i++) {

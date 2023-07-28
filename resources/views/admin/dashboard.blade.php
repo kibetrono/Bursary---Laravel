@@ -9,9 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/fontawesome-free/css/all.min.css') }}">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
@@ -28,7 +26,6 @@
     <link rel="stylesheet" href="{{ url('Admin/plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ url('Admin/plugins/summernote/summernote-bs4.min.css') }}">
-
     {{-- custom css --}}
     <link rel="stylesheet" href="{{ url('Admin/css/main.css') }}">
 @endsection
@@ -46,7 +43,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Dashboard</h1>
+                        <h3 class="m-0">Dashboard</h3>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -316,40 +313,39 @@
                             <div class="card-body bursary_graph_display_body">
                                 <div class="tab-content p-0">
                                     @if (Gate::check('manage bursary'))
-                                    <div class="chart tab-pane active" id="approved_chart_area"
-                                        style="position: relative; height: auto;">
-                                        {{-- Approved chart --}}
-                                        <div style="width: 100%">
-                                            <canvas id="approved_chart"></canvas>
+                                        <div class="chart tab-pane active" id="approved_chart_area"
+                                            style="position: relative; height: auto;">
+                                            {{-- Approved chart --}}
+                                            <div style="width: 100%">
+                                                <canvas id="approved_chart"></canvas>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="chart tab-pane" id="rejected_chart_area"
-                                        style="position: relative; height: auto;">
-                                        {{-- Rejected chart --}}
-                                        <div style="width: 100%">
-                                            <canvas id="rejected_chart"></canvas>
+                                        <div class="chart tab-pane" id="rejected_chart_area"
+                                            style="position: relative; height: auto;">
+                                            {{-- Rejected chart --}}
+                                            <div style="width: 100%">
+                                                <canvas id="rejected_chart"></canvas>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="chart tab-pane" id="pending_chart_area"
-                                        style="position: relative; height: auto;">
-                                        {{-- Rejected chart --}}
-                                        <div style="width: 100%">
-                                            <canvas id="pending_chart"></canvas>
+                                        <div class="chart tab-pane" id="pending_chart_area"
+                                            style="position: relative; height: auto;">
+                                            {{-- Rejected chart --}}
+                                            <div style="width: 100%">
+                                                <canvas id="pending_chart"></canvas>
+                                            </div>
                                         </div>
-                                    </div>
-
                                     @endif
 
                                 </div>
                             </div><!-- /.card-body -->
                         </div>
                         <!-- /.card -->
-                        
+
 
                     </section>
-                    
+
                     <!-- /.Left col -->
                     <div class="col-md-3">
                         <!-- Info Boxes Style 2 -->
@@ -357,7 +353,8 @@
                             <span class="info-box-icon"><i class="ion ion-location"></i></span>
 
                             <div class="info-box-content">
-                                <span class="info-box-text">Constituencies</span>
+                                <span class="info-box-text"><a href="{{ route('constituency.index') }}"
+                                        class="text-white">Constituencies</a></span>
                                 <span class="info-box-number">
                                     @if (Gate::check('manage location'))
                                         @if ($constituenciesCount > 0)
@@ -377,7 +374,8 @@
                             <span class="info-box-icon"><i class="ion ion-location"></i></span>
 
                             <div class="info-box-content">
-                                <span class="info-box-text">Wards</span>
+                                <span class="info-box-text"><a href="{{ route('ward.index') }}"
+                                        class="text-white">Wards</a></span>
                                 <span class="info-box-number">
                                     @if (Gate::check('manage location'))
                                         @if ($wardsCount > 0)
@@ -397,7 +395,9 @@
                             <span class="info-box-icon"><i class="ion ion-location"></i></span>
 
                             <div class="info-box-content">
-                                <span class="info-box-text">Locations</span>
+
+                                <span class="info-box-text"><a href="{{ route('location.index') }}"
+                                        class="text-white">Locations</a></span>
                                 <span class="info-box-number">
                                     @if (Gate::check('manage location'))
                                         @if ($locationsCount > 0)
@@ -417,7 +417,8 @@
                         <div class="info-box mb-3 bg-olive">
                             <span class="info-box-icon"><i class="ion ion-location"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Sub-Locations</span>
+                                <span class="info-box-text"><a href="{{ route('sub-location.index') }}"
+                                        class="text-white">Sub-Locations</a></span>
                                 <span class="info-box-number">
                                     @if (Gate::check('manage location'))
                                         @if ($sublocationsCount > 0)
@@ -434,7 +435,8 @@
                         <div class="info-box mb-3 bg-danger">
                             <span class="info-box-icon"><i class="ion ion-location"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Polling Stations</span>
+                                <span class="info-box-text"><a href="{{ route('polling-station.index') }}"
+                                        class="text-white">Polling Stations</a></span>
                                 <span class="info-box-number">
                                     @if (Gate::check('manage location'))
                                         @if ($pollingstationsCount > 0)

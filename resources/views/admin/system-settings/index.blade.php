@@ -97,7 +97,7 @@
                                                                     <div class="setting-card">
                                                                         <div class="logo-content mt-2">
                                                                             @if (isset($settingsfields['logo']))
-                                                                                <img src="{{ asset('storage/' . $settingsfields['logo']) }}"
+                                                                                <img src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}"
                                                                                     alt="Logo">
                                                                             @endif
                                                                         </div>
@@ -126,7 +126,7 @@
                                                                     <div class="setting-card">
                                                                         <div class="logo-content mt-2">
                                                                             @if (isset($settingsfields['favicon']))
-                                                                                <img src="{{ asset('storage/' . $settingsfields['favicon']) }}"
+                                                                                <img src="{{ route('fetchFavicon', ['filename' => basename($settingsfields['favicon'])]) }}"
                                                                                     alt="Favicon">
                                                                             @endif
                                                                         </div>

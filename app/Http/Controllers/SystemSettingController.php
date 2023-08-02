@@ -37,11 +37,7 @@ class SystemSettingController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->can('create system setting')) {
-            return view('admin.system-settings.create');
-        } else {
-            return redirect()->back()->with('error', __('Permission denied.'));
-        }
+    
     }
 
     /**

@@ -97,8 +97,12 @@
                                                                     <div class="setting-card">
                                                                         <div class="logo-content mt-2">
                                                                             @if (isset($settingsfields['logo']))
-                                                                                <img src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}"
+                                                                                <img id="logo_preview"
+                                                                                    src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}"
                                                                                     alt="Logo">
+                                                                            @else
+                                                                                <img id="logo_preview" src=""
+                                                                                    alt="Logo Preview">
                                                                             @endif
                                                                         </div>
                                                                         <div class="choose-files mt-2">
@@ -108,13 +112,13 @@
                                                                                     file here </div>
                                                                                 <input type="file" name="logo"
                                                                                     id="full_logo" class="form-control file"
-                                                                                    data-filename="full_logo"
-                                                                                    onchange="document.getElementById('logo_preview').src = window.URL.createObjectURL(this.files[0])">
+                                                                                    data-filename="full_logo">
                                                                             </label>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+
                                                         </div>
 
                                                         <div class="col-lg-6 col-sm-6 col-md-6 dashboard-card">
@@ -126,8 +130,12 @@
                                                                     <div class="setting-card">
                                                                         <div class="logo-content mt-2">
                                                                             @if (isset($settingsfields['favicon']))
-                                                                                <img src="{{ route('fetchFavicon', ['filename' => basename($settingsfields['favicon'])]) }}"
+                                                                                <img id="favicon_preview"
+                                                                                    src="{{ route('fetchFavicon', ['filename' => basename($settingsfields['favicon'])]) }}"
                                                                                     alt="Favicon">
+                                                                            @else
+                                                                                <img id="favicon_preview" src=""
+                                                                                    alt="Favicon Preview">
                                                                             @endif
                                                                         </div>
                                                                         <div class="choose-files mt-2">
@@ -138,8 +146,7 @@
                                                                                 </div>
                                                                                 <input type="file" name="favicon"
                                                                                     id="favicon" class="form-control file"
-                                                                                    data-filename="company_favicon_update"
-                                                                                    onchange="document.getElementById('favicon_preview').src = window.URL.createObjectURL(this.files[0])">
+                                                                                    data-filename="company_favicon_update">
                                                                             </label>
                                                                         </div>
                                                                     </div>

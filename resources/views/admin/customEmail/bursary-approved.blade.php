@@ -2,13 +2,11 @@
 
     Congratulations {{ $user->name }},
 
-    Congratulations, your bursary application for academic year {{ $year }} has been approved. {{ $institution }}
-    will receive your funds.
+    Congratulations, your bursary application for academic year {{ $year }} has been approved. {{ $institution }} will receive your funds.
 
     Next Steps:
     1. {{ $institution }} will contact you to provide further instructions on the disbursement process.
-    2. Make sure to review and comply with any requirements or documents requested by {{ $institution }} to receive the
-    bursary funds.
+    2. Make sure to review and comply with any requirements or documents requested by {{ $institution }} to receive the bursary funds.
     3. Should you have any questions or concerns, please reach out to {{ $institution }}'s bursary department.
 
     Note:

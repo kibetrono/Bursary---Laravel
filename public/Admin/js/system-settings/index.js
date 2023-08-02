@@ -127,3 +127,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// changing logo and favicon
+
+function handleImagePreview(inputId, previewId) {
+    document.getElementById(inputId).addEventListener('change', function () {
+        var preview = document.getElementById(previewId);
+        var file = this.files[0];
+
+        if (file) {
+            preview.src = window.URL.createObjectURL(file);
+        } else {
+            preview.src = ''; // Clear the preview if no file selected
+        }
+    });
+}
+
+handleImagePreview('full_logo', 'logo_preview');
+handleImagePreview('favicon', 'favicon_preview');

@@ -12,7 +12,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <div class="avatar avatar-sm avatar-circle">
-                    <img class="avatar-img" src="/assets/image/default_image.png" alt="Image Description"
+                    <img class="avatar-img" src="/assets/image/default_image.png"
                         style="width:30px;height:30px;border-radius:100px"> &nbsp;
                     <span class="card-text">
                         @if (Auth::check())
@@ -26,11 +26,9 @@
                 <a href="#" class="dropdown-item">
                     <div class="media align-items-center">
                         <div class="avatar avatar-sm avatar-circle mr-2">
-
-
                         </div>
                         <div class="media-body text-center">
-                            <img class="avatar-img" src="/assets/image/default_image.png" alt="Image Description"
+                            <img class="avatar-img" src="/assets/image/default_image.png"
                                 style="width:90px;height:90px;border-radius:100px">
                             <p>
                                 @if (Auth::check())

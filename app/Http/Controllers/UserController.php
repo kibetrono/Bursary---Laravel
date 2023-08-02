@@ -87,8 +87,6 @@ class UserController extends Controller
 
     //     $users = $query->get();
 
-
-
     //     // if($request->has('user_search')){
     //     //     $roles = Role::all();
     //     //     $users = User::where('name','like',"%{$request->user_search}%")->orWhere('email','like',"%$request->user_search%")->get();
@@ -161,19 +159,16 @@ class UserController extends Controller
                 if ($createUserValue == 1) {
                     try {
                         $name = $request->name;
-                    $role = Role::findorFail($request->role);
-                           
-                    Mail::to($request->email)->send(new CreateUser($name, $role));
+                        $role = Role::findorFail($request->role);
+
+                        Mail::to($request->email)->send(new CreateUser($name, $role));
                     } catch (\Exception $e) {
                         $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
-
                     }
-                    
                 }
             }
 
             return redirect()->route('user.index')->with('success', __('User created successfully.'))->with('smtp_error', (isset($smtp_error)) ? $smtp_error  : '');
-
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
@@ -195,7 +190,6 @@ class UserController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -275,31 +269,30 @@ class UserController extends Controller
             $user->touch();
 
             $user->save();
- 
+
             $updatedRoles = $user->getRoleNames(); // to allow me to send email
 
             if ($user->save()) {
                 if ($request->has('role') && $request['role'] !== null) {
                     $userAssignRoleValue = SystemSetting::where('name', 'role_assigned')->value('value');
                     if ($userAssignRoleValue == 1) {
-                        try{
-                        // send email only if role changed
-                        if ($myOriginalRoles != $updatedRoles) {
-                            $name = $request->name;
-                            $role = Role::findorFail($request->role);
-                            $url = url('home');
-                           
-                            Mail::to($request->email)->send(new RoleAssigned($name, $role,$url));
+                        try {
+                            // send email only if role changed
+                            if ($myOriginalRoles != $updatedRoles) {
+                                $name = $request->name;
+                                $role = Role::findorFail($request->role);
+                                $url = url('home');
+
+                                Mail::to($request->email)->send(new RoleAssigned($name, $role, $url));
+                            }
+                        } catch (\Exception $e) {
+                            $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                         }
-                    } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
-                    }
                     }
                 }
             }
 
             return redirect()->route('user.index')->with('success', __('User updated successfully.'))->with('smtp_error', (isset($smtp_error)) ? $smtp_error  : '');
-
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }

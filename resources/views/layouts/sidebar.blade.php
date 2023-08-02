@@ -4,11 +4,11 @@
     <a href="{{ url('home') }}" class="brand-link">
 
         @if (isset($settingsfields['logo']))
-            <img src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}" alt="Logo"
+            <img src="{{ route('fetchLogo', ['filename' => basename($settingsfields['logo'])]) }}"
                 class="brand-image img-circle elevation-3 bg-light"
                 style="opacity: .8; border-radius: 100px; width: 35px; height: 40px;">
         @else
-            <img src="{{ url('./assets/image/noLogo.png') }}" alt="Logo"
+            <img src="{{ url('./assets/image/noLogo.png') }}"
                 class="brand-image img-circle elevation-3 bg-light"
                 style="opacity: .8;border-radius:100px;width:35px;height:40px">
         @endif

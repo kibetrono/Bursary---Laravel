@@ -233,13 +233,13 @@
                                                                             <label for="">ID/Passport no.:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->id_or_passport_no }}"
-                                                                                readonly>
+                                                                                readonly>k
                                                                         </div>
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">D.O.B: <span
                                                                                     class="text-danger">*</span></label>
                                                                             <input type="text" class="form-control"
-                                                                                value="{{ \Carbon\Carbon::parse($bursary->date_of_birth)->format('Y-m-d') }}"
+                                                                                value="{{ \Carbon\Carbon::parse($bursary->date_of_birth)->format('m-d-Y') }}"
                                                                                 readonly>
                                                                         </div>
                                                                         <div class="col-md-4 my-2">

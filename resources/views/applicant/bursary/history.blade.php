@@ -15,7 +15,7 @@
 @endsection
 
 @php
-$startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
+    $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
 @endphp
 
 @section('content')
@@ -24,9 +24,9 @@ $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
+                <div class="row">
                     <div class="col-sm-6">
-                        <h1>History - {{ Auth::user()->email }}</h1>
+                        <h4>History - {{ Auth::user()->email }}</h4>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -55,38 +55,17 @@ $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
                         <div class="card">
                             <div class="card-header bg-info">
                                 <h3 class="card-title">Bursary Application History </h3>
-                                <div class="card-tools">
-                                    {{-- <a href="{{ route('user.create') }}" class="btn-sm btn btn-success"><i
-                                            class="fas fa-plus-circle"></i> Create New User</a> --}}
-                                </div>
+                                <div class="card-tools"></div>
                             </div>
-
                             <!-- /.card-header -->
                             <div class="card-header">
-                                {{-- <h3 class="card-title"><i class="fas fa-history"></i> Bursary Application History</h3> --}}
-
-                                <div class="card-tools my-1">
-                                    {{-- <form action="{{ route('user.bursary.history',encrypt(Auth::user()->id)) }}" method="GET">
-
-                                        <div class="input-group input-group-sm">
-                                            <input type="text" name="user_status_search" value="{{$searchTerm}}" class="form-control"
-                                                placeholder="search by status" autocomplete="off">
-
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form> --}}
-                                </div>
-
+                                <div class="card-tools my-1"></div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-1">
                                 <table class="table table-hover text-nowrap table-bordered">
                                     <thead>
-                                        <tr> 
+                                        <tr>
                                             <th style="width:5%">#</th>
                                             <th style="width:12%">First Name</th>
                                             <th style="width:12%">Last Name</th>
@@ -96,18 +75,19 @@ $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
                                             <th style="width:10%">Date applied</th>
                                             <th style="width:10%">Date updated</th>
                                             <th style="width:auto">Status</th>
+                                            <th style="width:auto">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($bursaries as $index=>$bursary)
-                                        @php
-                                            $trimmed_school = strlen($bursary->institution_name) > 20 ? substr($bursary->institution_name, 0, 20) . '...' : $bursary->institution_name;
-                                            $trimmed_fName = strlen($bursary->first_name) > 15 ? substr($bursary->first_name, 0, 15) . '...' : $bursary->first_name;
-                                            $trimmed_lName = strlen($bursary->last_name) > 15 ? substr($bursary->last_name, 0, 15) . '...' : $bursary->last_name;
-                                        @endphp
+                                            @php
+                                                $trimmed_school = strlen($bursary->institution_name) > 20 ? substr($bursary->institution_name, 0, 20) . '...' : $bursary->institution_name;
+                                                $trimmed_fName = strlen($bursary->first_name) > 15 ? substr($bursary->first_name, 0, 15) . '...' : $bursary->first_name;
+                                                $trimmed_lName = strlen($bursary->last_name) > 15 ? substr($bursary->last_name, 0, 15) . '...' : $bursary->last_name;
+                                            @endphp
                                             <tr>
                                                 <td>{{ $startIndex + $index + 1 }}</td>
-                                                <td>{{ $trimmed_fName}}</td>
+                                                <td>{{ $trimmed_fName }}</td>
                                                 <td>{{ $trimmed_lName }}</td>
                                                 <td>{{ $trimmed_school }}</td>
 
@@ -125,8 +105,578 @@ $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
                                                     @endif
                                                 </td>
 
+                                                <td class="d-flex">
+
+                                                    <a href="#" class="btn-sm btn btn-info mx-1" title="View"
+                                                        data-toggle="modal"
+                                                        data-target="#view_bursary{{ $bursary->id }}"><i
+                                                            class="fas fa-eye"></i></a>
+                                                </td>
                                             </tr>
 
+                                            <!--view bursary-->
+                                            <div class="modal fade" id="view_bursary{{ $bursary->id }}" tabindex="-1"
+                                                role="dialog" aria-labelledby="myModalLabel">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header px-3 py-2">
+                                                            <h5 class="modal-title" id="myModalLabel">Name:
+                                                                {{ $bursary->first_name }} {{ $bursary->last_name }}
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close" title="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body p-3">
+                                                            <ul class="nav nav-tabs">
+                                                                <li class="nav-item p-0">
+                                                                    <a class="nav-link active"
+                                                                        href="#personal_data{{ $bursary->id }}"
+                                                                        data-toggle="tab">Personal Details</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link"
+                                                                        href="#family_data{{ $bursary->id }}"
+                                                                        data-toggle="tab">Family Information</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link"
+                                                                        href="#address_data{{ $bursary->id }}"
+                                                                        data-toggle="tab">Address Information</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link"
+                                                                        href="#school_data{{ $bursary->id }}"
+                                                                        data-toggle="tab">School Details</a>
+                                                                </li>
+
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link"
+                                                                        href="#attachments_data{{ $bursary->id }}"
+                                                                        data-toggle="tab">Key Attachments</a>
+                                                                </li>
+                                                            </ul>
+                                                            <div class="tab-content">
+
+                                                                {{-- personal details --}}
+                                                                <div class="tab-pane active"
+                                                                    id="personal_data{{ $bursary->id }}">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">First Name: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->first_name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Last Name: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->last_name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Gender: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->gender }}" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">ID/Passport no.:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->id_or_passport_no }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">D.O.B: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ \Carbon\Carbon::parse($bursary->date_of_birth)->format('m-d-Y') }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Telephone Number:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->telephone_number }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                                {{-- /personal details --}}
+
+                                                                {{-- family background information --}}
+                                                                <div class="tab-pane"
+                                                                    id="family_data{{ $bursary->id }}">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Parental Status: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->parental_status }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Number of
+                                                                                Siblings: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->number_of_siblings }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Estimated Family
+                                                                                Income: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->estimated_family_income }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                    </div>
+                                                                    <h5 style="font-size: 16px" class="text-bold mt-2">
+                                                                        Father's Information:</h5>
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">First Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->fathers_firstname }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Last Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->fathers_lastname }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Telephone Number:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->fathers_telephone_number }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Occupation:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->fathers_occupation }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Employment Type:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ ucfirst($bursary->fathers_employment_type) }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <h5 style="font-size: 16px" class="text-bold mt-2">
+                                                                        Mother's Information:</h5>
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">First Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->mothers_firstname }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Last Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->mothers_lastname }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Telephone Number:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->mothers_telephone_number }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Occupation:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->mothers_occupation }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Employment Type:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ ucfirst($bursary->mothers_employment_type) }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <h5 style="font-size: 16px" class="text-bold mt-2">
+                                                                        Guardian's Information:</h5>
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">First Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->guardians_firstname }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Last Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->guardians_lastname }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Telephone Number:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->guardians_telephone_number }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Occupation:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->guardians_occupation }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Employment Type:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ ucfirst($bursary->guardians_employment_type) }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                {{-- /family background information --}}
+
+                                                                {{-- address information --}}
+                                                                <div class="tab-pane"
+                                                                    id="address_data{{ $bursary->id }}">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">County: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->county->name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Constituency: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->constituency->name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Ward: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->ward->name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Location: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->location->name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Sub location: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->sublocation->name }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                        <div class="col-md-4 my-2">
+                                                                            <label for="">Polling Station: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->pollingstation->name }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+                                                                {{-- /address information --}}
+
+                                                                {{-- school details --}}
+                                                                <div class="tab-pane"
+                                                                    id="school_data{{ $bursary->id }}">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">School Name: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->institution_name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Admission/Registration
+                                                                                no.: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->adm_or_reg_no }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Study Mode: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->mode_of_study }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Class/Year of
+                                                                                Study: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->year_of_study }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Course:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->course_name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Postal Address: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->instititution_postal_address }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Telephone Number: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->instititution_telephone_number }}"
+                                                                                readonly>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <h5 style="font-size: 16px" class="text-bold mt-2">
+                                                                        Fees Payable:</h5>
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Total Fees
+                                                                                Payable: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->total_fees_payable }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Fees Paid: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->total_fees_paid }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Fee Balance: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->fee_balance }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <h5 style="font-size: 16px" class="text-bold mt-2">
+                                                                        Account Details:</h5>
+                                                                    <div class="row">
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Name of Bank: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->bank_name }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Branch: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->branch }}" readonly>
+                                                                        </div>
+                                                                        <div class="col-md-4 my-1">
+                                                                            <label for="">Account Number: <span
+                                                                                    class="text-danger">*</span></label>
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ $bursary->account_number }}"
+                                                                                readonly>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                {{-- /school details --}}
+
+                                                                {{-- key attachments --}}
+                                                                <div class="tab-pane"
+                                                                    id="attachments_data{{ $bursary->id }}">
+                                                                    <div class="row mt-3">
+                                                                        <div class="col-md-4 p-2">
+                                                                            <div class="attachment">
+                                                                                <span
+                                                                                    class="attachment-name">Transcipt/Report
+                                                                                    form: <span
+                                                                                        class="text-danger">*</span></span>
+                                                                                <a href="{{ route('download.attachment', ['filename' => $bursary->transcript_report_form]) }}"
+                                                                                    class="download-link"
+                                                                                    title="Download transcipt/report form">
+                                                                                    <i class="fas fa-download"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4 p-2">
+                                                                            <div class="attachment">
+                                                                                <span
+                                                                                    class="attachment-name">Parents/Guardian
+                                                                                    ID: <span
+                                                                                        class="text-danger">*</span></span>
+                                                                                <a href="{{ route('download.attachment', ['filename' => $bursary->parents_or_guardian_id]) }}"
+                                                                                    class="download-link"
+                                                                                    title="Download parents/guardian ID">
+                                                                                    <i class="fas fa-download"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                        @if ($bursary->personal_id)
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">Personal
+                                                                                        ID/Passport:</span>
+                                                                                    <a href="{{ route('download.attachment', ['filename' => $bursary->personal_id]) }}"
+                                                                                        class="download-link"
+                                                                                        title="Download personal ID/passport">
+                                                                                        <i class="fas fa-download"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">Personal
+                                                                                        ID/Passport: ---</span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        @endif
+                                                                        <div class="col-md-4 p-2">
+                                                                            <div class="attachment">
+                                                                                <span class="attachment-name">Birth
+                                                                                    Certificate: <span
+                                                                                        class="text-danger">*</span></span>
+                                                                                <a href="{{ route('download.attachment', ['filename' => $bursary->birth_certificate]) }}"
+                                                                                    class="download-link"
+                                                                                    title="Download birth certificate">
+                                                                                    <i class="fas fa-download"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                        @if ($bursary->school_id)
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">School
+                                                                                        ID:</span>
+                                                                                    <a href="{{ route('download.attachment', ['filename' => $bursary->school_id]) }}"
+                                                                                        class="download-link"
+                                                                                        title="Download school ID">
+                                                                                        <i class="fas fa-download"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">School
+                                                                                        ID: ---</span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        @endif
+
+                                                                        @if ($bursary->fathers_death_certificate)
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">Father's
+                                                                                        Death Certificate:</span>
+                                                                                    <a href="{{ route('download.attachment', ['filename' => $bursary->fathers_death_certificate]) }}"
+                                                                                        class="download-link"
+                                                                                        title="Download father's death certificate">
+                                                                                        <i class="fas fa-download"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">Father's
+                                                                                        Death Certificate: ---</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endif
+
+                                                                        @if ($bursary->mothers_death_certificate)
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">Mother's
+                                                                                        Death Certificate:</span>
+                                                                                    <a href="{{ route('download.attachment', ['filename' => $bursary->mothers_death_certificate]) }}"
+                                                                                        class="download-link"
+                                                                                        title="Download mother's death certificate">
+                                                                                        <i class="fas fa-download"></i>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="col-md-4 p-2">
+                                                                                <div class="attachment">
+                                                                                    <span class="attachment-name">Mother's
+                                                                                        Death Certificate: --- </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endif
+
+                                                                        <div class="col-md-4 p-2">
+                                                                            <div class="attachment">
+                                                                                <span class="attachment-name">Current Fee
+                                                                                    Structure: <span
+                                                                                        class="text-danger">*</span></span>
+                                                                                <a href="{{ route('download.attachment', ['filename' => $bursary->current_fee_structure]) }}"
+                                                                                    class="download-link"
+                                                                                    title="Download current fee structure">
+                                                                                    <i class="fas fa-download"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4 p-2">
+                                                                            <div class="attachment">
+                                                                                <span class="attachment-name">Admission
+                                                                                    Letter: <span
+                                                                                        class="text-danger">*</span></span>
+                                                                                <a href="{{ route('download.attachment', ['filename' => $bursary->admission_letter]) }}"
+                                                                                    class="download-link"
+                                                                                    title="Download admission letter">
+                                                                                    <i class="fas fa-download"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                {{-- /key attachments --}}
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer mb-2">
+
+                                                            <button type="button"
+                                                                class="btn-sm btn btn-default bg-secondary"
+                                                                data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--/view bursary-->
                                         @empty
 
                                             <tr>
@@ -135,7 +685,7 @@ $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
                                                 <td></td>
                                                 <td></td>
                                                 <td class="fas fa-folder-open"> Empty Application History</td>
-                                        
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -155,7 +705,7 @@ $startIndex = ($bursaries->currentPage() - 1) * $bursaries->perPage();
                                             <td></td>
                                             <td></td>
                                             <td></td>
-
+                                            <td></td>
                                         </tr>
                                     </tfoot>
                                 </table>

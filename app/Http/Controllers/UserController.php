@@ -165,7 +165,7 @@ class UserController extends Controller
                            
                     Mail::to($request->email)->send(new CreateUser($name, $role));
                     } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                        $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
 
                     }
                     
@@ -292,7 +292,7 @@ class UserController extends Controller
                             Mail::to($request->email)->send(new RoleAssigned($name, $role,$url));
                         }
                     } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                        $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                     }
                     }
                 }

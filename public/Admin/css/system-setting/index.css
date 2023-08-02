@@ -3,6 +3,12 @@
     border-top-right-radius: 10px
 }
 
+#custom-setting-1,
+#custom-setting-2,
+#custom-setting-3 {
+    border-radius: 10px
+}
+
 #sbmt_btns,
 #close_mail_btn,
 #sendTestEmailBtn {

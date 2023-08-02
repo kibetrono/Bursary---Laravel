@@ -10,20 +10,26 @@ use Illuminate\Queue\SerializesModels;
 class CustomTestMailConfiguration extends Mailable
 {
     use Queueable, SerializesModels;
-    public $subject;
-    public $body;
+
+    public $the_host;
+    public $the_port;
+    public $the_username;
+    public $the_password;
+    public $the_encryption;
     public $url;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($subject,$body,$url)
+    public function __construct($the_host, $the_port, $the_username, $the_password, $the_encryption, $url)
     {
-        $this->subject = $subject;
-        $this->body = $body;
+        $this->the_host = $the_host;
+        $this->the_port = $the_port;
+        $this->the_username = $the_username;
+        $this->the_password = $the_password;
+        $this->the_encryption = $the_encryption;
         $this->url = $url;
-
     }
 
     /**
@@ -33,7 +39,6 @@ class CustomTestMailConfiguration extends Mailable
      */
     public function build()
     {
-        return $this->markdown('admin.customEmail.test-configuration')->subject($this->subject);
-
+        return $this->markdown('admin.customEmail.test-configuration', ['host' => $this->the_host, 'port' => $this->the_port, 'username' => $this->the_username, 'pwd' => $this->the_password, 'encryption' => $this->the_encryption, 'url' => $this->url])->subject("SMTP Configuration Settings");
     }
 }

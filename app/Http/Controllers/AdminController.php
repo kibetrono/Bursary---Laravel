@@ -25,11 +25,22 @@ class AdminController extends Controller
      */
     public function index()
     {
-        // $data = Bursary::all();
+        // code to draw chart to how  Top Ten Constituencies With Most Applicants 
+        $constituencies = Constituency::orderBy('name')->pluck('name');
+        $totalApplicants = Bursary::count();
+        $chartData = collect([]);
 
-        // $data = $this->getChartData();
+        foreach ($constituencies as $constituency) {
+            $applicantsCount = Bursary::whereHas('constituency', function ($query) use ($constituency) {
+                $query->where('name', $constituency);
+            })->count();
 
-        $roleName = 'Staff'; // Replace 'admin' with your desired role name
+            $percentage = $totalApplicants > 0 ? round(($applicantsCount / $totalApplicants) * 100, 2) : 0;
+            $chartData->push(['constituency' => $constituency, 'percentage' => $percentage]);
+        }
+        // end of code to draw chart to how  Top Ten Constituencies With Most Applicants 
+
+        $roleName = 'Staff';
 
         $role = Role::where('name', $roleName)->first();
 
@@ -136,7 +147,7 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.dashboard', compact('staffCount', 'bursaryApplicationsCount', 'totalApplications', 'approvalPercentages', 'rejectralPercentages', 'pendralPercentages', 'approvedbursaryApplicationsCount', 'rejectedbursaryApplicationsCount', 'pendingbursaryApplicationsCount', 'totalRolesCount','countiesCount','constituenciesCount','wardsCount','locationsCount','sublocationsCount','pollingstationsCount'));
+        return view('admin.dashboard', compact('staffCount', 'bursaryApplicationsCount', 'totalApplications', 'approvalPercentages', 'rejectralPercentages', 'pendralPercentages', 'approvedbursaryApplicationsCount', 'rejectedbursaryApplicationsCount', 'pendingbursaryApplicationsCount', 'totalRolesCount', 'countiesCount', 'constituenciesCount', 'wardsCount', 'locationsCount', 'sublocationsCount', 'pollingstationsCount', 'chartData'));
     }
 
     public function list()

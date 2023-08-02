@@ -343,6 +343,39 @@
                         </div>
                         <!-- /.card -->
 
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-bar mr-1"></i>
+                                    Top Ten Constituencies With Most Applicants
+                                </h3>
+                                <div class="card-tools">
+                                    <ul class="nav nav-pills">
+                                        <li class="nav-item" id='constituency_chart'>
+                                            <a class="nav-link active" href="#top_ten_constituencies_chart"
+                                                data-toggle="tab">Chart</a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div><!-- /.card-header -->
+                            <div class="card-body bursary_graph_display_body">
+                                <div class="tab-content p-0">
+                                    @if (Gate::check('manage location'))
+                                        <div class="chart tab-pane active" id="top_ten_constituencies_chart"
+                                            style="position: relative; height: auto;">
+                                            {{-- Approved chart --}}
+                                            <div style="width: 100%">
+                                                <canvas id="top_ten_constituencies"></canvas>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                </div>
+                            </div><!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
 
                     </section>
 
@@ -504,6 +537,8 @@
         var rejectralPercentages = @json($rejectralPercentages);
         // pending
         var pendralPercentages = @json($pendralPercentages);
+        // top ten constituencies with most applicants
+        var chartData = @json($chartData);
     </script>
     <!-- Custom js -->
     <script src="{{ url('Admin/js/dashboard/admin/app.js') }}"></script>

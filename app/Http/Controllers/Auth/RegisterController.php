@@ -81,7 +81,7 @@ class RegisterController extends Controller
                     // Send an email to the user after successful registration
                     Mail::to($user->email)->send(new WelcomeEmail($user));
                 } catch (\Exception $e) {
-                    $register_error = __('E-Mail has been not sent due to SMTP configuration');
+                    $register_error = __('E-Mail has not been sent due to SMTP configuration');
                 }
             }
         }

@@ -75,10 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('sendTestEmailBtn').addEventListener('click', function () {
-        var subject = document.getElementById('testEmailSubject').value;
-        var body = document.getElementById('testEmailBody').value;
-        if (subject.trim() === '' || body.trim() === '') {
-            alert('Please enter both subject and body.');
+        var email_address_input = document.getElementById('testEmailAddress').value;
+        if (email_address_input.trim() === '') {
+            alert('Email address required');
             return;
         } else {
             // Show the loading spinner
@@ -89,8 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 url: sendtestemailurl,
                 type: 'POST',
                 data: {
-                    subject: subject,
-                    body: body
+                    email_address: email_address_input,
                 },
 
                 headers: {
@@ -101,8 +99,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     $('#loadingMessage').hide();
                     $('#sendTestEmailBtn').prop('disabled', false);
 
-                    alert(response.success);
                     $('#testEmailModal').modal('hide');
+                    window.location.href = response.url;
+
                 },
                 error: function (xhr, status, error) {
                     // Hide the loading spinner
@@ -115,14 +114,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (response.smtp_error) {
                         // Use the smtp_error in your preferred way.
                         // For example, you can display it in an alert or show it on your page.
-                        alert(response.smtp_error);
                         $('#testEmailModal').modal('hide');
+                        window.location.href = response.url;
 
                     } else {
                         // Handle other errors
-                        alert(response.message);
                         $('#testEmailModal').modal('hide');
-
                     }
 
                 }

@@ -24,7 +24,7 @@ var chart = new Chart(ctx_approved, {
                 max: 100,
                 stepSize: 10,
                 ticks: {
-                    callback: function(value) {
+                    callback: function (value) {
                         return value + '%';
                     }
                 },
@@ -58,7 +58,7 @@ var chart = new Chart(ctx_rejected, {
                 max: 100,
                 ticks: {
                     stepSize: 10,
-                    callback: function(value) {
+                    callback: function (value) {
                         return value + '%';
                     }
                 },
@@ -91,7 +91,7 @@ var chart = new Chart(ctx_pending, {
                 max: 100,
                 stepSize: 10,
                 ticks: {
-                    callback: function(value) {
+                    callback: function (value) {
                         return value + '%';
                     }
                 },
@@ -103,3 +103,53 @@ var chart = new Chart(ctx_pending, {
         }
     }
 });
+
+// top ten constituencies
+
+// Sort the chartData based on the number of applicants in descending order
+chartData.sort((a, b) => b.percentage - a.percentage);
+
+// If the number of constituencies is greater than 10, limit to 10, otherwise use all
+var limitedChartData = chartData.slice(0, Math.min(chartData.length, 10));
+
+var ctx = document.getElementById('top_ten_constituencies').getContext('2d');
+var bursaryChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: limitedChartData.map(item => item.constituency), // Constituencies based on priority
+        datasets: [{
+            label: 'Percentage',
+            data: limitedChartData.map(item => item.percentage), // Corresponding percentages
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        indexAxis: 'y', // To display labels on the y-axis
+        scales: {
+            x: {
+                ticks: {
+                    callback: function (value) {
+                        return value + '%';
+                    }
+                }
+            },
+            y: {
+                ticks: {
+                    callback: function (value) {
+                        return value + '%';
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'right',
+            }
+        },
+        maxBarThickness: 50 // Adjust this value to control the width of the bars
+    }
+});
+

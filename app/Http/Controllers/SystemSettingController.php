@@ -11,6 +11,7 @@ use App\Mail\CustomTestMailConfiguration;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 
 class SystemSettingController extends Controller
 {
@@ -221,10 +222,9 @@ class SystemSettingController extends Controller
     public function sendTestEmail(Request $request)
     {
         if (Auth::user()->can('edit system setting')) {
+            $this->validate($request, [
+                'email_address' => 'required',
 
-            $validatedData = $request->validate([
-                'subject' => 'required',
-                'body' => 'required',
             ]);
 
             $emailSettings = SystemSetting::first();
@@ -233,26 +233,27 @@ class SystemSettingController extends Controller
                 return response()->json(['error' => 'Email settings not found!'], 404);
             }
 
-            // Fetch mail settings from the database
-            $mailUsername = SystemSetting::where('name', 'mail_username')->value('value');
-
-            Config::set('mail.username', $mailUsername);
-
-
             $url = route('system-setting.index');
 
-            $email = new CustomTestMailConfiguration($validatedData['subject'], $validatedData['body'], $url);
+            $the_host = SystemSetting::where('name', 'mail_host')->value('value');
+            $the_port = SystemSetting::where('name', 'mail_port')->value('value');
+            $the_username = SystemSetting::where('name', 'mail_username')->value('value');
+            $the_password = SystemSetting::where('name', 'mail_password')->value('value');
+            $the_encryption = SystemSetting::where('name', 'mail_encryption')->value('value');
+
+            $email = new CustomTestMailConfiguration($the_host, $the_port, $the_username, $the_password, $the_encryption, $url);
             try {
-                Mail::to($mailUsername)->send($email);
+                Mail::to($request->email_address)->send($email);
+                Session::flash('success', 'Valid Configurations. Test email sent successfully!.');
+                $data = ['url' => route('system-setting.index')];
             } catch (\Exception $e) {
-                $response = [
-                    'success' => false,
-                    'message' => 'E-Mail has been not sent due to failed SMTP configuration',
-                    'smtp_error' => (isset($smtp_error)) ? $smtp_error : null
-                ];
-                return response()->json($response, 500);
+                $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
+                Session::flash('smtp_error', (isset($smtp_error)) ? $smtp_error : null);
+                $data = ['url' => route('system-setting.index')];
+                return response()->json($data);
             }
-            return response()->json(['success' => 'Valid Configurations. Test email sent successfully!']);
+
+            return response()->json($data);
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }

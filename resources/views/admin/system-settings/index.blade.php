@@ -60,15 +60,15 @@
                                             <div class="list-group list-group-flush " id="custom-setting-sidenav">
 
                                                 <a href="#custom-setting-1"
-                                                    class="list-group-item list-group-item-action active">{{ __('Brand Setting') }}
+                                                    class="list-group-item list-group-item-action active">{{ __('Brand Settings') }}
                                                     <i class="fas fa-chevron-right arrow-icon"></i>
                                                 </a>
                                                 <a href="#custom-setting-2"
-                                                    class="list-group-item list-group-item-action">{{ __('Email Setting') }}
+                                                    class="list-group-item list-group-item-action">{{ __('Email Settings') }}
                                                     <i class="fas fa-chevron-right arrow-icon"></i>
                                                 </a>
                                                 <a href="#custom-setting-3"
-                                                    class="list-group-item list-group-item-action">{{ __('Email Notification') }}
+                                                    class="list-group-item list-group-item-action">{{ __('Email Notifications') }}
                                                     <i class="fas fa-chevron-right arrow-icon"></i>
                                                 </a>
 
@@ -80,7 +80,7 @@
                                         <!--Brand Setting-->
                                         <div id="custom-setting-1" class="card">
                                             <div class="card-header">
-                                                <h5 class="small-title">{{ __('Brand Setting') }}</h5>
+                                                <h5 class="small-title">{{ __('Brand Settings') }}</h5>
                                             </div>
                                             <div class="card-body">
                                                 <form method="POST" action="{{ route('settings.update.fields') }}"
@@ -185,7 +185,7 @@
                                         <!--Email Setting-->
                                         <div id="custom-setting-2" class="card">
                                             <div class="card-header">
-                                                <h5 class="small-title">{{ __('Email Setting') }}</h5>
+                                                <h5 class="small-title">{{ __('Email Settings') }}</h5>
                                             </div>
                                             <div class="card-body">
                                                 <form method="POST" action="{{ route('settings.update.fields') }}"
@@ -311,7 +311,7 @@
                                         <!--Email Notification-->
                                         <div id="custom-setting-3" class="card">
                                             <div class="card-header">
-                                                <h5 class="small-title">{{ __('Email Action Notification') }}</h5>
+                                                <h5 class="small-title">{{ __('Email Notification Settings') }}</h5>
                                             </div>
 
                                             <div class="card-body">
@@ -462,29 +462,27 @@
                                         @csrf
                                         <div id="app" data-csrf-token="{{ csrf_token() }}">
                                             <div class="form-group">
-                                                <label for="testEmailSubject">Subject:</label>
-                                                <input type="text" class="form-control" id="testEmailSubject"
-                                                    name="subject" required>
+                                                <label for="testEmailAddress">E-Mail Address:</label>
+                                                <input type="email" class="form-control" id="testEmailAddress"
+                                                    name="email_address" required placeholder="Enter email address">
                                             </div>
-                                            <div class="form-group">
-                                                <label for="testEmailBody">Body:</label>
-                                                <textarea class="form-control" id="testEmailBody" name="body" rows="2" required></textarea>
+
+                                        </div>
+                                        @can('edit system setting')
+                                            <div class="modal-footer">
+                                                <button type="button" id="close_mail_btn" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-info"
+                                                    id="sendTestEmailBtn">Send</button>
                                             </div>
+                                        @endcan
                                     </form>
                                 </div>
-                                @can('edit system setting')
-                                    <div class="modal-footer">
-                                        <button type="button" id="close_mail_btn" class="btn btn-secondary"
-                                            data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-info" id="sendTestEmailBtn">Send</button>
-                                    </div>
-                                @endcan
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
-            </div>
         </section>
         <!-- /.content -->
 

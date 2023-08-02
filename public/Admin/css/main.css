@@ -116,6 +116,9 @@
     .card-header>.card-tools {
         float: none;
     }
+    #constituency_chart{
+        display: none;
+    }
 
     /* user_btns */
     .user_btns {
@@ -144,6 +147,7 @@
 @media (min-width: 768px) {
 
     .bursary_graph_display_body,
+    
     #approved_chart_area,
     #rejected_chart_area,
     #pending_chart_area,

@@ -323,7 +323,7 @@ class BursaryController extends Controller
 
                         Mail::to($user->email)->send(new SuccessfullBursaryApplication($user, $currentYear));
                     } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                        $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                     }
                 }
             }
@@ -599,7 +599,7 @@ class BursaryController extends Controller
 
                     Mail::to($user->email)->send(new BursaryApproved($user, $currentYear, $institution));
                 } catch (\Exception $e) {
-                    $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                    $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                 }
             }
         }
@@ -639,7 +639,7 @@ class BursaryController extends Controller
 
                     Mail::to($user->email)->send(new BursaryReject($user, $currentYear));
                 } catch (\Exception $e) {
-                    $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                    $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                 }
             }
         }
@@ -684,7 +684,7 @@ class BursaryController extends Controller
                             Mail::to($user->email)->send(new BursaryApproved($user, $currentYear, $institution));
                         }
                     } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                        $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                     }
                 }
             }
@@ -709,7 +709,7 @@ class BursaryController extends Controller
                             Mail::to($user->email)->send(new BursaryReject($user, $currentYear));
                         }
                     } catch (\Exception $e) {
-                        $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
+                        $smtp_error = __('E-Mail has not been sent due to SMTP configuration');
                     }
                 }
             }

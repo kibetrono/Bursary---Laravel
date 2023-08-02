@@ -740,7 +740,7 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td class="fas fa-folder-open"> No Applications</td>
+                                                <td class="fas fa-folder-open"> No Pending Applications</td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

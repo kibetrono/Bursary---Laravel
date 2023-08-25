@@ -80,7 +80,7 @@
                                         </div>
                                         <div class="input-group mb-3">
                                             <input id="password-confirm" type="password" name="password_confirmation"
-                                                class="form-control" placeholder="Retype password" required>
+                                                class="form-control" placeholder="Confirm password" required>
                                             <!-- Password Confirm visibility toggle -->
                                             <div class="input-group-append">
                                                 <span class="input-group-text password-toggle-confirm"

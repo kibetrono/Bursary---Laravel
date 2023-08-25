@@ -219,7 +219,7 @@ class SystemSettingController extends Controller
     {
         if (Auth::user()->can('edit system setting')) {
             $this->validate($request, [
-                'email_address' => 'required',
+                'email_address' => 'required|email',
 
             ]);
 

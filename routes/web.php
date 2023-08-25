@@ -18,7 +18,6 @@ use App\Http\Controllers\SystemSettingController;
 |
 */
 
-
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect('/home');
@@ -56,7 +55,6 @@ Route::prefix('user-bursary')->middleware(['auth'])->group(function () {
     Route::get('history/{id}', [App\Http\Controllers\BursaryController::class, 'history'])->name('user.bursary.history');
     Route::get('apply', [App\Http\Controllers\BursaryController::class, 'create'])->name('user.bursary.create.form');
     Route::post('save', [App\Http\Controllers\BursaryController::class, 'store'])->name('user.bursary.store');
-
     // select dependent
     Route::get('/fetch-constituencies/{county}', [App\Http\Controllers\BursaryController::class, 'fetchConstituencies']);
     Route::get('/fetch-wards/{constituency}', [App\Http\Controllers\BursaryController::class, 'fetchWards']);
@@ -83,7 +81,6 @@ Route::middleware(['auth'])
         // downloading attachments
         Route::get('/download/{filename}', 'BursaryController@downloadAttachment')->name('download.attachment');
     });
-
 
 Route::prefix('admin')->middleware(['auth'])->group(
     function () {
@@ -129,16 +126,13 @@ Route::prefix('admin')->middleware(['auth'])->group(
         Route::resource('location', 'LocationController');
         Route::get('locations/create-multiple', [App\Http\Controllers\LocationController::class, 'createMultiple'])->name('location.create.multiple');
 
-
         // SubLocationController
         Route::resource('sub-location', 'SubLocationController');
         Route::get('sub-locations/create-multiple', [App\Http\Controllers\SubLocationController::class, 'createMultiple'])->name('sub-location.create.multiple');
 
-
         // PollingStationController
         Route::resource('polling-station', 'PollingStationController');
         Route::get('polling-stations/create-multiple', [App\Http\Controllers\PollingStationController::class, 'createMultiple'])->name('polling-station.create.multiple');
-
 
         // system settings
         Route::resource('system-setting', 'SystemSettingController');
@@ -149,4 +143,3 @@ Route::prefix('admin')->middleware(['auth'])->group(
 Route::prefix('staff')->middleware(['auth', 'permission:approve bursary'])->group(function () {
     Route::get('dashboard', [StaffController::class, 'index'])->name('staff.home');
 });
-

@@ -74,15 +74,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('sendTestEmailBtn').addEventListener('click', function () {
-        var email_address_input = document.getElementById('testEmailAddress').value;
-        if (email_address_input.trim() === '') {
-            alert('Email address required');
+    var emailInput = document.getElementById('testEmailAddress');
+    var sendTestEmailBtn = document.getElementById('sendTestEmailBtn');
+    var loadingMessage = $('#loadingMessage');
+
+    sendTestEmailBtn.addEventListener('click', function () {
+        var email_address_input = emailInput.value.trim();
+        if (email_address_input === '') {
+            emailInput.style.border = "1px solid red";
             return;
         } else {
+            emailInput.style.border = "1px solid #ced4da"; // Set the border color to default
+
             // Show the loading spinner
-            $('#loadingMessage').show();
-            $('#sendTestEmailBtn').prop('disabled', true);
+            loadingMessage.show();
+            sendTestEmailBtn.disabled = true;
 
             $.ajax({
                 url: sendtestemailurl,
@@ -90,41 +96,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: {
                     email_address: email_address_input,
                 },
-
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request header
+                    'X-CSRF-TOKEN': csrfToken
                 },
                 success: function (response) {
                     // Hide the loading spinner
-                    $('#loadingMessage').hide();
-                    $('#sendTestEmailBtn').prop('disabled', false);
+                    loadingMessage.hide();
+                    sendTestEmailBtn.disabled = false;
 
                     $('#testEmailModal').modal('hide');
                     window.location.href = response.url;
-
                 },
                 error: function (xhr, status, error) {
                     // Hide the loading spinner
-                    $('#loadingMessage').hide();
-                    $('#sendTestEmailBtn').prop('disabled', false);
+                    loadingMessage.hide();
+                    sendTestEmailBtn.disabled = false;
 
-                    var response = xhr.responseJSON; // Parse the JSON response
-
-                    // Check if smtp_error exists in the response
+                    var response = xhr.responseJSON;
                     if (response.smtp_error) {
-                        // Use the smtp_error in your preferred way.
-                        // For example, you can display it in an alert or show it on your page.
                         $('#testEmailModal').modal('hide');
                         window.location.href = response.url;
-
                     } else {
-                        // Handle other errors
                         $('#testEmailModal').modal('hide');
                     }
-
                 }
             });
         }
+    });
+
+    // Add an input event listener to reset the border color when typing starts
+    emailInput.addEventListener('input', function () {
+        emailInput.style.border = "1px solid #ced4da"; // Reset the border color to default
     });
 });
 

@@ -125,7 +125,7 @@
 
                                     <div class="input-group mb-3 px-4">
                                         <input id="password-confirm" type="password" name="password_confirmation"
-                                            class="form-control" placeholder="Retype password">
+                                            class="form-control" placeholder="Confirm password">
                                         <div class="input-group-append">
                                             <span class="input-group-text password-toggle-confirm"
                                                 onclick="togglePasswordConfirmVisibility()">

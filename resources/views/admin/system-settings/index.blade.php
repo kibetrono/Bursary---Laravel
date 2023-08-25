@@ -448,7 +448,7 @@
                         aria-labelledby="testEmailModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header py-2">
                                     <h5 class="modal-title" id="testEmailModalLabel">Send Test Email</h5>
 
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -468,18 +468,24 @@
                                         action="{{ route('send-configuration-test-email') }}">
                                         @csrf
                                         <div id="app" data-csrf-token="{{ csrf_token() }}">
-                                            <div class="form-group">
-                                                <label for="testEmailAddress">E-Mail Address:</label>
-                                                <input type="email" class="form-control" id="testEmailAddress"
-                                                    name="email_address" required placeholder="Enter email address">
+
+                                            <div class="input-group mb-2">
+                                                <input id="testEmailAddress" type="email" class="form-control"
+                                                    name="email_address" required autocomplete="email_address" autofocus
+                                                    placeholder="Enter email address">
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text"><span class="fas fa-envelope"></span>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                         </div>
                                         @can('edit system setting')
-                                            <div class="modal-footer">
-                                                <button type="button" id="close_mail_btn" class="btn btn-secondary"
+                                            <div class="modal-footer p-0">
+                                                <button type="button" id="close_mail_btn" class="btn-sm btn btn-secondary"
                                                     data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-info"
+                                                <button type="button" class="btn-sm btn btn-info"
                                                     id="sendTestEmailBtn">Send</button>
                                             </div>
                                         @endcan

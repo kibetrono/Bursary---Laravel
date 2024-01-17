@@ -233,7 +233,7 @@
                                                                             <label for="">ID/Passport no.:</label>
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ $bursary->id_or_passport_no }}"
-                                                                                readonly>k
+                                                                                readonly>
                                                                         </div>
                                                                         <div class="col-md-4 my-2">
                                                                             <label for="">D.O.B: <span

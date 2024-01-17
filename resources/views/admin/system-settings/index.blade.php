@@ -252,7 +252,7 @@
                                                                     Password</label>
                                                                 <input class="form-control"
                                                                     placeholder="Enter Mail Password" name="mail_password"
-                                                                    type="text"
+                                                                    type="password"
                                                                     value="{{ old('mail_password', $settingsfields['mail_password'] ?? '') }}"
                                                                     id="mail_password">
                                                             </div>
